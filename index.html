@@ -322,31 +322,24 @@
             html, body { overflow: auto; height: auto; }
             .app-wrapper { height: auto; padding: 0.5rem; z-index: auto; }
             .main-content-area {
-                flex-direction: row; /* Arrange columns horizontally */
-                overflow-x: auto; /* Enable horizontal scrolling */
-                scroll-behavior: smooth;
-                width: 200%; /* Make the flex container wide enough for both columns */
-                gap: 0; /* Remove gap here, use margin on columns instead */
-            }
+    flex-direction: column; /* CAMBIO: Apilar columnas verticalmente */
+    overflow-x: hidden;    /* CAMBIO: No más scroll horizontal */
+    width: 100%;           /* CAMBIO: Ancho normal de la pantalla */
+    gap: 1rem;             /* CAMBIO: Espacio vertical entre columnas */
+}
             .left-column, .right-column {
-                width: 100%; /* Each column takes full width of the viewport */
-                flex-shrink: 0; /* Prevent shrinking */
-                margin-bottom: 0; /* Remove bottom margin in horizontal layout */
-                margin-right: 1rem; /* Add space between columns */
-            }
-            .right-column {
-                margin-right: 0; /* No margin on the last column */
-            }
+    width: 100%;           /* Mantener: Cada columna toma el ancho completo */
+    flex-shrink: 1;      
+    margin-bottom: 0;      
+    margin-right: 0;       /* CAMBIO: Eliminar margen derecho ya que están apiladas */
+    overflow-y: visible;   
+}
+
              /* Hide default scrollbar for a cleaner look */
-            .main-content-area::-webkit-scrollbar {
-                display: none;
-            }
-            .main-content-area {
-                -ms-overflow-style: none;  /* IE and Edge */
-                scrollbar-width: none;  /* Firefox */
-            }
-            .scroll-arrow { display: flex; } /* Show arrows */
-        }
+            
+            .scroll-arrow {
+    display: none !important; 
+}
         @media (min-width: 1025px) {
             .scroll-arrow { display: none; } /* Hide arrows on larger screens */
             .main-content-area {
