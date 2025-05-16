@@ -1459,15 +1459,15 @@
                     const deckItemEl = document.createElement('div');
                     deckItemEl.className = 'p-2.5 border border-[var(--duo-gray-light)] rounded-lg bg-[var(--duo-gray-lightest)]';
                     deckItemEl.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">${deckData.name}</h4>
-                                <p class="text-xs text-[var(--duo-gray-dark)]">Costo: <span class="deck-cost">${deckData.cost}</span> 🍎 </p>
-                                <p class="text-xs text-[var(--duo-gray-dark)]">Palabras: ${deckData.cards.length}</p>
-                            </div>
-                            <button class="btn btn-primary btn-sm buy-deck-btn" data-deck-id="${deckDef.id}">Comprar</button>
-                        </div>
-                    `;
+    <div class="flex justify-between items-center">
+        <div>
+            <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">${deckData.name}</h4>
+            <p class="text-xs text-[var(--duo-gray-dark)]">Costo: <span class="deck-cost">${deckData.cost}</span> 🍎 </p>
+            <p class="text-xs text-[var(--duo-gray-dark)]">Palabras: ${deckData.cards.length}</p>
+        </div>
+        <button class="btn btn-primary btn-sm buy-deck-btn" data-deck-id="${deckDef.id}">Comprar</button>
+    </div>
+`;
                     shopDecksContainerEl.appendChild(deckItemEl);
                     decksDisplayed++;
                 } catch (error) {
