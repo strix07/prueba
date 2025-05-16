@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        
+
         :root {
             --duo-green: #4CAF50; /* Darker main green */
             --duo-green-dark: #388E3C; /* Darker border green */
@@ -153,7 +153,7 @@
             border: 1px solid #bee5eb;
         }
 
-        
+
         .btn {
             padding: 0.65rem 1.1rem; /* Reduced */
             border-radius: 0.75rem;
@@ -310,34 +310,82 @@
             background-color: #d1d1d1;
         }
 
+        #shop-decks-container {
+            max-height: 150px; 
+
+        overflow-y: auto;}
+
         #import-progress-input { display: none; }
 
         /* Responsive adjustments */
         @media (max-width: 1024px) {
             html, body { overflow: auto; height: auto; }
             .app-wrapper { height: auto; padding: 0.5rem; z-index: auto; }
-            .main-content-area { flex-direction: column; overflow-y: visible; }
-            .left-column, .right-column { width: 100%; max-height: none; margin-bottom: 1rem; overflow-y: visible; }
-            .left-column:last-child, .right-column:last-child { margin-bottom: 0; }
-            .tree-gif { max-height: 180px; } /* Keep a decent size for tablet */
+            .main-content-area {
+                flex-direction: row; /* Arrange columns horizontally */
+                overflow-x: auto; /* Enable horizontal scrolling */
+                scroll-behavior: smooth;
+                width: 200%; /* Make the flex container wide enough for both columns */
+                gap: 0; /* Remove gap here, use margin on columns instead */
+            }
+            .left-column, .right-column {
+                width: 100%; /* Each column takes full width of the viewport */
+                flex-shrink: 0; /* Prevent shrinking */
+                margin-bottom: 0; /* Remove bottom margin in horizontal layout */
+                margin-right: 1rem; /* Add space between columns */
+            }
+            .right-column {
+                margin-right: 0; /* No margin on the last column */
+            }
+             /* Hide default scrollbar for a cleaner look */
+            .main-content-area::-webkit-scrollbar {
+                display: none;
+            }
+            .main-content-area {
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            .scroll-arrow { display: flex; } /* Show arrows */
+        }
+        @media (min-width: 1025px) {
+            .scroll-arrow { display: none; } /* Hide arrows on larger screens */
+            .main-content-area {
+                flex-direction: row; /* Default two-column layout */
+                overflow-x: hidden; /* Disable horizontal scrolling */
+                gap: 1rem; /* Restore gap */
+                width: 100%; /* Restore width */
+            }
+            .left-column { width: 45%; margin-right: 0; } /* Restore width and remove margin-right */
+            .right-column { width: 55%; margin-right: 0; } /* Restore width and remove margin-right */
         }
 
-        @media (max-width: 640px) {
-            .app-wrapper { padding: 0.25rem; }
-            .left-column, .right-column { padding: 0.75rem; } /* Reduced padding for small mobile */
-            .flashcard { padding: 0.75rem; min-height: 90px; }
-            #question-text { font-size: 1rem; } /* Slightly smaller on smallest screens */
-            .tree-gif { max-height: 130px; }
-            .btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; min-width: 70px; } /* Smaller buttons for mobile */
-            .button-group .btn { font-size: 0.7rem; padding: 0.4rem 0.7rem;}
-            .input-field { font-size: 0.85rem; padding: 0.5rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.375rem; }
-            .stat-item h3 { font-size: 0.65rem; }
-            .stat-item p { font-size: 1rem; }
-            .section-title { font-size: 1rem; }
-            .modal-content { padding: 1rem; width: 95%; }
-            .modal-content h3 { font-size: 1.1rem; }
+        /* Styles for scroll arrows */
+        .scroll-arrow {
+            position: fixed; /* Use fixed to keep them in viewport */
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
         }
+        .scroll-arrow:hover {
+            opacity: 1;
+        }
+        .scroll-arrow.left { left: 0.5rem; }
+        .scroll-arrow.right { right: 0.5rem; }
+
     </style>
 </head>
 <body>
@@ -348,20 +396,20 @@
         <div class="main-content-area">
             <div class="left-column">
                 <h2 class="column-title">Panel de Estudio</h2>
-                <section id="flashcard-section"> 
+                <section id="flashcard-section">
                     <div class="flashcard">
                         <p id="question-text"></p>
                     </div>
                     <input type="text" id="answer-input" class="input-field mx-auto block" placeholder="Escribe la traducción...">
-                    <div id="feedback-text" class="feedback text-center"></div> 
-                    <div class="flex justify-center space-x-2 mt-1.5 button-group"> 
+                    <div id="feedback-text" class="feedback text-center"></div>
+                    <div class="flex justify-center space-x-2 mt-1.5 button-group">
                         <button id="check-answer-btn" class="btn btn-primary">Revisar</button>
                         <button id="learned-btn" class="btn btn-learned hidden">¡Lo sé!</button>
                         <button id="next-card-btn" class="btn btn-secondary hidden">Siguiente</button>
                     </div>
                 </section>
 
-                <section class="stats-grid"> 
+                <section class="stats-grid">
                     <div class="stat-item">
                         <h3>Puntos</h3>
                         <p id="score">0</p>
@@ -395,7 +443,7 @@
             </div>
 
             <div class="right-column">
-                 <h2 class="column-title">Mi Bosque Lingüístico</h2>
+                 <h2 class="column-title">Panel de Progreso</h2>
                  <section id="tree-section" class="text-center flex flex-col flex-grow tree-section-container">
                     <h2 class="section-title text-[var(--duo-green)]">Tu Árbol de Palabras</h2>
                     <div id="tree-display" class="tree-display">
@@ -407,14 +455,19 @@
                 <section class="bottom-section">
                     <h2 class="section-title text-[var(--duo-blue)]">Progreso</h2>
                     <div class="button-group">
-                         <button id="export-progress-btn" class="btn btn-tertiary">Exportar</button>
-                         <button id="import-progress-btn" class="btn btn-tertiary">Importar</button>
+                         <button id="export-progress-btn" class="btn btn-tertiary">Exportar Progreso</button>
+                         <button id="import-progress-btn" class="btn btn-tertiary">Importar Progreso</button>
+                         <button id="download-words-btn" class="btn btn-tertiary">Descargar Palabras (TXT)</button>
                          <input type="file" id="import-progress-input" accept=".json, .enc">
                     </div>
-                    <div id="import-export-feedback" class="feedback text-center mt-1.5"></div> 
+                    <div id="import-export-feedback" class="feedback text-center mt-1.5"></div>
                 </section>
             </div>
         </div>
+
+        <button id="scroll-left-btn" class="scroll-arrow left hidden">«</button>
+        <button id="scroll-right-btn" class="scroll-arrow right hidden">»</button>
+
     </div>
 
     <div id="add-card-modal" class="modal hidden">
@@ -425,7 +478,7 @@
             <label for="new-answer">Traducción al Español:</label>
             <input type="text" id="new-answer" class="input-field w-full" placeholder="Ej: Hola">
             <div id="add-card-feedback" class="feedback text-center"></div>
-            <div class="flex justify-end space-x-2 mt-3"> 
+            <div class="flex justify-end space-x-2 mt-3">
                 <button id="save-card-btn" class="btn btn-primary btn-sm">Guardar</button>
                 <button id="cancel-add-card-btn" class="btn bg-slate-300 hover:bg-slate-400 text-slate-800 btn-sm">Cancelar</button>
             </div>
@@ -435,11 +488,14 @@
     <div id="delete-card-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Eliminar Palabra</h3>
-            <div id="delete-card-list-container" class="my-2 max-h-48 overflow-y-auto p-2 border border-[var(--duo-gray-light)] rounded-md"> {/* Reduced my, max-h */}
+            <div class="flex justify-end mb-1">
+                 <button id="select-all-delete-btn" class="btn btn-secondary btn-sm !py-1 !px-2 !text-xs hidden">Seleccionar Todas</button>
+            </div>
+            <div id="delete-card-list-container" class="my-2 max-h-48 overflow-y-auto p-2 border border-[var(--duo-gray-light)] rounded-md">
                 <p id="no-cards-to-delete-msg" class="text-[var(--duo-gray-dark)] text-sm hidden">No hay palabras para eliminar.</p>
             </div>
             <div id="delete-feedback" class="feedback text-center"></div>
-            <div class="flex justify-end space-x-2 mt-3"> 
+            <div class="flex justify-end space-x-2 mt-3">
                 <button id="confirm-delete-card-btn" class="btn btn-danger btn-sm">Eliminar</button>
                 <button id="cancel-delete-card-btn" class="btn bg-slate-300 hover:bg-slate-400 text-slate-800 btn-sm">Cancelar</button>
             </div>
@@ -449,11 +505,11 @@
     <div id="review-learned-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Palabras Aprendidas</h3>
-            <div id="review-learned-list-container" class="my-2 max-h-52 overflow-y-auto p-2 border border-[var(--duo-gray-light)] rounded-md"> {/* Reduced my, max-h */}
+            <div id="review-learned-list-container" class="my-2 max-h-52 overflow-y-auto p-2 border border-[var(--duo-gray-light)] rounded-md">
                  <p id="no-learned-cards-msg" class="text-[var(--duo-gray-dark)] text-sm hidden">Aún no has marcado ninguna palabra como aprendida.</p>
             </div>
             <div id="review-modal-feedback" class="feedback text-center"></div>
-            <div class="flex justify-end mt-3"> 
+            <div class="flex justify-end mt-3">
                 <button id="close-review-learned-btn" class="btn bg-slate-300 hover:bg-slate-400 text-slate-800 btn-sm">Cerrar</button>
             </div>
         </div>
@@ -463,31 +519,43 @@
         <div class="modal-content">
             <h3>Tienda del Árbol</h3>
             <div id="shop-feedback" class="feedback text-center"></div>
-            <div class="space-y-2 my-3"> 
-                <div class="p-2.5 border border-[var(--duo-gray-light)] rounded-lg bg-[var(--duo-gray-lightest)]"> 
+            <div class="space-y-2 my-3">
+                <div class="p-2.5 border border-[var(--duo-gray-light)] rounded-lg bg-[var(--duo-gray-lightest)]">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">Fertilizante Mágico</h4>
+                            <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">Fertilizante</h4>
                             <p class="text-xs text-[var(--duo-gray-dark)]">Costo: <span id="fertilizer-shop-cost-display">10</span> Puntos ✨</p>
                         </div>
                         <button id="buy-fertilizer-shop-btn" class="btn btn-primary btn-sm">Comprar</button>
                     </div>
                 </div>
-                 <div class="p-2.5 border border-[var(--duo-gray-light)] rounded-lg bg-[var(--duo-gray-lightest)]"> 
+                 <div class="p-2.5 border border-[var(--duo-gray-light)] rounded-lg bg-[var(--duo-gray-lightest)]">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">1 Manzana Dorada 🍎</h4>
-                            <p class="text-xs text-[var(--duo-gray-dark)]">Costo: <span id="apple-shop-cost-display">100</span> Puntos</p>
+                            <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">1 Manzana 🍎</h4>
+                            <p class="text-xs text-[var(--duo-gray-dark)]">Costo: <span id="apple-shop-cost-display">1000</span> Puntos</p>
                         </div>
                         <button id="buy-apple-shop-btn" class="btn btn-primary btn-sm">Comprar</button>
                     </div>
                 </div>
+
+                <!-- Nueva sección para Mazos de Palabras -->
+                <h4 class="text-md font-semibold text-[var(--duo-text-dark)] pt-3 mt-3 border-t border-[var(--duo-gray-light)]">Mazos de Palabras</h4>
+                <div id="shop-decks-container" class="space-y-2">
+                    <!-- Los mazos se cargarán aquí dinámicamente -->
+                    <p id="loading-decks-msg" class="text-sm text-center text-[var(--duo-gray-dark)]">Cargando mazos disponibles...</p>
+                </div>
+
             </div>
-            <div class="flex justify-end mt-3"> 
+            <div class="flex justify-end mt-3">
                 <button id="close-shop-btn" class="btn bg-slate-300 hover:bg-slate-400 text-slate-800 btn-sm">Cerrar Tienda</button>
             </div>
         </div>
     </div>
+
+    <!-- Elementos de Audio -->
+    <audio id="correct-sound" src="sounds/correct-sound.mp3" preload="auto"></audio>
+    <audio id="incorrect-sound" src="sounds/incorrect-sound.mp3" preload="auto"></audio>
 
     <script>
         // --- Variables del Juego ---
@@ -501,6 +569,12 @@
         let applesPerDay = 0;
         let lastAppleGenerationTime = Date.now();
         let appleCountdownInterval = null;
+        let shopDecksData = {};
+
+        // NUEVO: Variables para límite de puntos
+        let pointsThisHour = 0;
+        let lastPointResetTime = Date.now();
+
 
         // --- Constantes del Juego ---
         const POINTS_PER_CORRECT_ANSWER = 10;
@@ -511,23 +585,36 @@
             { question: "Yes", answer: "Sí" }, { question: "No", answer: "No" },
             { question: "Friend", answer: "Amigo" }, { question: "Love", answer: "Amor" }
         ];
-        const CHECK_APPLES_INTERVAL = 60 * 1000; // 1 minuto
-        const FERTILIZER_SHOP_COST = 10;
-        const APPLE_SHOP_COST = 100;
-        const TREE_LEVEL_DATA = [ // Asegúrate de que los GIFs existen en una carpeta 'gifs/' relativa al HTML
+        const CHECK_APPLES_INTERVAL = 60 * 1000;
+        const FERTILIZER_SHOP_COST = 50;
+        const APPLE_SHOP_COST = 500;
+        const TREE_LEVEL_DATA = [
             { name: 'Semilla',         gifName: 'gif_1.gif', fertilizerToNext: 5,   applesPerDay: 0 },
             { name: 'Brote',           gifName: 'gif_2.gif', fertilizerToNext: 10,  applesPerDay: 0 },
             { name: 'Árbol Pequeño',   gifName: 'gif_3.gif', fertilizerToNext: 20,  applesPerDay: 1 },
             { name: 'Árbol Mediano',   gifName: 'gif_4.gif', fertilizerToNext: 40,  applesPerDay: 2 },
             { name: 'Árbol Mìstico',    gifName: 'gif_5.gif', fertilizerToNext: 80,  applesPerDay: 4 },
             { name: 'Árbol Divino',   gifName: 'gif_6.gif', fertilizerToNext: 160, applesPerDay: 8 }
-       
         ];
         const MAX_TREE_LEVEL_INDEX = TREE_LEVEL_DATA.length - 1;
 
-        // --- Constantes de Encriptación ---
+       const SHOP_DECK_DEFINITIONS = [
+            { id: "basic_verbs_pack", fileName: "decks/deck_basic_verbs.json" },
+            { id: "birds_pack", fileName: "decks/birds.json" },
+            { id: "body_parts_pack", fileName: "decks/body.json" },
+            { id: "basic_verbs_past_pack", fileName: "decks/deck_basic_verbs_past.json" },
+            { id: "fruits_vegetables_pack", fileName: "decks/fruit.json" },
+            { id: "land_animals_pack", fileName: "decks/land_animals.json" },
+            { id: "marine_animals_pack", fileName: "decks/marine_animals.json" }
+        ];
+
         const ENCRYPTION_KEY_STRING = "miClaveSuperSecreta1234567890!";
         let cryptoKey;
+
+        // NUEVO: Constantes para límites
+        const MIN_CARDS_FOR_POINTS = 5;
+        const MAX_POINTS_PER_HOUR = 500;
+        const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 
         // --- Elementos del DOM ---
         const questionTextEl = document.getElementById('question-text');
@@ -558,6 +645,7 @@
         const confirmDeleteCardBtn = document.getElementById('confirm-delete-card-btn');
         const cancelDeleteCardBtn = document.getElementById('cancel-delete-card-btn');
         const deleteFeedbackEl = document.getElementById('delete-feedback');
+        const selectAllDeleteBtn = document.getElementById('select-all-delete-btn');
         const reviewLearnedModal = document.getElementById('review-learned-modal');
         const reviewLearnedListContainerEl = document.getElementById('review-learned-list-container');
         const noLearnedCardsMsgEl = document.getElementById('no-learned-cards-msg');
@@ -571,13 +659,21 @@
         const shopFeedbackEl = document.getElementById('shop-feedback');
         const fertilizerShopCostDisplayEl = document.getElementById('fertilizer-shop-cost-display');
         const appleShopCostDisplayEl = document.getElementById('apple-shop-cost-display');
+        const shopDecksContainerEl = document.getElementById('shop-decks-container');
+        const loadingDecksMsgEl = document.getElementById('loading-decks-msg');
         const exportProgressBtn = document.getElementById('export-progress-btn');
         const importProgressBtn = document.getElementById('import-progress-btn');
         const importProgressInput = document.getElementById('import-progress-input');
         const importExportFeedbackEl = document.getElementById('import-export-feedback');
-        const showReviewLearnedModalBtn = document.getElementById('show-review-learned-modal-btn'); // Nueva referencia
+        const showReviewLearnedModalBtn = document.getElementById('show-review-learned-modal-btn');
+        const downloadWordsBtn = document.getElementById('download-words-btn');
+        const scrollLeftBtn = document.getElementById('scroll-left-btn');
+        const scrollRightBtn = document.getElementById('scroll-right-btn');
+        const mainContentAreaEl = document.querySelector('.main-content-area');
+        const correctSound = document.getElementById('correct-sound');
+        const incorrectSound = document.getElementById('incorrect-sound');
 
-        // --- Funciones de Encriptación/Decriptación ---
+
         async function initCryptoKey() {
             try {
                 const keyMaterial = await window.crypto.subtle.importKey(
@@ -589,7 +685,6 @@
                     { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
                     keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
                 );
-                // console.log("CryptoKey inicializada."); // Comentado para producción
             } catch (error) {
                 console.error("Error al inicializar CryptoKey:", error);
                 showTemporaryFeedback(importExportFeedbackEl, "Error de criptografía al iniciar.", "incorrect", 5000);
@@ -631,10 +726,15 @@
             }
         }
 
-        // --- Funciones del Juego (Export/Import) ---
         async function exportProgress() {
             clearFeedback(importExportFeedbackEl);
-            const gameData = { flashcards, learnedFlashcards, currentCardIndex, score, fertilizerCount, treeLevel, applesCount, applesPerDay, lastAppleGenerationTime };
+            // MODIFICADO: Incluir variables de límite de puntos
+            const gameData = {
+                flashcards, learnedFlashcards, currentCardIndex, score,
+                fertilizerCount, treeLevel, applesCount, applesPerDay,
+                lastAppleGenerationTime,
+                pointsThisHour, lastPointResetTime // NUEVO
+            };
             const jsonData = JSON.stringify(gameData);
             const encryptedPayload = await encryptData(jsonData);
             if (!encryptedPayload) {
@@ -687,8 +787,12 @@
                     treeLevel = importedData.treeLevel || 0;
                     applesCount = importedData.applesCount || 0;
                     lastAppleGenerationTime = importedData.lastAppleGenerationTime || Date.now();
-                    saveGameData();
-                    initGameVisuals();
+                    // NUEVO: Cargar variables de límite de puntos
+                    pointsThisHour = importedData.pointsThisHour || 0;
+                    lastPointResetTime = importedData.lastPointResetTime || Date.now();
+
+                    saveGameData(); // Guardar inmediatamente los datos importados (incluyendo los nuevos)
+                    initGameVisuals(); // Esto llamará a checkHourlyPointLimit
                     showTemporaryFeedback(importExportFeedbackEl, "Progreso importado exitosamente.", "correct", 4000);
                 } catch (error) {
                     console.error("Error importando progreso:", error);
@@ -703,7 +807,50 @@
             reader.readAsText(file);
         }
 
-        // --- Funciones Principales del Juego ---
+        function formatWordsArrayToTxt(wordsArray) {
+            if (!wordsArray || wordsArray.length === 0) {
+                return "Ninguna por el momento.";
+            }
+            let textParts = [];
+            for (let i = 0; i < wordsArray.length; i++) {
+                const card = wordsArray[i];
+                let currentPart = `${card.question}: ${card.answer}`;
+                if (wordsArray.length === 1) {
+                    currentPart += ".";
+                } else {
+                    if (i === 0) {
+                        currentPart += ".";
+                    } else if (i < wordsArray.length - 1) {
+                        currentPart += ",";
+                    }
+                }
+                textParts.push(currentPart);
+            }
+            return textParts.join(' ');
+        }
+
+        function downloadFlashcardsJson() {
+            clearFeedback(importExportFeedbackEl);
+            if (flashcards.length === 0 && learnedFlashcards.length === 0) {
+                showTemporaryFeedback(importExportFeedbackEl, "No hay palabras para descargar.", "info", 3000);
+                return;
+            }
+            let textContent = "=== Palabras por Aprender ===\r\n";
+            textContent += formatWordsArrayToTxt(flashcards) + "\r\n\r\n"; // Doble salto de línea
+            textContent += "=== Palabras Aprendidas ===\r\n";
+            textContent += formatWordsArrayToTxt(learnedFlashcards);
+            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "flashcards_palabras.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showTemporaryFeedback(importExportFeedbackEl, "Archivo de palabras (TXT) descargado.", "correct", 3000);
+        }
+
         function displayCard() {
             if (flashcards.length === 0) {
                 handleNoCardsState();
@@ -715,7 +862,12 @@
             questionTextEl.textContent = flashcards[currentCardIndex].question;
             answerInputEl.value = "";
             answerInputEl.focus();
-            clearFeedback(feedbackTextEl);
+            clearFeedback(feedbackTextEl); // Limpiar feedback anterior
+            // NUEVO: Comprobar si se pueden ganar puntos y mostrar aviso si no
+            if (flashcards.length < MIN_CARDS_FOR_POINTS) {
+                 showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0); // 0 para persistente
+            }
+
             checkAnswerBtn.classList.remove('hidden');
             checkAnswerBtn.disabled = false;
             learnedBtn.classList.add('hidden');
@@ -723,13 +875,25 @@
         }
 
         function handleNoCardsState() {
-            questionTextEl.textContent = "¡No hay palabras! Añade algunas para empezar.";
+            questionTextEl.textContent = "¡No hay palabras! Añade algunas o compra un mazo para empezar.";
             answerInputEl.value = "";
             answerInputEl.disabled = true;
             checkAnswerBtn.classList.add('hidden');
             learnedBtn.classList.add('hidden');
             nextCardBtn.classList.add('hidden');
-            showTemporaryFeedback(feedbackTextEl, "Usa 'Añadir Palabra' para crear tus tarjetas.", "info", 0);
+            showTemporaryFeedback(feedbackTextEl, `Usa 'Añadir Palabra' o visita la Tienda. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
+        }
+
+        // NUEVO: Función para verificar y reiniciar el contador de puntos por hora
+        function checkHourlyPointLimit() {
+            const now = Date.now();
+            if (now - lastPointResetTime >= ONE_HOUR_IN_MS) {
+                pointsThisHour = 0;
+                lastPointResetTime = now;
+                // Opcional: informar al usuario que el límite se ha reiniciado
+                // showTemporaryFeedback(feedbackTextEl, "Límite de puntos por hora reiniciado.", "info", 2000);
+                saveGameData(); // Guardar el reinicio
+            }
         }
 
         function checkAnswer() {
@@ -738,17 +902,50 @@
             const correctAnswer = flashcards[currentCardIndex].answer.toLowerCase();
             checkAnswerBtn.classList.add('hidden');
             nextCardBtn.classList.remove('hidden');
+
             if (userAnswer === correctAnswer) {
-                showTemporaryFeedback(feedbackTextEl, "¡Correcto! 🎉", "correct", 2000);
-                score += POINTS_PER_CORRECT_ANSWER;
-                if (learnedFlashcards.some(card => card.question.toLowerCase() === flashcards[currentCardIndex].question.toLowerCase())) {
-                    score += Math.floor(POINTS_FOR_LEARNED_WORD / 2);
+                checkHourlyPointLimit(); // NUEVO: Verificar/Resetear contador horario
+
+                if (flashcards.length < MIN_CARDS_FOR_POINTS) { // NUEVO: Verificar mínimo de cartas
+                    showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 Pero necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos. Añade más. (Tienes ${flashcards.length})`, "info", 4000);
+                } else if (pointsThisHour >= MAX_POINTS_PER_HOUR) { // NUEVO: Verificar si se alcanzó el límite horario
+                    showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 Has alcanzado el límite de ${MAX_POINTS_PER_HOUR} puntos esta hora. Intenta más tarde.`, "info", 4000);
+                } else {
+                    const pointsToAdd = POINTS_PER_CORRECT_ANSWER;
+                    let actualPointsAdded = pointsToAdd;
+
+                    if (pointsThisHour + pointsToAdd > MAX_POINTS_PER_HOUR) {
+                        actualPointsAdded = MAX_POINTS_PER_HOUR - pointsThisHour;
+                        showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 +${actualPointsAdded} puntos. (Límite horario alcanzado)`, "correct", 3000);
+                    } else {
+                        showTemporaryFeedback(feedbackTextEl, "¡Correcto! 🎉", "correct", 2000);
+                    }
+                    score += actualPointsAdded;
+                    pointsThisHour += actualPointsAdded;
+                    updateScore();
+                }
+                // FIN NUEVO
+
+                learnedBtn.classList.remove('hidden');
+                if (correctSound) {
+                    correctSound.currentTime = 0;
+                    correctSound.play().catch(error => console.error("Error al reproducir sonido correcto:", error));
+                }
+            } else {
+                // --- INICIO DEL CAMBIO ---
+                const pointsToDeduct = 20;
+                score -= pointsToDeduct;
+                if (score < 0) { // Opcional: Evitar que el puntaje sea negativo
+                    score = 0;
                 }
                 updateScore();
-                learnedBtn.classList.remove('hidden');
-            } else {
-                showTemporaryFeedback(feedbackTextEl, `Respuesta correcta: ${flashcards[currentCardIndex].answer}`, "incorrect", 3000);
+                showTemporaryFeedback(feedbackTextEl, `Incorrecto. Respuesta correcta: ${flashcards[currentCardIndex].answer}. Has perdido ${pointsToDeduct} puntos. 📉`, "incorrect", 3500);
+                // --- FIN DEL CAMBIO ---
                 learnedBtn.classList.add('hidden');
+                if (incorrectSound) {
+                    incorrectSound.currentTime = 0;
+                    incorrectSound.play().catch(error => console.error("Error al reproducir sonido incorrecto:", error));
+                }
             }
             nextCardBtn.focus();
             saveGameData();
@@ -757,29 +954,65 @@
         function markAsLearned() {
             if (flashcards.length === 0) return;
             const cardToLearn = flashcards[currentCardIndex];
+            let feedbackMessage = "";
+
             if (learnedFlashcards.findIndex(card => card.question.toLowerCase() === cardToLearn.question.toLowerCase()) === -1) {
                 learnedFlashcards.push(cardToLearn);
-                score += POINTS_FOR_LEARNED_WORD;
-                showTemporaryFeedback(feedbackTextEl, `"${cardToLearn.question}" marcada como aprendida. +${POINTS_FOR_LEARNED_WORD} pts!`, "info", 2500);
+                checkHourlyPointLimit(); // NUEVO: Verificar/Resetear contador horario
+
+                // MODIFICADO: Condición para dar puntos por aprender
+                // Ahora también considera el mínimo de palabras EN EL MAZO PRINCIPAL ANTES de marcar como aprendida
+                if (flashcards.length < MIN_CARDS_FOR_POINTS) {
+                    feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. Necesitas ${MIN_CARDS_FOR_POINTS} palabras en el mazo principal para ganar puntos por aprender.`;
+                } else if (pointsThisHour >= MAX_POINTS_PER_HOUR) {
+                    feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. Límite de ${MAX_POINTS_PER_HOUR} puntos/hora alcanzado.`;
+                } else {
+                    const pointsToAdd = POINTS_FOR_LEARNED_WORD;
+                    let actualPointsAdded = pointsToAdd;
+
+                    if (pointsThisHour + pointsToAdd > MAX_POINTS_PER_HOUR) {
+                        actualPointsAdded = MAX_POINTS_PER_HOUR - pointsThisHour;
+                        feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. +${actualPointsAdded} pts! (Límite horario alcanzado)`;
+                    } else {
+                        feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. +${actualPointsAdded} pts!`;
+                    }
+                    score += actualPointsAdded;
+                    pointsThisHour += actualPointsAdded;
+                    updateScore();
+                }
+                showTemporaryFeedback(feedbackTextEl, feedbackMessage, "info", 3500);
+
             } else {
                 showTemporaryFeedback(feedbackTextEl, `"${cardToLearn.question}" ya estaba marcada como aprendida.`, "info", 2500);
             }
+
+            const previousFlashcardCount = flashcards.length; // Guardar antes de quitar
             flashcards.splice(currentCardIndex, 1);
-            updateScore();
+
             saveGameData();
             checkAnswerBtn.classList.add('hidden');
             learnedBtn.classList.add('hidden');
             nextCardBtn.classList.remove('hidden');
             nextCardBtn.focus();
+
             if (flashcards.length === 0) {
                 handleNoCardsState();
             } else {
+                // NUEVO: Comprobar si el mazo principal ahora tiene menos de MIN_CARDS_FOR_POINTS
+                if (flashcards.length < MIN_CARDS_FOR_POINTS && previousFlashcardCount >= MIN_CARDS_FOR_POINTS) {
+                     // displayCard() se encargará de mostrar el aviso general si es necesario
+                } else if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
+                    // Si al marcar como aprendida, casualmente el mazo queda con suficientes, el aviso de displayCard se quitará
+                }
+
                 if (currentCardIndex >= flashcards.length) {
                     currentCardIndex = 0;
+                    shuffleFlashcards();
                 }
-                displayCard();
+                displayCard(); // Esto actualizará el feedback si es necesario
             }
         }
+
 
         function moveToNextCard(shuffleDeckIfNeeded = true) {
             if (flashcards.length === 0) {
@@ -791,7 +1024,10 @@
                 currentCardIndex = 0;
                 if (shuffleDeckIfNeeded && flashcards.length > 1) {
                     shuffleFlashcards();
-                    showTemporaryFeedback(feedbackTextEl, "¡Mazo barajado para la siguiente ronda!", "info", 1500);
+                    // No mostramos "Mazo barajado" si ya hay otro feedback importante (ej. falta de palabras)
+                    if (!feedbackTextEl.textContent || feedbackTextEl.textContent.includes("¡Correcto!") || feedbackTextEl.textContent.includes("Respuesta correcta:")) {
+                         showTemporaryFeedback(feedbackTextEl, "¡Mazo barajado para la siguiente ronda!", "info", 1500);
+                    }
                 }
             }
             displayCard();
@@ -805,7 +1041,6 @@
             }
         }
 
-        // --- Funciones de UI y Estado ---
         function updateScore() { scoreEl.textContent = score; }
         function updateFertilizerCount() {
             fertilizerCountEl.textContent = fertilizerCount;
@@ -819,7 +1054,7 @@
 
         function updateTreeVisual() {
             const currentLevelData = TREE_LEVEL_DATA[treeLevel];
-            const gifPath = `gifs/${currentLevelData.gifName}`; // Ajusta esta ruta si tus gifs están en otro lugar
+            const gifPath = `gifs/${currentLevelData.gifName}`;
             treeDisplayEl.innerHTML = `<img src="${gifPath}" alt="[Imagen de ${currentLevelData.name}]" class="tree-gif mx-auto">`;
             treeLevelTextEl.textContent = `Nivel: ${currentLevelData.name}`;
             applesPerDay = currentLevelData.applesPerDay;
@@ -845,12 +1080,13 @@
                 treeLevel++;
                 updateTreeVisual();
                 updateFertilizerCount();
+                updateScore();
                 showTemporaryFeedback(feedbackTextEl, `¡Tu árbol creció a ${TREE_LEVEL_DATA[treeLevel].name}!`, "correct", 2500);
                 treeDisplayEl.style.transform = 'scale(1.15)';
                 setTimeout(() => { treeDisplayEl.style.transform = 'scale(1)'; }, 300);
                 saveGameData();
             } else {
-                showTemporaryFeedback(feedbackTextEl, `Necesitas ${requiredFertilizer - fertilizerCount} más fertilizante para crecer el árbol.`, "info", 3000);
+                 showTemporaryFeedback(feedbackTextEl, `Necesitas ${requiredFertilizer - fertilizerCount} más fertilizante.`, "info", 3000);
             }
         }
 
@@ -879,29 +1115,47 @@
                 appleCountdownEl.textContent = "--:--:--";
                 return;
             }
-            appleCountdownInterval = setInterval(() => {
+            function calculateAndDisplayCountdown() {
                 const now = Date.now();
                 const generationIntervalMs = ((24 * 60 * 60) / applesPerDay) * 1000;
                 const timeSinceLastApple = now - lastAppleGenerationTime;
+
+                if (timeSinceLastApple >= generationIntervalMs && applesPerDay > 0) {
+                    checkAndGenerateApples();
+                    const newTimeSinceLastApple = now - lastAppleGenerationTime;
+                    let timeToNextAppleMs = generationIntervalMs - (newTimeSinceLastApple % generationIntervalMs);
+                    if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
+
+                    const h = String(Math.floor((timeToNextAppleMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+                    const m = String(Math.floor((timeToNextAppleMs / (1000 * 60)) % 60)).padStart(2, '0');
+                    const s = String(Math.floor((timeToNextAppleMs / 1000) % 60)).padStart(2, '0');
+                    appleCountdownEl.textContent = `${h}:${m}:${s}`;
+                    return;
+                }
+
                 let timeToNextAppleMs = generationIntervalMs - (timeSinceLastApple % generationIntervalMs);
+
                 if (timeToNextAppleMs <= 1000 && timeToNextAppleMs > 0) {
                      appleCountdownEl.textContent = "¡Ahora!";
-                     if(timeSinceLastApple >= generationIntervalMs) checkAndGenerateApples();
                      return;
                 }
-                if (timeToNextAppleMs <=0) timeToNextAppleMs = generationIntervalMs;
+                if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
+
                 const h = String(Math.floor((timeToNextAppleMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
                 const m = String(Math.floor((timeToNextAppleMs / (1000 * 60)) % 60)).padStart(2, '0');
                 const s = String(Math.floor((timeToNextAppleMs / 1000) % 60)).padStart(2, '0');
                 appleCountdownEl.textContent = `${h}:${m}:${s}`;
-            }, 1000);
+            }
+            calculateAndDisplayCountdown();
+            appleCountdownInterval = setInterval(calculateAndDisplayCountdown, 1000);
         }
 
         function saveGameData() {
             const gameData = {
                 flashcards, learnedFlashcards, currentCardIndex, score,
                 fertilizerCount, treeLevel, applesCount,
-                lastAppleGenerationTime
+                lastAppleGenerationTime,
+                pointsThisHour, lastPointResetTime // NUEVO: Guardar estado de límite de puntos
             };
             localStorage.setItem('flashcardGameData', JSON.stringify(gameData));
         }
@@ -919,7 +1173,11 @@
                     treeLevel = parsedData.treeLevel || 0;
                     applesCount = parsedData.applesCount || 0;
                     lastAppleGenerationTime = parsedData.lastAppleGenerationTime || Date.now();
-                    if (flashcards.length === 0 && DEFAULT_FLASHCARDS.length > 0) {
+                    // NUEVO: Cargar estado de límite de puntos
+                    pointsThisHour = parsedData.pointsThisHour || 0;
+                    lastPointResetTime = parsedData.lastPointResetTime || Date.now();
+
+                    if (flashcards.length === 0 && DEFAULT_FLASHCARDS.length > 0 && learnedFlashcards.length === 0) {
                         flashcards = DEFAULT_FLASHCARDS.slice();
                         shuffleFlashcards();
                     }
@@ -930,6 +1188,7 @@
             } else {
                 resetToDefaults();
             }
+             checkHourlyPointLimit(); // NUEVO: Verificar el límite al cargar, por si pasó tiempo offline
         }
 
         function resetToDefaults() {
@@ -942,6 +1201,9 @@
             treeLevel = 0;
             applesCount = 0;
             lastAppleGenerationTime = Date.now();
+            // NUEVO: Resetear variables de límite de puntos
+            pointsThisHour = 0;
+            lastPointResetTime = Date.now();
         }
 
         function updateAllStats() {
@@ -949,33 +1211,42 @@
             updateFertilizerCount();
             updateApplesCount();
             updateTreeVisual();
+            updateApplesPerDay();
         }
 
-        // --- Funciones de Modales ---
         function openModal(modalElement) { modalElement.classList.remove('hidden'); }
         function closeModal(modalElement) { modalElement.classList.add('hidden'); }
 
         function clearFeedback(element, delay = 0) {
             const baseClass = element.className.split(' ').filter(cls => cls === 'feedback' || cls === 'text-center' || cls.startsWith('mt-') || cls.startsWith('h-')).join(' ');
+            element.textContent = '';
+            element.classList.remove('correct', 'incorrect', 'info');
             if (delay > 0) {
-                setTimeout(() => { element.textContent = ''; element.className = baseClass; }, delay);
-            } else {
-                element.textContent = '';
-                element.className = baseClass;
+                setTimeout(() => { element.textContent = ''; element.classList.remove('correct', 'incorrect', 'info'); }, delay);
             }
         }
 
         function showTemporaryFeedback(element, message, type = 'info', duration = 3000) {
-            clearFeedback(element);
-            const baseClass = element.className.split(' ').filter(cls => cls === 'feedback' || cls === 'text-center' || cls.startsWith('mt-') || cls.startsWith('h-')).join(' ');
+            clearFeedback(element); // Limpia cualquier feedback anterior, incluyendo el persistente.
             element.textContent = message;
             element.classList.add(type);
             if (duration > 0) {
-                setTimeout(() => clearFeedback(element), duration);
+                setTimeout(() => {
+                    // Solo limpiar si el mensaje actual es el que se iba a limpiar (evita borrar un nuevo feedback)
+                    if (element.textContent === message) {
+                        clearFeedback(element);
+                         // NUEVO: Si después de limpiar, aún se necesita el aviso de MIN_CARDS, mostrarlo.
+                        if (element === feedbackTextEl && flashcards.length > 0 && flashcards.length < MIN_CARDS_FOR_POINTS) {
+                            showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
+                        } else if (element === feedbackTextEl && flashcards.length === 0) {
+                             showTemporaryFeedback(feedbackTextEl, `¡No hay palabras! Añade algunas o compra un mazo para empezar. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
+                        }
+                    }
+                }, duration);
             }
         }
 
-        // Modal: Añadir Palabra
+
         showAddCardModalBtn.addEventListener('click', () => {
             newQuestionInput.value = ''; newAnswerInput.value = '';
             clearFeedback(addCardFeedbackEl);
@@ -992,35 +1263,59 @@
                     showTemporaryFeedback(addCardFeedbackEl, "Esa palabra ya existe en tus mazos.", "incorrect", 2500);
                     return;
                 }
+                const previousFlashcardCount = flashcards.length; // NUEVO
                 flashcards.push({ question: newQ, answer: newA });
+                shuffleFlashcards();
                 saveGameData();
                 showTemporaryFeedback(addCardFeedbackEl, "¡Palabra añadida con éxito!", "correct", 1500);
                 newQuestionInput.value = ''; newAnswerInput.value = '';
                 newQuestionInput.focus();
-                if (flashcards.length === 1 && questionTextEl.textContent.startsWith("¡No hay palabras!")) {
+
+                // NUEVO: Comprobar si ahora se pueden ganar puntos
+                if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
+                    clearFeedback(feedbackTextEl); // Limpia el aviso de "necesitas X palabras"
+                    showTemporaryFeedback(feedbackTextEl, `¡Genial! Ahora tienes ${flashcards.length} palabras. Ya puedes ganar puntos de nuevo.`, "correct", 4000);
+                } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
+                    // Actualizar el mensaje de feedback principal si aún no se alcanza el mínimo
+                    showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
+                }
+
+
+                if (flashcards.length === 1 && (questionTextEl.textContent.startsWith("¡No hay palabras!") || questionTextEl.textContent.startsWith("¡No hay flashcards!"))) {
+                    currentCardIndex = 0;
+                    displayCard(); // displayCard se encargará de los avisos
+                    answerInputEl.disabled = false;
+                    // clearFeedback(feedbackTextEl); // displayCard lo maneja
+                } else if (flashcards.length > 0 && answerInputEl.disabled) { // Si había 0 y se añadió la primera
                     displayCard();
                     answerInputEl.disabled = false;
-                    clearFeedback(feedbackTextEl);
                 }
+
             } else {
                 showTemporaryFeedback(addCardFeedbackEl, "Ambos campos son obligatorios.", "incorrect", 2000);
             }
         });
 
-        // Modal: Eliminar Palabra
         function populateDeleteCardList() {
             deleteCardListContainerEl.innerHTML = '';
             clearFeedback(deleteFeedbackEl);
             const cardsToDeleteFrom = [...flashcards, ...learnedFlashcards];
+
             if (cardsToDeleteFrom.length === 0) {
                 noCardsToDeleteMsgEl.classList.remove('hidden');
                 confirmDeleteCardBtn.disabled = true;
                 confirmDeleteCardBtn.classList.add('btn-disabled');
+                selectAllDeleteBtn.classList.add('hidden');
                 return;
             }
+
             noCardsToDeleteMsgEl.classList.add('hidden');
             confirmDeleteCardBtn.disabled = false;
             confirmDeleteCardBtn.classList.remove('btn-disabled');
+
+            selectAllDeleteBtn.classList.remove('hidden');
+            selectAllDeleteBtn.textContent = 'Seleccionar Todas';
+
             cardsToDeleteFrom.sort((a, b) => a.question.localeCompare(b.question)).forEach((card, index) => {
                 const listItem = document.createElement('div');
                 listItem.className = 'flex items-center p-1.5 hover:bg-gray-50 rounded';
@@ -1036,6 +1331,7 @@
         }
         showDeleteCardModalBtn.addEventListener('click', () => { populateDeleteCardList(); openModal(deleteCardModal); });
         cancelDeleteCardBtn.addEventListener('click', () => closeModal(deleteCardModal));
+
         confirmDeleteCardBtn.addEventListener('click', () => {
             const checkboxes = deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]:checked');
             if (checkboxes.length === 0) {
@@ -1044,39 +1340,52 @@
             }
             const questionsToDelete = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
             let deletedCount = 0;
+            const currentQuestionBeforeDelete = flashcards.length > 0 && currentCardIndex < flashcards.length ? flashcards[currentCardIndex].question : null;
+            const previousFlashcardCount = flashcards.length; // NUEVO
+
             const initialFlashcardsLength = flashcards.length;
-            flashcards = flashcards.filter(card => {
-                if (questionsToDelete.includes(card.question.toLowerCase())) {
-                    return false;
-                }
-                return true;
-            });
+            flashcards = flashcards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
             deletedCount += (initialFlashcardsLength - flashcards.length);
+
             const initialLearnedLength = learnedFlashcards.length;
             learnedFlashcards = learnedFlashcards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
             deletedCount += (initialLearnedLength - learnedFlashcards.length);
+
             if (deletedCount > 0) {
                 saveGameData();
                 showTemporaryFeedback(deleteFeedbackEl, `${deletedCount} palabra(s) eliminada(s) permanentemente.`, "correct", 2000);
-                if (currentCardIndex >= flashcards.length) {
-                    currentCardIndex = Math.max(0, flashcards.length - 1);
+
+                // NUEVO: Comprobar si ahora NO se pueden ganar puntos
+                if (flashcards.length < MIN_CARDS_FOR_POINTS && previousFlashcardCount >= MIN_CARDS_FOR_POINTS && flashcards.length > 0) {
+                     showTemporaryFeedback(feedbackTextEl, `Atención: Ahora tienes ${flashcards.length} palabras. Necesitas al menos ${MIN_CARDS_FOR_POINTS} para ganar puntos.`, "info", 0); // Persistente
+                } else if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
+                    // Si al eliminar, casualmente el mazo queda con suficientes (raro, pero posible si se eliminan de aprendidas y no del mazo principal)
+                    clearFeedback(feedbackTextEl); // Quitar aviso anterior
+                    showTemporaryFeedback(feedbackTextEl, `¡Ahora tienes ${flashcards.length} palabras y puedes ganar puntos!`, "correct", 3000);
                 }
-                if (flashcards.length === 0) {
-                    handleNoCardsState();
+
+
+                if (flashcards.length > 0) {
+                    const currentQuestionStillExists = flashcards.some(card => card.question === currentQuestionBeforeDelete);
+                    if (!currentQuestionStillExists || currentCardIndex >= flashcards.length) {
+                        currentCardIndex = 0;
+                        shuffleFlashcards();
+                    }
+                    displayCard(); // displayCard se encargará de los avisos
                 } else {
-                    displayCard();
+                    handleNoCardsState();
                 }
             } else {
-                showTemporaryFeedback(deleteFeedbackEl, "No se eliminaron palabras. ¿Ya estaban eliminadas?", "info", 2500);
+                showTemporaryFeedback(deleteFeedbackEl, "No se eliminaron palabras.", "info", 2500);
             }
             populateDeleteCardList();
              if (deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]').length === 0) {
                  noCardsToDeleteMsgEl.classList.remove('hidden');
                  confirmDeleteCardBtn.disabled = true; confirmDeleteCardBtn.classList.add('btn-disabled');
+                 selectAllDeleteBtn.classList.add('hidden');
             }
         });
 
-        // Modal: Revisar Aprendidas
         function populateReviewLearnedList() {
             reviewLearnedListContainerEl.innerHTML = '';
             clearFeedback(reviewModalFeedbackEl);
@@ -1099,6 +1408,8 @@
                     const cardIndexInLearned = learnedFlashcards.findIndex(c => c.question.toLowerCase() === questionToRemove.toLowerCase());
                     if (cardIndexInLearned > -1) {
                         const removedCard = learnedFlashcards.splice(cardIndexInLearned, 1)[0];
+                        const previousFlashcardCount = flashcards.length; // NUEVO
+
                         if (!flashcards.some(fc => fc.question.toLowerCase() === removedCard.question.toLowerCase())) {
                             flashcards.push(removedCard);
                             shuffleFlashcards();
@@ -1106,10 +1417,26 @@
                         saveGameData();
                         populateReviewLearnedList();
                         showTemporaryFeedback(reviewModalFeedbackEl, `"${questionToRemove}" movida de nuevo al mazo principal.`, "info", 2000);
-                        if (flashcards.length > 0 && questionTextEl.textContent.startsWith("¡No hay palabras!")) {
-                             displayCard();
+
+                        // NUEVO: Comprobar si ahora se pueden ganar puntos
+                        if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
+                             clearFeedback(feedbackTextEl); // Limpiar aviso anterior
+                             showTemporaryFeedback(feedbackTextEl, `¡Bien! "${removedCard.question}" ha vuelto al mazo. Ya puedes ganar puntos de nuevo. (Total: ${flashcards.length})`, "correct", 4000);
+                        } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
+                            // Actualizar el mensaje si sigue siendo insuficiente
+                            showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
+                        }
+
+
+                        if (flashcards.length > 0 && (questionTextEl.textContent.startsWith("¡No hay palabras!") || questionTextEl.textContent.startsWith("¡No hay flashcards!"))) {
+                             currentCardIndex = flashcards.findIndex(c => c.question === removedCard.question);
+                             if (currentCardIndex === -1) currentCardIndex = 0;
+                             displayCard(); // displayCard se encargará de los avisos
                              answerInputEl.disabled = false;
-                             clearFeedback(feedbackTextEl);
+                             // clearFeedback(feedbackTextEl); // displayCard lo maneja
+                        } else if (answerInputEl.disabled && flashcards.length > 0) { // Si estaba vacío y se "olvidó" la primera
+                            displayCard();
+                            answerInputEl.disabled = false;
                         }
                     }
                 });
@@ -1117,14 +1444,122 @@
         }
         closeReviewLearnedBtn.addEventListener('click', () => closeModal(reviewLearnedModal));
 
-        // Modal: Tienda
         function updateShopCosts() {
             fertilizerShopCostDisplayEl.textContent = FERTILIZER_SHOP_COST;
             appleShopCostDisplayEl.textContent = APPLE_SHOP_COST;
         }
+
+        async function loadShopDecks() {
+            shopDecksContainerEl.innerHTML = '';
+            loadingDecksMsgEl.classList.remove('hidden');
+            let decksDisplayed = 0;
+
+            for (const deckDef of SHOP_DECK_DEFINITIONS) {
+                try {
+                    const response = await fetch(deckDef.fileName + `?v=${Date.now()}`);
+                    if (!response.ok) {
+                        throw new Error(`No se pudo cargar el mazo: ${deckDef.fileName} (Status: ${response.status})`);
+                    }
+                    const deckData = await response.json();
+                    shopDecksData[deckDef.id] = deckData;
+
+                    const deckItemEl = document.createElement('div');
+                    deckItemEl.className = 'p-2.5 border border-[var(--duo-gray-light)] rounded-lg bg-[var(--duo-gray-lightest)]';
+                    deckItemEl.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">${deckData.name}</h4>
+                                <p class="text-xs text-[var(--duo-gray-dark)]">Costo: <span class="deck-cost">${deckData.cost}</span> 🍎 </p>
+                                <p class="text-xs text-[var(--duo-gray-dark)]">Palabras: ${deckData.cards.length}</p>
+                            </div>
+                            <button class="btn btn-primary btn-sm buy-deck-btn" data-deck-id="${deckDef.id}">Comprar</button>
+                        </div>
+                    `;
+                    shopDecksContainerEl.appendChild(deckItemEl);
+                    decksDisplayed++;
+                } catch (error) {
+                    console.error(`Error cargando el mazo ${deckDef.fileName}:`, error);
+                    const errorEl = document.createElement('p');
+                    errorEl.className = 'text-xs text-center text-[var(--duo-red)]';
+                    errorEl.textContent = `Error al cargar mazo: ${deckDef.id.replace(/_/g, ' ')}`;
+                    shopDecksContainerEl.appendChild(errorEl);
+                }
+            }
+
+            loadingDecksMsgEl.classList.add('hidden');
+            if (decksDisplayed === 0 && SHOP_DECK_DEFINITIONS.length > 0) {
+                 const noDecksMsg = document.createElement('p');
+                 noDecksMsg.className = 'text-sm text-center text-[var(--duo-gray-dark)]';
+                 noDecksMsg.textContent = 'No se pudieron cargar los mazos.';
+                 shopDecksContainerEl.appendChild(noDecksMsg);
+            } else if (SHOP_DECK_DEFINITIONS.length === 0) {
+                const noDecksMsg = document.createElement('p');
+                 noDecksMsg.className = 'text-sm text-center text-[var(--duo-gray-dark)]';
+                 noDecksMsg.textContent = 'No hay mazos disponibles en este momento.';
+                 shopDecksContainerEl.appendChild(noDecksMsg);
+            }
+
+            shopDecksContainerEl.querySelectorAll('.buy-deck-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const deckId = e.target.dataset.deckId;
+                    handleBuyDeck(deckId);
+                });
+            });
+        }
+
+        function handleBuyDeck(deckId) {
+            const deckData = shopDecksData[deckId];
+            if (!deckData) {
+                showTemporaryFeedback(shopFeedbackEl, "Error: Mazo no encontrado.", "incorrect", 2500);
+                return;
+            }
+
+            if (applesCount >= deckData.cost) {
+                applesCount -= deckData.cost;
+                let newCardsAddedCount = 0;
+                const previousFlashcardCount = flashcards.length; // NUEVO
+
+                deckData.cards.forEach(cardFromDeck => {
+                    const cardExists = flashcards.some(fc => fc.question.toLowerCase() === cardFromDeck.question.toLowerCase()) ||
+                                       learnedFlashcards.some(lc => lc.question.toLowerCase() === cardFromDeck.question.toLowerCase());
+                    if (!cardExists) {
+                        flashcards.push({ question: cardFromDeck.question, answer: cardFromDeck.answer });
+                        newCardsAddedCount++;
+                    }
+                });
+
+                if (newCardsAddedCount > 0) {
+                    shuffleFlashcards();
+                    if (flashcards.length === newCardsAddedCount && (questionTextEl.textContent.startsWith("¡No hay palabras!") || questionTextEl.textContent.startsWith("¡No hay flashcards!"))) {
+                        currentCardIndex = 0;
+                        displayCard(); // displayCard se encargará de los avisos
+                        answerInputEl.disabled = false;
+                        // clearFeedback(feedbackTextEl); // displayCard lo maneja
+                    }
+                     // NUEVO: Comprobar si ahora se pueden ganar puntos
+                    if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
+                         clearFeedback(feedbackTextEl); // Limpiar aviso anterior
+                         showTemporaryFeedback(feedbackTextEl, `¡Mazo comprado! Ahora tienes ${flashcards.length} palabras y puedes ganar puntos.`, "correct", 4000);
+                    } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
+                        showTemporaryFeedback(feedbackTextEl, `Mazo comprado. Aún necesitas ${MIN_CARDS_FOR_POINTS - flashcards.length} palabras más para ganar puntos (Tienes ${flashcards.length}).`, "info", 0);
+                    } else if (answerInputEl.disabled && flashcards.length > 0){ // Si estaba vacío antes de comprar el mazo
+                        displayCard();
+                        answerInputEl.disabled = false;
+                    }
+                }
+                updateApplesCount();
+                saveGameData();
+                showTemporaryFeedback(shopFeedbackEl, `¡Mazo "${deckData.name}" comprado! Se añadieron ${newCardsAddedCount} nuevas palabras.`, "correct", 3000);
+            } else {
+                showTemporaryFeedback(shopFeedbackEl, `Manzanas insuficientes para comprar "${deckData.name}". Necesitas ${deckData.cost - applesCount} más.`, "incorrect", 3000);
+            }
+        }
+
+
         openShopBtn.addEventListener('click', () => {
             clearFeedback(shopFeedbackEl);
             updateShopCosts();
+            loadShopDecks();
             openModal(shopModal);
         });
         closeShopBtn.addEventListener('click', () => closeModal(shopModal));
@@ -1153,13 +1588,12 @@
             }
         });
 
-        // --- Event Listeners Globales ---
         checkAnswerBtn.addEventListener('click', checkAnswer);
         answerInputEl.addEventListener('keypress', (event) => {
             if (event.key === 'Enter') {
-                if (!checkAnswerBtn.classList.contains('hidden')) {
+                if (!checkAnswerBtn.classList.contains('hidden') && !checkAnswerBtn.disabled) {
                     checkAnswer();
-                } else if (!nextCardBtn.classList.contains('hidden')) {
+                } else if (!nextCardBtn.classList.contains('hidden') && !nextCardBtn.disabled) {
                     moveToNextCard();
                 }
             }
@@ -1170,36 +1604,83 @@
         exportProgressBtn.addEventListener('click', exportProgress);
         importProgressBtn.addEventListener('click', triggerImport);
         importProgressInput.addEventListener('change', handleImportFile);
-        showReviewLearnedModalBtn.addEventListener('click', () => { // Nuevo Event Listener
+        showReviewLearnedModalBtn.addEventListener('click', () => {
             populateReviewLearnedList();
             openModal(reviewLearnedModal);
         });
+        downloadWordsBtn.addEventListener('click', downloadFlashcardsJson);
 
-        // --- Inicialización del Juego ---
+        selectAllDeleteBtn.addEventListener('click', () => {
+            const checkboxes = deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]');
+            if (checkboxes.length === 0) return;
+            const shouldSelectAll = selectAllDeleteBtn.textContent === 'Seleccionar Todas';
+            checkboxes.forEach(checkbox => { checkbox.checked = shouldSelectAll; });
+            selectAllDeleteBtn.textContent = shouldSelectAll ? 'Deseleccionar Todas' : 'Seleccionar Todas';
+        });
+
+        scrollRightBtn.addEventListener('click', () => {
+            mainContentAreaEl.scrollBy({ left: mainContentAreaEl.offsetWidth, behavior: 'smooth' });
+        });
+        scrollLeftBtn.addEventListener('click', () => {
+            mainContentAreaEl.scrollBy({ left: -mainContentAreaEl.offsetWidth, behavior: 'smooth' });
+        });
+        mainContentAreaEl.addEventListener('scroll', () => {
+            if (window.innerWidth <= 1024) {
+                if (mainContentAreaEl.scrollLeft < 10) {
+                    scrollLeftBtn.classList.add('hidden');
+                } else {
+                    scrollLeftBtn.classList.remove('hidden');
+                }
+                if (mainContentAreaEl.scrollLeft + mainContentAreaEl.offsetWidth >= mainContentAreaEl.scrollWidth - 10) {
+                     scrollRightBtn.classList.add('hidden');
+                } else {
+                    scrollRightBtn.classList.remove('hidden');
+                }
+            }
+        });
+
         function initGameVisuals() {
-            checkAndGenerateApples();
             if (flashcards.length > 0) {
                 if (currentCardIndex >= flashcards.length || currentCardIndex < 0) currentCardIndex = 0;
-                displayCard();
+                displayCard(); // displayCard se encarga de mostrar avisos si es necesario
                 answerInputEl.disabled = false;
-                clearFeedback(feedbackTextEl);
+                // clearFeedback(feedbackTextEl); // displayCard se encarga de esto
             } else {
                 handleNoCardsState();
             }
             updateAllStats();
+            checkAndGenerateApples();
+            checkScrollArrowsVisibility();
         }
+
 
         async function initGame() {
             await initCryptoKey();
-            loadGameData();
-            initGameVisuals();
+            loadGameData(); // Carga datos, incluyendo pointsThisHour y lastPointResetTime
+            initGameVisuals(); // Muestra la UI y los avisos iniciales
             if (!window.appleCheckIntervalId) {
                  window.appleCheckIntervalId = setInterval(checkAndGenerateApples, CHECK_APPLES_INTERVAL);
             }
-            updateAppleCountdown();
+        }
+
+        function checkScrollArrowsVisibility() {
+            if (window.innerWidth <= 1024) {
+                scrollLeftBtn.classList.add('hidden');
+                if (mainContentAreaEl.scrollWidth > mainContentAreaEl.clientWidth + 5) {
+                     scrollRightBtn.classList.remove('hidden');
+                } else {
+                     scrollRightBtn.classList.add('hidden');
+                }
+                mainContentAreaEl.dispatchEvent(new Event('scroll'));
+            } else {
+                scrollLeftBtn.classList.add('hidden');
+                scrollRightBtn.classList.add('hidden');
+            }
         }
 
         window.onload = initGame;
+        window.addEventListener('resize', checkScrollArrowsVisibility);
+
     </script>
 </body>
 </html>
