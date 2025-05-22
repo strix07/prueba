@@ -203,6 +203,48 @@
         }
         .btn-disabled:hover { background-color: var(--duo-gray-light); }
 
+        /* Multiple Choice Option Button Styles */
+        .option-btn {
+            background-color: var(--duo-text-light);
+            color: var(--duo-text-dark);
+            border: 2px solid var(--duo-gray-light);
+            padding: 0.75rem;
+            text-align: left;
+            text-transform: none; /* Override .btn uppercase */
+            font-size: 0.95rem; /* Slightly larger for readability */
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 0.5rem; /* Space between option buttons */
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--duo-blue);
+            background-color: #f0f8ff; /* Light blueish hover */
+            transform: translateY(-1px); /* Less aggressive hover transform */
+        }
+        .option-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background-color: var(--duo-gray-lightest);
+        }
+        .option-btn.selected-correct {
+            background-color: var(--duo-correct-bg) !important;
+            color: var(--duo-correct-text) !important;
+            border-color: var(--duo-correct-text) !important;
+            font-weight: 700;
+        }
+        .option-btn.selected-incorrect {
+            background-color: var(--duo-incorrect-bg) !important;
+            color: var(--duo-incorrect-text) !important;
+            border-color: var(--duo-incorrect-text) !important;
+            font-weight: 700;
+        }
+        .option-btn.actual-correct { /* Style for showing the correct answer if user picked wrong */
+            background-color: var(--duo-correct-bg) !important;
+            color: var(--duo-correct-text) !important;
+            border: 2px dashed var(--duo-correct-text) !important;
+        }
+
+
         /* Stats */
         .stats-grid {
             display: grid;
@@ -312,8 +354,8 @@
 
         #shop-decks-container {
             max-height: 150px; 
-
-        overflow-y: auto;}
+            overflow-y: auto;
+        }
 
         #import-progress-input { display: none; }
 
@@ -322,24 +364,22 @@
             html, body { overflow: auto; height: auto; }
             .app-wrapper { height: auto; padding: 0.5rem; z-index: auto; }
             .main-content-area {
-    flex-direction: column; /* CAMBIO: Apilar columnas verticalmente */
-    overflow-x: hidden;    /* CAMBIO: No más scroll horizontal */
-    width: 100%;           /* CAMBIO: Ancho normal de la pantalla */
-    gap: 1rem;             /* CAMBIO: Espacio vertical entre columnas */
-}
+                flex-direction: column; /* CAMBIO: Apilar columnas verticalmente */
+                overflow-x: hidden;    /* CAMBIO: No más scroll horizontal */
+                width: 100%;           /* CAMBIO: Ancho normal de la pantalla */
+                gap: 1rem;             /* CAMBIO: Espacio vertical entre columnas */
+            }
             .left-column, .right-column {
-    width: 100%;           /* Mantener: Cada columna toma el ancho completo */
-    flex-shrink: 1;      
-    margin-bottom: 0;      
-    margin-right: 0;       /* CAMBIO: Eliminar margen derecho ya que están apiladas */
-    overflow-y: visible;   
-}
-
-             /* Hide default scrollbar for a cleaner look */
-            
+                width: 100%;           /* Mantener: Cada columna toma el ancho completo */
+                flex-shrink: 1;      
+                margin-bottom: 0;      
+                margin-right: 0;       /* CAMBIO: Eliminar margen derecho ya que están apiladas */
+                overflow-y: visible;   
+            }
             .scroll-arrow {
-    display: none !important; 
-}
+                display: none !important; 
+            }
+        }
         @media (min-width: 1025px) {
             .scroll-arrow { display: none; } /* Hide arrows on larger screens */
             .main-content-area {
@@ -393,10 +433,18 @@
                     <div class="flashcard">
                         <p id="question-text"></p>
                     </div>
-                    <input type="text" id="answer-input" class="input-field mx-auto block" placeholder="Escribe la traducción...">
+                    <!-- Input field hidden, options will be displayed below -->
+                    <input type="text" id="answer-input" class="input-field mx-auto block hidden" placeholder="Escribe la traducción...">
+                    
+                    <!-- Container for multiple choice options -->
+                    <div id="multiple-choice-options" class="mt-3 space-y-2 w-full max-w-sm mx-auto">
+                        <!-- Option buttons will be generated here by JS -->
+                    </div>
+
                     <div id="feedback-text" class="feedback text-center"></div>
                     <div class="flex justify-center space-x-2 mt-1.5 button-group">
-                        <button id="check-answer-btn" class="btn btn-primary">Revisar</button>
+                        <!-- "Revisar" button is hidden, click on option will trigger check -->
+                        <button id="check-answer-btn" class="btn btn-primary hidden">Revisar</button>
                         <button id="learned-btn" class="btn btn-learned hidden">¡Lo sé!</button>
                         <button id="next-card-btn" class="btn btn-secondary hidden">Siguiente</button>
                     </div>
@@ -563,8 +611,6 @@
         let lastAppleGenerationTime = Date.now();
         let appleCountdownInterval = null;
         let shopDecksData = {};
-
-        // NUEVO: Variables para límite de puntos
         let pointsThisHour = 0;
         let lastPointResetTime = Date.now();
 
@@ -603,16 +649,15 @@
 
         const ENCRYPTION_KEY_STRING = "miClaveSuperSecreta1234567890!";
         let cryptoKey;
-
-        // NUEVO: Constantes para límites
         const MIN_CARDS_FOR_POINTS = 5;
         const MAX_POINTS_PER_HOUR = 500;
         const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 
         // --- Elementos del DOM ---
         const questionTextEl = document.getElementById('question-text');
-        const answerInputEl = document.getElementById('answer-input');
-        const checkAnswerBtn = document.getElementById('check-answer-btn');
+        const answerInputEl = document.getElementById('answer-input'); // Will be hidden
+        const multipleChoiceOptionsEl = document.getElementById('multiple-choice-options'); // New
+        const checkAnswerBtn = document.getElementById('check-answer-btn'); // Will be hidden
         const learnedBtn = document.getElementById('learned-btn');
         const nextCardBtn = document.getElementById('next-card-btn');
         const feedbackTextEl = document.getElementById('feedback-text');
@@ -721,12 +766,11 @@
 
         async function exportProgress() {
             clearFeedback(importExportFeedbackEl);
-            // MODIFICADO: Incluir variables de límite de puntos
             const gameData = {
                 flashcards, learnedFlashcards, currentCardIndex, score,
                 fertilizerCount, treeLevel, applesCount, applesPerDay,
                 lastAppleGenerationTime,
-                pointsThisHour, lastPointResetTime // NUEVO
+                pointsThisHour, lastPointResetTime
             };
             const jsonData = JSON.stringify(gameData);
             const encryptedPayload = await encryptData(jsonData);
@@ -780,12 +824,11 @@
                     treeLevel = importedData.treeLevel || 0;
                     applesCount = importedData.applesCount || 0;
                     lastAppleGenerationTime = importedData.lastAppleGenerationTime || Date.now();
-                    // NUEVO: Cargar variables de límite de puntos
                     pointsThisHour = importedData.pointsThisHour || 0;
                     lastPointResetTime = importedData.lastPointResetTime || Date.now();
 
-                    saveGameData(); // Guardar inmediatamente los datos importados (incluyendo los nuevos)
-                    initGameVisuals(); // Esto llamará a checkHourlyPointLimit
+                    saveGameData(); 
+                    initGameVisuals(); 
                     showTemporaryFeedback(importExportFeedbackEl, "Progreso importado exitosamente.", "correct", 4000);
                 } catch (error) {
                     console.error("Error importando progreso:", error);
@@ -829,7 +872,7 @@
                 return;
             }
             let textContent = "=== Palabras por Aprender ===\r\n";
-            textContent += formatWordsArrayToTxt(flashcards) + "\r\n\r\n"; // Doble salto de línea
+            textContent += formatWordsArrayToTxt(flashcards) + "\r\n\r\n"; 
             textContent += "=== Palabras Aprendidas ===\r\n";
             textContent += formatWordsArrayToTxt(learnedFlashcards);
             const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
@@ -844,64 +887,74 @@
             showTemporaryFeedback(importExportFeedbackEl, "Archivo de palabras (TXT) descargado.", "correct", 3000);
         }
 
-        function displayCard() {
-            if (flashcards.length === 0) {
-                handleNoCardsState();
-                return;
-            }
-            if (currentCardIndex >= flashcards.length || currentCardIndex < 0) {
-                currentCardIndex = 0;
-            }
-            questionTextEl.textContent = flashcards[currentCardIndex].question;
-            answerInputEl.value = "";
-            answerInputEl.focus();
-            clearFeedback(feedbackTextEl); // Limpiar feedback anterior
-            // NUEVO: Comprobar si se pueden ganar puntos y mostrar aviso si no
-            if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                 showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0); // 0 para persistente
-            }
+        // --- Multiple Choice Logic ---
+        function generateAndDisplayOptions() {
+            multipleChoiceOptionsEl.innerHTML = ''; // Clear previous options
+            const correctAnswer = flashcards[currentCardIndex].answer;
+            let options = [correctAnswer];
 
-            checkAnswerBtn.classList.remove('hidden');
-            checkAnswerBtn.disabled = false;
-            learnedBtn.classList.add('hidden');
-            nextCardBtn.classList.add('hidden');
+            // Get potential distractors (answers from other cards)
+            let distractorPool = flashcards
+                .filter((card, index) => index !== currentCardIndex) // Exclude current card
+                .map(card => card.answer) // Get their answers
+                .filter(answer => answer.toLowerCase() !== correctAnswer.toLowerCase()); // Ensure distractors are different
+
+            // Remove duplicate distractors
+            distractorPool = [...new Set(distractorPool)];
+            shuffleArray(distractorPool); // Shuffle to get random distractors
+
+            // Add up to two distractors
+            for (let i = 0; i < Math.min(2, distractorPool.length); i++) {
+                options.push(distractorPool[i]);
+            }
+            
+            // If we don't have 3 options yet (e.g., deck has only 2 unique answers)
+            // and we need to fill up to 3. This part can be tricky if deck is small.
+            // For simplicity, if less than 3 unique options can be formed, show fewer.
+            // The user expects 3, so if flashcards.length is small, it might be an issue.
+            // Let's ensure we try to make 3 if flashcards.length >= 3
+            if (options.length < 3 && flashcards.length >= 3) {
+                let allAnswers = [...new Set(flashcards.map(card => card.answer))];
+                shuffleArray(allAnswers);
+                for (const ans of allAnswers) {
+                    if (options.length < 3 && !options.includes(ans)) {
+                        options.push(ans);
+                    }
+                }
+            }
+            // If still not 3 options and must have 3, might need dummy options or repeat, but let's avoid if possible
+            // For now, we'll show what we have, up to 3.
+
+            shuffleArray(options); // Shuffle the final set of options
+
+            options.forEach(optionText => {
+                const button = document.createElement('button');
+                button.classList.add('btn', 'option-btn'); // General styling + specific option styling
+                button.textContent = optionText;
+                button.dataset.answer = optionText; // Store answer in data attribute
+                button.addEventListener('click', handleOptionClick);
+                multipleChoiceOptionsEl.appendChild(button);
+            });
         }
+        
+        function handleOptionClick(event) {
+            const clickedButton = event.target;
+            const selectedAnswer = clickedButton.dataset.answer;
+            const correctAnswer = flashcards[currentCardIndex].answer;
 
-        function handleNoCardsState() {
-            questionTextEl.textContent = "¡No hay palabras! Añade algunas o compra un mazo para empezar.";
-            answerInputEl.value = "";
-            answerInputEl.disabled = true;
-            checkAnswerBtn.classList.add('hidden');
-            learnedBtn.classList.add('hidden');
-            nextCardBtn.classList.add('hidden');
-            showTemporaryFeedback(feedbackTextEl, `Usa 'Añadir Palabra' o visita la Tienda. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
-        }
+            // Disable all option buttons
+            const optionButtons = multipleChoiceOptionsEl.querySelectorAll('.option-btn');
+            optionButtons.forEach(btn => btn.disabled = true);
 
-        // NUEVO: Función para verificar y reiniciar el contador de puntos por hora
-        function checkHourlyPointLimit() {
-            const now = Date.now();
-            if (now - lastPointResetTime >= ONE_HOUR_IN_MS) {
-                pointsThisHour = 0;
-                lastPointResetTime = now;
-                // Opcional: informar al usuario que el límite se ha reiniciado
-                // showTemporaryFeedback(feedbackTextEl, "Límite de puntos por hora reiniciado.", "info", 2000);
-                saveGameData(); // Guardar el reinicio
-            }
-        }
-
-        function checkAnswer() {
-            if (flashcards.length === 0) return;
-            const userAnswer = answerInputEl.value.trim().toLowerCase();
-            const correctAnswer = flashcards[currentCardIndex].answer.toLowerCase();
-            checkAnswerBtn.classList.add('hidden');
             nextCardBtn.classList.remove('hidden');
 
-            if (userAnswer === correctAnswer) {
-                checkHourlyPointLimit(); // NUEVO: Verificar/Resetear contador horario
+            if (selectedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                clickedButton.classList.add('selected-correct');
+                checkHourlyPointLimit(); 
 
-                if (flashcards.length < MIN_CARDS_FOR_POINTS) { // NUEVO: Verificar mínimo de cartas
+                if (flashcards.length < MIN_CARDS_FOR_POINTS) { 
                     showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 Pero necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos. Añade más. (Tienes ${flashcards.length})`, "info", 4000);
-                } else if (pointsThisHour >= MAX_POINTS_PER_HOUR) { // NUEVO: Verificar si se alcanzó el límite horario
+                } else if (pointsThisHour >= MAX_POINTS_PER_HOUR) { 
                     showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 Has alcanzado el límite de ${MAX_POINTS_PER_HOUR} puntos esta hora. Intenta más tarde.`, "info", 4000);
                 } else {
                     const pointsToAdd = POINTS_PER_CORRECT_ANSWER;
@@ -917,23 +970,26 @@
                     pointsThisHour += actualPointsAdded;
                     updateScore();
                 }
-                // FIN NUEVO
-
                 learnedBtn.classList.remove('hidden');
                 if (correctSound) {
                     correctSound.currentTime = 0;
                     correctSound.play().catch(error => console.error("Error al reproducir sonido correcto:", error));
                 }
             } else {
-                // --- INICIO DEL CAMBIO ---
+                clickedButton.classList.add('selected-incorrect');
+                // Highlight the correct answer
+                optionButtons.forEach(btn => {
+                    if (btn.dataset.answer.toLowerCase() === correctAnswer.toLowerCase()) {
+                        btn.classList.add('actual-correct');
+                    }
+                });
+
                 const pointsToDeduct = 20;
                 score -= pointsToDeduct;
-                if (score < 0) { // Opcional: Evitar que el puntaje sea negativo
-                    score = 0;
-                }
+                if (score < 0) { score = 0; }
                 updateScore();
-                showTemporaryFeedback(feedbackTextEl, `Incorrecto. Respuesta correcta: ${flashcards[currentCardIndex].answer}. Has perdido ${pointsToDeduct} puntos. 📉`, "incorrect", 3500);
-                // --- FIN DEL CAMBIO ---
+                showTemporaryFeedback(feedbackTextEl, `Incorrecto. Respuesta correcta: ${correctAnswer}. Has perdido ${pointsToDeduct} puntos. 📉`, "incorrect", 3500);
+                
                 learnedBtn.classList.add('hidden');
                 if (incorrectSound) {
                     incorrectSound.currentTime = 0;
@@ -944,6 +1000,62 @@
             saveGameData();
         }
 
+        function displayCard() {
+            if (flashcards.length === 0) {
+                handleNoCardsState();
+                return;
+            }
+            if (currentCardIndex >= flashcards.length || currentCardIndex < 0) {
+                currentCardIndex = 0;
+            }
+            questionTextEl.textContent = flashcards[currentCardIndex].question;
+            
+            // Hide text input, show question, generate multiple choice
+            answerInputEl.value = ""; 
+            answerInputEl.classList.add('hidden'); // Ensure it's hidden
+            checkAnswerBtn.classList.add('hidden'); // Ensure check button is hidden
+
+            generateAndDisplayOptions(); // Generate and display MCQs
+
+            clearFeedback(feedbackTextEl); 
+            
+            if (flashcards.length < MIN_CARDS_FOR_POINTS) {
+                 showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0); 
+            } else if (flashcards.length > 0 && flashcards.length < 3) {
+                // Add a specific message if not enough cards for 3 full MC options
+                showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
+            }
+
+
+            // Buttons like "Siguiente" and "Lo sé" are hidden until an answer is picked
+            learnedBtn.classList.add('hidden');
+            nextCardBtn.classList.add('hidden');
+        }
+
+        function handleNoCardsState() {
+            questionTextEl.textContent = "¡No hay palabras! Añade algunas o compra un mazo para empezar.";
+            answerInputEl.value = "";
+            answerInputEl.disabled = true; // Keep disabled
+            answerInputEl.classList.add('hidden'); // Keep hidden
+            multipleChoiceOptionsEl.innerHTML = ''; // Clear any options
+            checkAnswerBtn.classList.add('hidden');
+            learnedBtn.classList.add('hidden');
+            nextCardBtn.classList.add('hidden');
+            showTemporaryFeedback(feedbackTextEl, `Usa 'Añadir Palabra' o visita la Tienda. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
+        }
+
+        function checkHourlyPointLimit() {
+            const now = Date.now();
+            if (now - lastPointResetTime >= ONE_HOUR_IN_MS) {
+                pointsThisHour = 0;
+                lastPointResetTime = now;
+                saveGameData(); 
+            }
+        }
+
+        // `checkAnswer` is no longer directly called by a button, `handleOptionClick` takes its role.
+        // The original `checkAnswer` logic is now mostly within `handleOptionClick`.
+
         function markAsLearned() {
             if (flashcards.length === 0) return;
             const cardToLearn = flashcards[currentCardIndex];
@@ -951,10 +1063,8 @@
 
             if (learnedFlashcards.findIndex(card => card.question.toLowerCase() === cardToLearn.question.toLowerCase()) === -1) {
                 learnedFlashcards.push(cardToLearn);
-                checkHourlyPointLimit(); // NUEVO: Verificar/Resetear contador horario
+                checkHourlyPointLimit(); 
 
-                // MODIFICADO: Condición para dar puntos por aprender
-                // Ahora también considera el mínimo de palabras EN EL MAZO PRINCIPAL ANTES de marcar como aprendida
                 if (flashcards.length < MIN_CARDS_FOR_POINTS) {
                     feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. Necesitas ${MIN_CARDS_FOR_POINTS} palabras en el mazo principal para ganar puntos por aprender.`;
                 } else if (pointsThisHour >= MAX_POINTS_PER_HOUR) {
@@ -979,30 +1089,30 @@
                 showTemporaryFeedback(feedbackTextEl, `"${cardToLearn.question}" ya estaba marcada como aprendida.`, "info", 2500);
             }
 
-            const previousFlashcardCount = flashcards.length; // Guardar antes de quitar
+            const previousFlashcardCount = flashcards.length; 
             flashcards.splice(currentCardIndex, 1);
 
             saveGameData();
-            checkAnswerBtn.classList.add('hidden');
-            learnedBtn.classList.add('hidden');
-            nextCardBtn.classList.remove('hidden');
+            // checkAnswerBtn.classList.add('hidden'); // Already hidden by default now
+            learnedBtn.classList.add('hidden'); // Hide after marking
+            nextCardBtn.classList.remove('hidden'); // Ensure next is visible
             nextCardBtn.focus();
 
             if (flashcards.length === 0) {
                 handleNoCardsState();
             } else {
-                // NUEVO: Comprobar si el mazo principal ahora tiene menos de MIN_CARDS_FOR_POINTS
                 if (flashcards.length < MIN_CARDS_FOR_POINTS && previousFlashcardCount >= MIN_CARDS_FOR_POINTS) {
-                     // displayCard() se encargará de mostrar el aviso general si es necesario
-                } else if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                    // Si al marcar como aprendida, casualmente el mazo queda con suficientes, el aviso de displayCard se quitará
+                     // displayCard() will handle this
                 }
-
                 if (currentCardIndex >= flashcards.length) {
                     currentCardIndex = 0;
                     shuffleFlashcards();
                 }
-                displayCard(); // Esto actualizará el feedback si es necesario
+                // Don't call displayCard here, let user click "Next" to see the next card's options
+                // This is a slight change in flow: after marking learned, the options for the *next* card
+                // will only show when "Next" is clicked. This is fine.
+                // OR, we can call moveToNextCard directly if we want immediate transition
+                moveToNextCard(false); // Move to next card without shuffling again if it's end of deck
             }
         }
 
@@ -1017,7 +1127,6 @@
                 currentCardIndex = 0;
                 if (shuffleDeckIfNeeded && flashcards.length > 1) {
                     shuffleFlashcards();
-                    // No mostramos "Mazo barajado" si ya hay otro feedback importante (ej. falta de palabras)
                     if (!feedbackTextEl.textContent || feedbackTextEl.textContent.includes("¡Correcto!") || feedbackTextEl.textContent.includes("Respuesta correcta:")) {
                          showTemporaryFeedback(feedbackTextEl, "¡Mazo barajado para la siguiente ronda!", "info", 1500);
                     }
@@ -1027,12 +1136,21 @@
             saveGameData();
         }
 
-        function shuffleFlashcards() {
+        function shuffleFlashcards() { // Renamed from shuffle to be more specific
             for (let i = flashcards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
             }
         }
+        
+        // Helper to shuffle any array (used for options and distractors)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
 
         function updateScore() { scoreEl.textContent = score; }
         function updateFertilizerCount() {
@@ -1073,7 +1191,7 @@
                 treeLevel++;
                 updateTreeVisual();
                 updateFertilizerCount();
-                updateScore();
+                // updateScore(); // Score is not directly affected by growing tree
                 showTemporaryFeedback(feedbackTextEl, `¡Tu árbol creció a ${TREE_LEVEL_DATA[treeLevel].name}!`, "correct", 2500);
                 treeDisplayEl.style.transform = 'scale(1.15)';
                 setTimeout(() => { treeDisplayEl.style.transform = 'scale(1)'; }, 300);
@@ -1114,25 +1232,30 @@
                 const timeSinceLastApple = now - lastAppleGenerationTime;
 
                 if (timeSinceLastApple >= generationIntervalMs && applesPerDay > 0) {
-                    checkAndGenerateApples();
-                    const newTimeSinceLastApple = now - lastAppleGenerationTime;
+                    // This condition might be redundant if checkAndGenerateApples is called regularly
+                    // but serves as a fallback.
+                    checkAndGenerateApples(); 
+                    // Recalculate timeToNextAppleMs after potential generation
+                    const newTimeSinceLastApple = now - lastAppleGenerationTime; // Re-fetch after generation
                     let timeToNextAppleMs = generationIntervalMs - (newTimeSinceLastApple % generationIntervalMs);
-                    if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
+                    if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs; // Ensure positive for next cycle
 
                     const h = String(Math.floor((timeToNextAppleMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
                     const m = String(Math.floor((timeToNextAppleMs / (1000 * 60)) % 60)).padStart(2, '0');
                     const s = String(Math.floor((timeToNextAppleMs / 1000) % 60)).padStart(2, '0');
                     appleCountdownEl.textContent = `${h}:${m}:${s}`;
-                    return;
+                    return; // Exit after recalculation and display
                 }
-
+                
+                // If no apple generated in this specific call, calculate remaining time
                 let timeToNextAppleMs = generationIntervalMs - (timeSinceLastApple % generationIntervalMs);
 
-                if (timeToNextAppleMs <= 1000 && timeToNextAppleMs > 0) {
-                     appleCountdownEl.textContent = "¡Ahora!";
+                if (timeToNextAppleMs <= 1000 && timeToNextAppleMs > 0) { // Approx. 1 second left
+                     appleCountdownEl.textContent = "¡Ahora!"; // Indicate an apple is due very soon
+                     // It will be properly processed by checkAndGenerateApples in its own interval or next countdown tick
                      return;
                 }
-                if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
+                if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs; // Reset for next full interval if somehow negative
 
                 const h = String(Math.floor((timeToNextAppleMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
                 const m = String(Math.floor((timeToNextAppleMs / (1000 * 60)) % 60)).padStart(2, '0');
@@ -1148,7 +1271,7 @@
                 flashcards, learnedFlashcards, currentCardIndex, score,
                 fertilizerCount, treeLevel, applesCount,
                 lastAppleGenerationTime,
-                pointsThisHour, lastPointResetTime // NUEVO: Guardar estado de límite de puntos
+                pointsThisHour, lastPointResetTime 
             };
             localStorage.setItem('flashcardGameData', JSON.stringify(gameData));
         }
@@ -1166,7 +1289,6 @@
                     treeLevel = parsedData.treeLevel || 0;
                     applesCount = parsedData.applesCount || 0;
                     lastAppleGenerationTime = parsedData.lastAppleGenerationTime || Date.now();
-                    // NUEVO: Cargar estado de límite de puntos
                     pointsThisHour = parsedData.pointsThisHour || 0;
                     lastPointResetTime = parsedData.lastPointResetTime || Date.now();
 
@@ -1181,7 +1303,7 @@
             } else {
                 resetToDefaults();
             }
-             checkHourlyPointLimit(); // NUEVO: Verificar el límite al cargar, por si pasó tiempo offline
+             checkHourlyPointLimit(); 
         }
 
         function resetToDefaults() {
@@ -1194,7 +1316,6 @@
             treeLevel = 0;
             applesCount = 0;
             lastAppleGenerationTime = Date.now();
-            // NUEVO: Resetear variables de límite de puntos
             pointsThisHour = 0;
             lastPointResetTime = Date.now();
         }
@@ -1213,26 +1334,32 @@
         function clearFeedback(element, delay = 0) {
             const baseClass = element.className.split(' ').filter(cls => cls === 'feedback' || cls === 'text-center' || cls.startsWith('mt-') || cls.startsWith('h-')).join(' ');
             element.textContent = '';
-            element.classList.remove('correct', 'incorrect', 'info');
+            element.className = baseClass; // Reset to base classes, removing correct/incorrect/info
             if (delay > 0) {
-                setTimeout(() => { element.textContent = ''; element.classList.remove('correct', 'incorrect', 'info'); }, delay);
+                setTimeout(() => { 
+                    element.textContent = ''; 
+                    element.className = baseClass;
+                }, delay);
             }
         }
 
         function showTemporaryFeedback(element, message, type = 'info', duration = 3000) {
-            clearFeedback(element); // Limpia cualquier feedback anterior, incluyendo el persistente.
+            clearFeedback(element); 
             element.textContent = message;
             element.classList.add(type);
             if (duration > 0) {
                 setTimeout(() => {
-                    // Solo limpiar si el mensaje actual es el que se iba a limpiar (evita borrar un nuevo feedback)
-                    if (element.textContent === message) {
+                    if (element.textContent === message) { // Only clear if it's still the same message
                         clearFeedback(element);
-                         // NUEVO: Si después de limpiar, aún se necesita el aviso de MIN_CARDS, mostrarlo.
-                        if (element === feedbackTextEl && flashcards.length > 0 && flashcards.length < MIN_CARDS_FOR_POINTS) {
-                            showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
-                        } else if (element === feedbackTextEl && flashcards.length === 0) {
-                             showTemporaryFeedback(feedbackTextEl, `¡No hay palabras! Añade algunas o compra un mazo para empezar. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
+                        // After clearing, re-evaluate if persistent info messages are needed for flashcard section
+                        if (element === feedbackTextEl) {
+                            if (flashcards.length === 0) {
+                                 showTemporaryFeedback(feedbackTextEl, `¡No hay palabras! Añade algunas o compra un mazo para empezar. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
+                            } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
+                                showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
+                            } else if (flashcards.length > 0 && flashcards.length < 3) {
+                                showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
+                            }
                         }
                     }
                 }, duration);
@@ -1256,7 +1383,7 @@
                     showTemporaryFeedback(addCardFeedbackEl, "Esa palabra ya existe en tus mazos.", "incorrect", 2500);
                     return;
                 }
-                const previousFlashcardCount = flashcards.length; // NUEVO
+                const previousFlashcardCount = flashcards.length; 
                 flashcards.push({ question: newQ, answer: newA });
                 shuffleFlashcards();
                 saveGameData();
@@ -1264,25 +1391,27 @@
                 newQuestionInput.value = ''; newAnswerInput.value = '';
                 newQuestionInput.focus();
 
-                // NUEVO: Comprobar si ahora se pueden ganar puntos
+                const currentlyNoCards = questionTextEl.textContent.startsWith("¡No hay palabras!");
+
                 if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                    clearFeedback(feedbackTextEl); // Limpia el aviso de "necesitas X palabras"
+                    clearFeedback(feedbackTextEl); 
                     showTemporaryFeedback(feedbackTextEl, `¡Genial! Ahora tienes ${flashcards.length} palabras. Ya puedes ganar puntos de nuevo.`, "correct", 4000);
                 } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                    // Actualizar el mensaje de feedback principal si aún no se alcanza el mínimo
                     showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
+                } else if (flashcards.length > 0 && flashcards.length < 3) {
+                     showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
                 }
 
 
-                if (flashcards.length === 1 && (questionTextEl.textContent.startsWith("¡No hay palabras!") || questionTextEl.textContent.startsWith("¡No hay flashcards!"))) {
-                    currentCardIndex = 0;
-                    displayCard(); // displayCard se encargará de los avisos
-                    answerInputEl.disabled = false;
-                    // clearFeedback(feedbackTextEl); // displayCard lo maneja
-                } else if (flashcards.length > 0 && answerInputEl.disabled) { // Si había 0 y se añadió la primera
+                if (currentlyNoCards && flashcards.length > 0) { // If deck was empty and now has cards
+                    currentCardIndex = 0; // Reset index for the new deck
                     displayCard();
-                    answerInputEl.disabled = false;
+                } else if (flashcards.length === 1 && previousFlashcardCount === 0) { // First card added
+                    displayCard();
+                } else if (flashcards.length > 0 && multipleChoiceOptionsEl.innerHTML === '') { // If options were empty, refresh
+                    displayCard();
                 }
+
 
             } else {
                 showTemporaryFeedback(addCardFeedbackEl, "Ambos campos son obligatorios.", "incorrect", 2000);
@@ -1293,8 +1422,27 @@
             deleteCardListContainerEl.innerHTML = '';
             clearFeedback(deleteFeedbackEl);
             const cardsToDeleteFrom = [...flashcards, ...learnedFlashcards];
+            // Remove duplicates by question for listing, but keep track of learned status
+            const uniqueCardsMap = new Map();
+            cardsToDeleteFrom.forEach(card => {
+                const key = card.question.toLowerCase();
+                if (!uniqueCardsMap.has(key)) {
+                    uniqueCardsMap.set(key, {
+                        question: card.question,
+                        answer: card.answer,
+                        isLearned: learnedFlashcards.some(lc => lc.question.toLowerCase() === key)
+                    });
+                } else {
+                    // If it's also in learned, ensure isLearned is true
+                    if (learnedFlashcards.some(lc => lc.question.toLowerCase() === key)) {
+                        uniqueCardsMap.get(key).isLearned = true;
+                    }
+                }
+            });
+            const displayableCards = Array.from(uniqueCardsMap.values());
 
-            if (cardsToDeleteFrom.length === 0) {
+
+            if (displayableCards.length === 0) {
                 noCardsToDeleteMsgEl.classList.remove('hidden');
                 confirmDeleteCardBtn.disabled = true;
                 confirmDeleteCardBtn.classList.add('btn-disabled');
@@ -1309,15 +1457,14 @@
             selectAllDeleteBtn.classList.remove('hidden');
             selectAllDeleteBtn.textContent = 'Seleccionar Todas';
 
-            cardsToDeleteFrom.sort((a, b) => a.question.localeCompare(b.question)).forEach((card, index) => {
+            displayableCards.sort((a, b) => a.question.localeCompare(b.question)).forEach((card, index) => {
                 const listItem = document.createElement('div');
                 listItem.className = 'flex items-center p-1.5 hover:bg-gray-50 rounded';
-                const isLearned = learnedFlashcards.some(lc => lc.question.toLowerCase() === card.question.toLowerCase());
                 listItem.innerHTML = `
                     <input type="checkbox" id="delete-card-${index}" value="${card.question}" class="mr-2 rounded border-gray-300 text-[var(--duo-blue)] focus:ring-[var(--duo-blue)] h-4 w-4">
                     <label for="delete-card-${index}" class="flex-grow text-sm text-[var(--duo-text-dark)] cursor-pointer">
                         ${card.question} - ${card.answer}
-                        ${isLearned ? '<span class="text-xs text-[var(--duo-green)] ml-1 font-semibold">(Aprendida)</span>' : ''}
+                        ${card.isLearned ? '<span class="text-xs text-[var(--duo-green)] ml-1 font-semibold">(Aprendida)</span>' : ''}
                     </label>`;
                 deleteCardListContainerEl.appendChild(listItem);
             });
@@ -1334,7 +1481,7 @@
             const questionsToDelete = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
             let deletedCount = 0;
             const currentQuestionBeforeDelete = flashcards.length > 0 && currentCardIndex < flashcards.length ? flashcards[currentCardIndex].question : null;
-            const previousFlashcardCount = flashcards.length; // NUEVO
+            const previousFlashcardCount = flashcards.length; 
 
             const initialFlashcardsLength = flashcards.length;
             flashcards = flashcards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
@@ -1342,19 +1489,25 @@
 
             const initialLearnedLength = learnedFlashcards.length;
             learnedFlashcards = learnedFlashcards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
-            deletedCount += (initialLearnedLength - learnedFlashcards.length);
+            // Count only unique deletions if a card was in both lists and got deleted
+            // The current deletedCount might double count if a card was in flashcards and learnedFlashcards.
+            // However, the filtering logic is correct. Let's refine deletedCount if it's critical.
+            // For user feedback, "X words removed" based on unique questions is better.
+            // The current `deletedCount` just sums up how many items were removed from each array.
 
-            if (deletedCount > 0) {
+            if (questionsToDelete.length > 0) { // Check if any unique words were targeted for deletion
                 saveGameData();
-                showTemporaryFeedback(deleteFeedbackEl, `${deletedCount} palabra(s) eliminada(s) permanentemente.`, "correct", 2000);
+                showTemporaryFeedback(deleteFeedbackEl, `${questionsToDelete.length} palabra(s) eliminada(s) permanentemente.`, "correct", 2000);
 
-                // NUEVO: Comprobar si ahora NO se pueden ganar puntos
+                const deckWasEmpty = previousFlashcardCount === 0;
+
                 if (flashcards.length < MIN_CARDS_FOR_POINTS && previousFlashcardCount >= MIN_CARDS_FOR_POINTS && flashcards.length > 0) {
-                     showTemporaryFeedback(feedbackTextEl, `Atención: Ahora tienes ${flashcards.length} palabras. Necesitas al menos ${MIN_CARDS_FOR_POINTS} para ganar puntos.`, "info", 0); // Persistente
+                     showTemporaryFeedback(feedbackTextEl, `Atención: Ahora tienes ${flashcards.length} palabras. Necesitas al menos ${MIN_CARDS_FOR_POINTS} para ganar puntos.`, "info", 0); 
                 } else if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                    // Si al eliminar, casualmente el mazo queda con suficientes (raro, pero posible si se eliminan de aprendidas y no del mazo principal)
-                    clearFeedback(feedbackTextEl); // Quitar aviso anterior
+                    clearFeedback(feedbackTextEl); 
                     showTemporaryFeedback(feedbackTextEl, `¡Ahora tienes ${flashcards.length} palabras y puedes ganar puntos!`, "correct", 3000);
+                } else if (flashcards.length > 0 && flashcards.length < 3) {
+                    showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
                 }
 
 
@@ -1364,14 +1517,14 @@
                         currentCardIndex = 0;
                         shuffleFlashcards();
                     }
-                    displayCard(); // displayCard se encargará de los avisos
+                    displayCard(); 
                 } else {
                     handleNoCardsState();
                 }
             } else {
                 showTemporaryFeedback(deleteFeedbackEl, "No se eliminaron palabras.", "info", 2500);
             }
-            populateDeleteCardList();
+            populateDeleteCardList(); // Refresh list
              if (deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]').length === 0) {
                  noCardsToDeleteMsgEl.classList.remove('hidden');
                  confirmDeleteCardBtn.disabled = true; confirmDeleteCardBtn.classList.add('btn-disabled');
@@ -1401,35 +1554,34 @@
                     const cardIndexInLearned = learnedFlashcards.findIndex(c => c.question.toLowerCase() === questionToRemove.toLowerCase());
                     if (cardIndexInLearned > -1) {
                         const removedCard = learnedFlashcards.splice(cardIndexInLearned, 1)[0];
-                        const previousFlashcardCount = flashcards.length; // NUEVO
+                        const previousFlashcardCount = flashcards.length; 
+                        const deckWasEmpty = previousFlashcardCount === 0;
+
 
                         if (!flashcards.some(fc => fc.question.toLowerCase() === removedCard.question.toLowerCase())) {
                             flashcards.push(removedCard);
                             shuffleFlashcards();
                         }
                         saveGameData();
-                        populateReviewLearnedList();
+                        populateReviewLearnedList(); // Refresh the modal list
                         showTemporaryFeedback(reviewModalFeedbackEl, `"${questionToRemove}" movida de nuevo al mazo principal.`, "info", 2000);
 
-                        // NUEVO: Comprobar si ahora se pueden ganar puntos
                         if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                             clearFeedback(feedbackTextEl); // Limpiar aviso anterior
+                             clearFeedback(feedbackTextEl); 
                              showTemporaryFeedback(feedbackTextEl, `¡Bien! "${removedCard.question}" ha vuelto al mazo. Ya puedes ganar puntos de nuevo. (Total: ${flashcards.length})`, "correct", 4000);
                         } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                            // Actualizar el mensaje si sigue siendo insuficiente
                             showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
+                        } else if (flashcards.length > 0 && flashcards.length < 3) {
+                            showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
                         }
 
 
-                        if (flashcards.length > 0 && (questionTextEl.textContent.startsWith("¡No hay palabras!") || questionTextEl.textContent.startsWith("¡No hay flashcards!"))) {
+                        if (deckWasEmpty && flashcards.length > 0) {
                              currentCardIndex = flashcards.findIndex(c => c.question === removedCard.question);
                              if (currentCardIndex === -1) currentCardIndex = 0;
-                             displayCard(); // displayCard se encargará de los avisos
-                             answerInputEl.disabled = false;
-                             // clearFeedback(feedbackTextEl); // displayCard lo maneja
-                        } else if (answerInputEl.disabled && flashcards.length > 0) { // Si estaba vacío y se "olvidó" la primera
+                             displayCard(); 
+                        } else if (multipleChoiceOptionsEl.innerHTML === '' && flashcards.length > 0) { // If options were empty (e.g. deck became empty then card added back)
                             displayCard();
-                            answerInputEl.disabled = false;
                         }
                     }
                 });
@@ -1510,7 +1662,9 @@
             if (applesCount >= deckData.cost) {
                 applesCount -= deckData.cost;
                 let newCardsAddedCount = 0;
-                const previousFlashcardCount = flashcards.length; // NUEVO
+                const previousFlashcardCount = flashcards.length; 
+                const deckWasEmpty = previousFlashcardCount === 0;
+
 
                 deckData.cards.forEach(cardFromDeck => {
                     const cardExists = flashcards.some(fc => fc.question.toLowerCase() === cardFromDeck.question.toLowerCase()) ||
@@ -1523,21 +1677,20 @@
 
                 if (newCardsAddedCount > 0) {
                     shuffleFlashcards();
-                    if (flashcards.length === newCardsAddedCount && (questionTextEl.textContent.startsWith("¡No hay palabras!") || questionTextEl.textContent.startsWith("¡No hay flashcards!"))) {
+                     if (deckWasEmpty && flashcards.length > 0) {
                         currentCardIndex = 0;
-                        displayCard(); // displayCard se encargará de los avisos
-                        answerInputEl.disabled = false;
-                        // clearFeedback(feedbackTextEl); // displayCard lo maneja
+                        displayCard(); 
+                    } else if (multipleChoiceOptionsEl.innerHTML === '' && flashcards.length > 0) { // If options were empty
+                        displayCard();
                     }
-                     // NUEVO: Comprobar si ahora se pueden ganar puntos
+
                     if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                         clearFeedback(feedbackTextEl); // Limpiar aviso anterior
+                         clearFeedback(feedbackTextEl); 
                          showTemporaryFeedback(feedbackTextEl, `¡Mazo comprado! Ahora tienes ${flashcards.length} palabras y puedes ganar puntos.`, "correct", 4000);
                     } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
                         showTemporaryFeedback(feedbackTextEl, `Mazo comprado. Aún necesitas ${MIN_CARDS_FOR_POINTS - flashcards.length} palabras más para ganar puntos (Tienes ${flashcards.length}).`, "info", 0);
-                    } else if (answerInputEl.disabled && flashcards.length > 0){ // Si estaba vacío antes de comprar el mazo
-                        displayCard();
-                        answerInputEl.disabled = false;
+                    } else if (flashcards.length > 0 && flashcards.length < 3) {
+                         showTemporaryFeedback(feedbackTextEl, `Mazo comprado. Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
                     }
                 }
                 updateApplesCount();
@@ -1581,16 +1734,9 @@
             }
         });
 
-        checkAnswerBtn.addEventListener('click', checkAnswer);
-        answerInputEl.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                if (!checkAnswerBtn.classList.contains('hidden') && !checkAnswerBtn.disabled) {
-                    checkAnswer();
-                } else if (!nextCardBtn.classList.contains('hidden') && !nextCardBtn.disabled) {
-                    moveToNextCard();
-                }
-            }
-        });
+        // checkAnswerBtn is no longer used directly for checking answers.
+        // answerInputEl 'keypress' for Enter is also not relevant for MCQs.
+        
         learnedBtn.addEventListener('click', markAsLearned);
         nextCardBtn.addEventListener('click', () => moveToNextCard());
         useFertilizerBtn.addEventListener('click', growTree);
@@ -1619,52 +1765,48 @@
         });
         mainContentAreaEl.addEventListener('scroll', () => {
             if (window.innerWidth <= 1024) {
-                if (mainContentAreaEl.scrollLeft < 10) {
-                    scrollLeftBtn.classList.add('hidden');
-                } else {
-                    scrollLeftBtn.classList.remove('hidden');
-                }
-                if (mainContentAreaEl.scrollLeft + mainContentAreaEl.offsetWidth >= mainContentAreaEl.scrollWidth - 10) {
-                     scrollRightBtn.classList.add('hidden');
-                } else {
-                    scrollRightBtn.classList.remove('hidden');
-                }
+                // Hide scrollLeftBtn if at the beginning
+                scrollLeftBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft < 10);
+                // Hide scrollRightBtn if at the end
+                scrollRightBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft + mainContentAreaEl.offsetWidth >= mainContentAreaEl.scrollWidth - 10);
             }
         });
 
         function initGameVisuals() {
+            answerInputEl.classList.add('hidden'); // Ensure text input is always hidden
+            checkAnswerBtn.classList.add('hidden'); // Ensure check button is always hidden
+
             if (flashcards.length > 0) {
                 if (currentCardIndex >= flashcards.length || currentCardIndex < 0) currentCardIndex = 0;
-                displayCard(); // displayCard se encarga de mostrar avisos si es necesario
-                answerInputEl.disabled = false;
-                // clearFeedback(feedbackTextEl); // displayCard se encarga de esto
+                displayCard(); 
             } else {
                 handleNoCardsState();
             }
             updateAllStats();
             checkAndGenerateApples();
-            checkScrollArrowsVisibility();
+            checkScrollArrowsVisibility(); // Initial check for scroll arrows
         }
 
 
         async function initGame() {
             await initCryptoKey();
-            loadGameData(); // Carga datos, incluyendo pointsThisHour y lastPointResetTime
-            initGameVisuals(); // Muestra la UI y los avisos iniciales
+            loadGameData(); 
+            initGameVisuals(); 
             if (!window.appleCheckIntervalId) {
                  window.appleCheckIntervalId = setInterval(checkAndGenerateApples, CHECK_APPLES_INTERVAL);
             }
         }
 
         function checkScrollArrowsVisibility() {
-            if (window.innerWidth <= 1024) {
-                scrollLeftBtn.classList.add('hidden');
+             if (window.innerWidth <= 1024) {
+                // Make sure arrows are initially hidden if not needed, then dispatch scroll to check
+                scrollLeftBtn.classList.add('hidden'); 
+                scrollRightBtn.classList.add('hidden');
+                // Only show right arrow if content is scrollable
                 if (mainContentAreaEl.scrollWidth > mainContentAreaEl.clientWidth + 5) {
                      scrollRightBtn.classList.remove('hidden');
-                } else {
-                     scrollRightBtn.classList.add('hidden');
                 }
-                mainContentAreaEl.dispatchEvent(new Event('scroll'));
+                mainContentAreaEl.dispatchEvent(new Event('scroll')); // Trigger scroll handler to update based on current scroll
             } else {
                 scrollLeftBtn.classList.add('hidden');
                 scrollRightBtn.classList.add('hidden');
