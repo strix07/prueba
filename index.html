@@ -437,11 +437,17 @@
             .app-header h1 {
                 display: none; /* Esto ocultará el título */
             }
+            
             .app-wrapper {
-                height: 100vh; 
-                padding: 0.5rem; 
-                overflow: hidden; 
-                /* display: flex; flex-direction: column; align-items: center;  YA LO TIENE DE BASE */
+                /* Altura total menos el espacio para la barra de navegación inferior del OS */
+                height: calc(100vh - env(safe-area-inset-bottom, 0px)); /* El 0px es un fallback */
+                padding-top: 0.5rem; /* Mantenemos padding superior */
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                /* El padding-bottom ahora lo manejará el inset o se puede añadir explícitamente */
+                padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+                box-sizing: border-box; /* Asegúrate de que esté para que el padding no aumente el tamaño total */
+                overflow: hidden;
             }
             
 
