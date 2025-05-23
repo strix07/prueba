@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
     <!-- SEO: Título optimizado -->
     <title>Flashcards de Inglés Fácil: Aprende Vocabulario Interactivo</title>
@@ -438,34 +438,31 @@
                 display: none; /* Esto ocultará el título */
             }
             
-            .app-wrapper {
-                /* Altura total menos el espacio para la barra de navegación inferior del OS */
-                height: calc(100vh - env(safe-area-inset-bottom, 0px)); /* El 0px es un fallback */
-                padding-top: 0.5rem; /* Mantenemos padding superior */
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-                /* El padding-bottom ahora lo manejará el inset o se puede añadir explícitamente */
-                padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
-                box-sizing: border-box; /* Asegúrate de que esté para que el padding no aumente el tamaño total */
-                overflow: hidden;
-            }
-            
+        .app-wrapper {
+            height: 100dvh; /* O 100vh si dvh causa problemas inesperados */
+            padding: 0.5rem; /* Padding general para los bordes del app-wrapper */
+            /* Eliminamos el padding-bottom específico con env() aquí si main-content-area lo maneja */
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-             .main-content-area {
-                flex-direction: column;
-                flex-grow: 1;
-                overflow-y: auto;
-                scroll-snap-type: y mandatory;
-                gap: 0;
-                /* Para Firefox */
-                scrollbar-width: none;
-                /* Para IE (opcional, más antiguo) */
-                -ms-overflow-style: none;
-            }
-            /* Para Webkit (Chrome, Safari, Edge) - FUERA de la regla .main-content-area */
-            .main-content-area::-webkit-scrollbar {
-                display: none;
-            }
+            .main-content-area {
+            flex-direction: column;
+            flex-grow: 1;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            gap: 0;
+            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;  /* IE 10+ */
+            padding-bottom: env(safe-area-inset-bottom, 0px); /* Ajusta el 0px si necesitas un padding mínimo adicional */
+            box-sizing: border-box; /* Importante para que el padding no aumente el tamaño del scroll */
+        }
+        .main-content-area::-webkit-scrollbar { /* WebKit */
+            display: none;
+        }
 
             .content-wrapper-main {
                 /* width: 100%; ya lo tiene */
