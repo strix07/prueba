@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://flashcards-inglesfacil.netlify.app/</loc>
+    <lastmod>2025-05-23</lastmod> <!-- Actualiza esta fecha cuando hagas cambios importantes -->
+    <changefreq>monthly</changefreq>   <!-- O 'weekly' si actualizas contenido/funcionalidad más a menudo -->
+    <priority>1.0</priority>         <!-- Es tu página principal, así que alta prioridad interna -->
+  </url>
+</urlset>
