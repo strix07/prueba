@@ -55,11 +55,10 @@
     </script>
 
     <style>
-        /* ... (tu CSS existente permanece igual, no se muestra aquí por brevedad) ... */
         :root {
-            --duo-green: #4CAF50; /* Darker main green */
-            --duo-green-dark: #388E3C; /* Darker border green */
-            --duo-green-light: #66BB6A; /* Adjusted hover green */
+            --duo-green: #4CAF50;
+            --duo-green-dark: #388E3C;
+            --duo-green-light: #66BB6A;
             --duo-blue: #1cb0f6;
             --duo-blue-dark: #138bc4;
             --duo-red: #ff4b4b;
@@ -74,84 +73,117 @@
             --duo-text-dark: #4b4b4b;
             --duo-text-light: #ffffff;
             --duo-correct-bg: #d7ffb8;
-            --duo-correct-text: #58a700; /* Kept original correct green text for contrast */
+            --duo-correct-text: #58a700;
             --duo-incorrect-bg: #ffdfe0;
             --duo-incorrect-text: #ea2b2b;
         }
 
         html, body {
-            height: 100%;
             margin: 0;
             font-family: 'Nunito', sans-serif;
             background-color: var(--duo-gray-lightest);
             color: var(--duo-text-dark);
-            overflow: hidden; /* Evitar scroll en el body en vista de escritorio */
         }
-        .app-wrapper { /* SEO: Cambiado a <main> en el HTML */
+        .app-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            padding: 0.75rem; /* Main app padding */
+            min-height: 100vh;
+            height: auto; /* Cambiará en móvil */
+            padding: 0.75rem; /* Cambiará en móvil */
             box-sizing: border-box;
             position: relative;
             z-index: 1;
         }
+        .app-header {
+            margin-bottom: 0.75rem; 
+            text-align: center;
+            width: 100%;
+            max-width: 1400px; 
+        }
+        .app-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--duo-green);
+            margin-bottom: 0.5rem;
+        }
+
         .main-content-area {
             display: flex;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px; 
             flex-grow: 1;
-            gap: 1rem;
-            overflow: hidden; /* Prevent this area from showing scrollbars if children are managed */
+            gap: 1rem; 
+            overflow: visible; /* Cambiará en móvil */
         }
-        .left-column, .right-column { /* SEO: Cambiado a <section> en el HTML */
-            background-color: var(--duo-text-light);
-            padding: 1.1rem; /* Slightly reduced column padding */
-            border-radius: 1rem;
-            border: 1px solid var(--duo-gray-light);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            overflow-y: auto; /* Allow internal scroll IF content is still too tall */
-            display: flex;
-            flex-direction: column;
-        }
-        .left-column { width: 45%; }
-        .right-column { width: 55%; }
 
         .column-title {
-            font-size: 1.4rem; /* Slightly reduced */
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--duo-text-dark);
             text-align: center;
-            margin-bottom: 0.75rem; /* Reduced */
-            padding-bottom: 0.5rem; /* Reduced */
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--duo-gray-light);
         }
 
-        .app-header { /* SEO: Cambiado a <header> en el HTML */
-            margin-bottom: 0.25rem; /* Reduced header margin */
-            text-align: center;
-            width: 100%;
-            max-width: 1200px;
-            min-height: 5px;
+        .sidebar {
+            background-color: var(--duo-text-light);
+            padding: 1.1rem;
+            border-radius: 1rem;
+            border: 1px solid var(--duo-gray-light);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
         }
-        /* SEO: Estilo para el H1 */
-        .app-header h1 {
-            font-size: 1.8rem; /* Ajusta según sea necesario */
-            font-weight: 800;
-            color: var(--duo-green); /* O el color que prefieras para tu marca */
-            margin-bottom: 0.5rem; /* Espacio debajo del H1 */
+        .sidebar-section .section-title {
+            font-size: 1.0rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            text-align: center;
+            color: var(--duo-text-dark);
+        }
+        .sidebar-section .button-group .btn {
+            font-size: 0.8rem;
+            padding: 0.6rem 1rem;
+            width: auto;
+        }
+        .sidebar .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+            gap: 0.4rem;
+            margin-bottom: 0;
+        }
+        .sidebar .stat-item h3 { font-size: 0.65rem; }
+        .sidebar .stat-item p { font-size: 1rem; }
+
+        .content-wrapper-main {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 1rem; /* Este gap separará study-panel y tree-panel en desktop. En móvil, display:contents lo anula. */
+            overflow: visible; /* Cambiará en móvil si es necesario */
         }
 
-        /* Flashcards */
-        #flashcard-section { margin-bottom: 0.75rem; } /* Reduced from mb-6 (1.5rem) to mb-3 (0.75rem) */
+        .study-panel, .tree-panel {
+            background-color: var(--duo-text-light);
+            padding: 1.1rem;
+            border-radius: 1rem;
+            border: 1px solid var(--duo-gray-light);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow-y: visible; /* Cambiará en móvil */
+        }
+
+        #flashcard-section { margin-bottom: 0.75rem; }
         .flashcard {
             background-color: var(--duo-text-light);
             border: 2px solid var(--duo-gray-light);
-            padding: 1.1rem; /* Reduced */
+            padding: 1.1rem;
             border-radius: 0.75rem;
-            margin-bottom: 0.75rem; /* Reduced */
-            min-height: 100px; /* Reduced */
+            margin-bottom: 0.75rem;
+            min-height: 100px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -159,19 +191,19 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
         #question-text {
-            font-size: 1.15rem; /* Reduced */
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--duo-text-dark);
         }
-        .input-field { /* Flashcard input */
-            padding: 0.6rem 0.9rem; /* Reduced */
+        .input-field {
+            padding: 0.6rem 0.9rem;
             border: 2px solid var(--duo-gray-light);
             border-radius: 0.75rem;
             width: 100%;
-            max-width: 280px; /* Slightly reduced max-width */
-            margin: 0.375rem auto; /* Reduced */
+            max-width: 280px;
+            margin: 0.375rem auto;
             box-sizing: border-box;
-            font-size: 0.9rem; /* Reduced */
+            font-size: 0.9rem;
             color: var(--duo-text-dark);
             transition: border-color 0.2s ease;
         }
@@ -180,13 +212,13 @@
             outline: none;
             box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.2);
         }
-        .feedback { /* Main feedback area */
-            margin-top: 0.375rem; /* Reduced */
+        .feedback {
+            margin-top: 0.375rem;
             font-weight: 700;
-            min-height: 20px; /* Reduced */
-            font-size: 0.85rem; /* Reduced */
-            margin-bottom: 0.6rem; /* Reduced */
-            padding: 0.4rem; /* Reduced */
+            min-height: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 0.6rem;
+            padding: 0.4rem;
             border-radius: 0.5rem;
             text-align: center;
         }
@@ -206,9 +238,8 @@
             border: 1px solid #bee5eb;
         }
 
-
         .btn {
-            padding: 0.65rem 1.1rem; /* Reduced */
+            padding: 0.65rem 1.1rem;
             border-radius: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -217,8 +248,8 @@
             border: none;
             border-bottom: 3px solid rgba(0,0,0,0.2);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            min-width: 90px; /* Reduced */
-            font-size: 0.85rem; /* Reduced */
+            min-width: 90px;
+            font-size: 0.85rem;
             color: var(--duo-text-light);
         }
         .btn:hover {
@@ -230,22 +261,16 @@
             border-bottom-width: 1px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-
         .btn-primary { background-color: var(--duo-green); border-bottom-color: var(--duo-green-dark); }
         .btn-primary:hover { background-color: var(--duo-green-light); }
-
         .btn-secondary { background-color: var(--duo-blue); border-bottom-color: var(--duo-blue-dark); }
         .btn-secondary:hover { background-color: #4acaff; }
-
         .btn-tertiary { background-color: var(--duo-orange); border-bottom-color: var(--duo-orange-dark); }
         .btn-tertiary:hover { background-color: #ffae40; }
-
         .btn-danger { background-color: var(--duo-red); border-bottom-color: var(--duo-red-dark); }
         .btn-danger:hover { background-color: #ff6a6a; }
-
         .btn-learned { background-color: var(--duo-yellow); border-bottom-color: #e6b400; color: var(--duo-text-dark); }
         .btn-learned:hover { background-color: #ffd433; }
-
         .btn-disabled {
             background-color: var(--duo-gray-light);
             border-bottom-color: var(--duo-gray-medium);
@@ -256,23 +281,22 @@
         }
         .btn-disabled:hover { background-color: var(--duo-gray-light); }
 
-        /* Multiple Choice Option Button Styles */
         .option-btn {
             background-color: var(--duo-text-light);
             color: var(--duo-text-dark);
             border: 2px solid var(--duo-gray-light);
             padding: 0.75rem;
             text-align: left;
-            text-transform: none; /* Override .btn uppercase */
-            font-size: 0.95rem; /* Slightly larger for readability */
+            text-transform: none;
+            font-size: 0.95rem;
             font-weight: 600;
             width: 100%;
-            margin-bottom: 0.5rem; /* Space between option buttons */
+            margin-bottom: 0.5rem;
         }
         .option-btn:hover:not(:disabled) {
             border-color: var(--duo-blue);
-            background-color: #f0f8ff; /* Light blueish hover */
-            transform: translateY(-1px); /* Less aggressive hover transform */
+            background-color: #f0f8ff;
+            transform: translateY(-1px);
         }
         .option-btn:disabled {
             opacity: 0.7;
@@ -291,23 +315,20 @@
             border-color: var(--duo-incorrect-text) !important;
             font-weight: 700;
         }
-        .option-btn.actual-correct { /* Style for showing the correct answer if user picked wrong */
+        .option-btn.actual-correct {
             background-color: var(--duo-correct-bg) !important;
             color: var(--duo-correct-text) !important;
             border: 2px dashed var(--duo-correct-text) !important;
         }
 
-
-        /* Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); /* Reduced minmax */
-            gap: 0.5rem; /* Reduced */
-            margin-bottom: 0.75rem; /* Reduced from mb-6 */
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
         }
         .stat-item {
             background-color: var(--duo-gray-lightest);
-            padding: 0.6rem; /* Reduced */
+            padding: 0.6rem;
             border-radius: 0.5rem;
             text-align: center;
             border: 1px solid var(--duo-gray-light);
@@ -315,39 +336,40 @@
         .stat-item h3 {
             margin-top: 0;
             color: var(--duo-gray-dark);
-            font-size: 0.7rem; /* Reduced */
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            margin-bottom: 0.1rem; /* Added small margin */
+            margin-bottom: 0.1rem;
         }
-        .stat-item p { font-size: 1.1rem; font-weight: 700; color: var(--duo-text-dark); } /* Reduced */
-        #open-shop-btn { font-size: 0.75rem !important; padding: 0.5rem 0.9rem !important; } /* Reduced */
-
-        /* Tree */
+        .stat-item p { font-size: 1.1rem; font-weight: 700; color: var(--duo-text-dark); }
+        
+        .tree-panel .stats-grid {
+             grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+             margin-top: 1rem;
+        }
         .tree-section-container { display: flex; flex-direction: column; flex-grow: 1; }
         .tree-display {
-            margin: 0.5rem 0; /* Reduced */
-            min-height: 130px; /* Reduced */
+            margin: 0.5rem 0;
+            min-height: 130px;
             display: flex;
             justify-content: center;
             align-items: center;
             transition: transform 0.3s ease-in-out;
-            flex-grow: 1; /* Allow tree display to take up available space */
+            flex-grow: 1;
         }
         .tree-display:hover { transform: scale(1.05); }
-        .tree-gif { max-width: 100%; max-height: 180px; object-fit: contain; } /* Reduced max-height */
+        .tree-gif { max-width: 100%; max-height: 180px; object-fit: contain; }
         #tree-level-text {
-            font-size: 0.9rem; /* Reduced */
-            margin-top: 0.25rem; /* Reduced */
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
             font-weight: 600;
             color: var(--duo-gray-dark);
         }
 
-        /* Section Titles & Button Groups */
         .section-title {
-            font-size: 1.1rem; /* Reduced */
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 0.6rem; /* Reduced */
+            margin-bottom: 0.6rem;
             text-align: center;
             color: var(--duo-text-dark);
         }
@@ -355,19 +377,13 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 0.4rem; /* Reduced */
+            gap: 0.4rem;
         }
-        .button-group .btn { /* Buttons within groups */
-            font-size: 0.75rem; /* Reduced */
-            padding: 0.5rem 0.9rem; /* Reduced */
-        }
-        .bottom-section { /* Sections at the bottom of columns */
-            margin-top: auto; /* Pushes to bottom */
-            padding-top: 0.6rem; /* Reduced */
-            border-top: 1px solid var(--duo-gray-light);
+        .button-group .btn {
+            font-size: 0.75rem;
+            padding: 0.5rem 0.9rem;
         }
 
-        /* Modals */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.7);
@@ -380,7 +396,7 @@
             border-radius: 1rem;
             width: 90%; max-width: 450px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border-top: 5px solid var(--duo-green); /* Uses new darker green */
+            border-top: 5px solid var(--duo-green);
         }
         .modal-content h3 {
             font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--duo-text-dark);
@@ -404,54 +420,157 @@
         .modal-content .btn.bg-slate-300:hover {
             background-color: #d1d1d1;
         }
-
         #shop-decks-container {
             max-height: 150px;
             overflow-y: auto;
         }
-
         #import-progress-input { display: none; }
 
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            html, body { overflow: auto; height: auto; }
-            .app-wrapper { height: auto; padding: 0.5rem; z-index: auto; }
-            .main-content-area {
-                flex-direction: column; /* CAMBIO: Apilar columnas verticalmente */
-                overflow-x: hidden;    /* CAMBIO: No más scroll horizontal */
-                width: 100%;           /* CAMBIO: Ancho normal de la pantalla */
-                gap: 1rem;             /* CAMBIO: Espacio vertical entre columnas */
+       
+        @media (max-width: 1024px) { /* Móvil y Tablet */
+            
+            html, body {
+                height: 100%; 
+                overflow: hidden; 
             }
-            .left-column, .right-column {
-                width: 100%;           /* Mantener: Cada columna toma el ancho completo */
-                flex-shrink: 1;
-                margin-bottom: 0;
-                margin-right: 0;       /* CAMBIO: Eliminar margen derecho ya que están apiladas */
-                overflow-y: visible;
-            }
-            .scroll-arrow {
-                display: none !important;
-            }
-            /* SEO: Ajustar tamaño de H1 en móviles si es necesario */
+
             .app-header h1 {
-                font-size: 1.5rem;
+                display: none; /* Esto ocultará el título */
             }
-        }
-        @media (min-width: 1025px) {
-            .scroll-arrow { display: none; } /* Hide arrows on larger screens */
-            .main-content-area {
-                flex-direction: row; /* Default two-column layout */
-                overflow-x: hidden; /* Disable horizontal scrolling */
-                gap: 1rem; /* Restore gap */
-                width: 100%; /* Restore width */
+            .app-wrapper {
+                height: 100vh; 
+                padding: 0.5rem; 
+                overflow: hidden; 
+                /* display: flex; flex-direction: column; align-items: center;  YA LO TIENE DE BASE */
             }
-            .left-column { width: 45%; margin-right: 0; } /* Restore width and remove margin-right */
-            .right-column { width: 55%; margin-right: 0; } /* Restore width and remove margin-right */
+            
+
+             .main-content-area {
+                flex-direction: column;
+                flex-grow: 1;
+                overflow-y: auto;
+                scroll-snap-type: y mandatory;
+                gap: 0;
+                /* Para Firefox */
+                scrollbar-width: none;
+                /* Para IE (opcional, más antiguo) */
+                -ms-overflow-style: none;
+            }
+            /* Para Webkit (Chrome, Safari, Edge) - FUERA de la regla .main-content-area */
+            .main-content-area::-webkit-scrollbar {
+                display: none;
+            }
+
+            .content-wrapper-main {
+                /* width: 100%; ya lo tiene */
+                /* flex-direction: column; ya lo tiene (pero display:contents lo hace irrelevante para sus hijos directos) */
+                order: 1; /* Ya lo tiene */
+                display: contents; 
+            }
+
+                        .study-panel, .tree-panel, .sidebar {
+                scroll-snap-align: start;
+                height: 100%;
+                min-height: 100%;
+                margin-bottom: 0 !important;
+                overflow-y: auto;
+                flex-shrink: 0;
+                /* Para Firefox */
+                scrollbar-width: none;
+                /* Para IE (opcional, más antiguo) */
+                -ms-overflow-style: none;
+            }
+            /* Para Webkit (Chrome, Safari, Edge) - FUERA de la regla combinada */
+            .study-panel::-webkit-scrollbar,
+            .tree-panel::-webkit-scrollbar,
+            .sidebar::-webkit-scrollbar {
+                display: none;
+            }
+
+            .sidebar {
+                order: 2; /* Ya lo tiene */
+                /* width: 100%; margin-bottom: 1rem; (originales) -> Sobrescritos por la regla de panel */
+            }
+
+
+            .scroll-arrow {
+                display: none !important; 
+            }
+            /* END: TikTok Scroll Snap Changes */
+
+            /* Estilos originales de la media query que no entran en conflicto o ya están cubiertos: */
+            .app-header h1 { font-size: 1.5rem; }
+
+            /* .study-panel, .tree-panel (originales width y margin-bottom) -> Sobrescritos por la regla de panel */
+            
+            /* .content-wrapper-main > section:last-child { margin-bottom: 0; } /* Ya no es necesario */
         }
 
-        /* Styles for scroll arrows */
+        @media (min-width: 1025px) { /* Escritorio */
+            html, body {
+                overflow-x: hidden; /* Mantener para evitar scroll horizontal accidental */
+                height: auto; /* Volver a auto para que el contenido determine la altura */
+                overflow-y: auto; /* Permitir scroll normal en desktop */
+            }
+             .app-wrapper { /* Restaurar comportamiento de escritorio */
+                min-height: 100vh;
+                height: auto;
+                padding: 0.75rem;
+                overflow: visible; /* Permitir que el contenido se desborde si es necesario */
+            }
+            .main-content-area {
+                flex-direction: row; 
+                align-items: flex-start;
+                gap: 1.5rem;
+                overflow: visible; /* Restaurar */
+                scroll-snap-type: none; /* Desactivar snap en escritorio */
+            }
+            .sidebar {
+                width: 380px;
+                flex-shrink: 0;
+                margin-bottom: 0; /* Ya lo tenía */
+                position: sticky; 
+                top: 1rem; 
+                align-self: flex-start;
+                max-height: calc(100vh - 2rem); 
+                overflow-y: auto; 
+                height: auto; /* Restaurar altura automática */
+                min-height: auto; /* Restaurar */
+                scroll-snap-align: unset; /* Quitar snap */
+            }
+            .content-wrapper-main {
+                flex-grow: 1;
+                flex-direction: row; 
+                gap: 1.5rem;
+                display: flex; /* Restaurar a flex si display:contents lo afectó */
+            }
+            .study-panel {
+                flex-basis: 45%; 
+                flex-grow: 1;
+                margin-bottom: 0; /* Ya lo tenía */
+                height: auto; /* Restaurar altura automática */
+                min-height: auto; /* Restaurar */
+                overflow-y: visible; /* Restaurar, el scroll interno es manejado por sidebar si es sticky */
+                scroll-snap-align: unset; /* Quitar snap */
+                flex-shrink: 1; /* Restaurar comportamiento flex normal */
+            }
+            .tree-panel {
+                flex-basis: 55%; 
+                flex-grow: 1;
+                margin-bottom: 0; /* Ya lo tenía */
+                height: auto; /* Restaurar altura automática */
+                min-height: auto; /* Restaurar */
+                overflow-y: visible; /* Restaurar */
+                scroll-snap-align: unset; /* Quitar snap */
+                flex-shrink: 1; /* Restaurar comportamiento flex normal */
+            }
+            .scroll-arrow { display: none !important; } 
+        }
+
+        /* Styles for scroll arrows (solo relevantes para móvil si .main-content-area tiene scroll) */
+        /* Se mantienen por si se revierte, pero ahora ocultas en móvil y desktop */
         .scroll-arrow {
-            position: fixed; /* Use fixed to keep them in viewport */
+            position: fixed;
             top: 50%;
             transform: translateY(-50%);
             background-color: rgba(0, 0, 0, 0.5);
@@ -464,7 +583,6 @@
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0.8;
@@ -475,104 +593,106 @@
         }
         .scroll-arrow.left { left: 0.5rem; }
         .scroll-arrow.right { right: 0.5rem; }
-
     </style>
 </head>
 <body>
-    <!-- SEO: Cambiado div por main para semántica -->
     <main class="app-wrapper">
-        <!-- SEO: Cambiado div por header y añadido H1 -->
         <header class="app-header">
             <h1>Aprende Inglés Fácil con Flashcards Interactivas</h1>
         </header>
 
         <div class="main-content-area">
-            <!-- SEO: Cambiado div por section para semántica -->
-            <section class="left-column">
-                <h2 class="column-title">Panel de Estudio</h2>
-                <section id="flashcard-section" aria-labelledby="flashcard-title"> <!-- SEO: aria-labelledby para accesibilidad -->
-                    <!-- <h3 id="flashcard-title" class="sr-only">Flashcard Actual</h3>  SEO: Título oculto para lectores de pantalla si es necesario, aunque el contexto ya es claro -->
-                    <div class="flashcard">
-                        <p id="question-text"></p>
+            <aside class="sidebar">
+                <h2 class="column-title">Panel de Control</h2>
+
+                <section class="sidebar-section" aria-label="Recursos y Tienda">
+                    <h3 class="section-title text-[var(--duo-green)]">Recursos y Tienda</h3>
+                    <div class="stats-grid sidebar-stats">
+                        <div class="stat-item">
+                            <h3>Puntos</h3>
+                            <p id="score">0</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>Fertilizante</h3>
+                            <p id="fertilizer-count">0</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>Manzanas</h3>
+                            <p id="apples-count">0 🍎</p>
+                        </div>
                     </div>
-                    <input type="text" id="answer-input" class="input-field mx-auto block hidden" placeholder="Escribe la traducción...">
-                    <div id="multiple-choice-options" class="mt-3 space-y-2 w-full max-w-sm mx-auto">
-                        <!-- Option buttons will be generated here by JS -->
-                    </div>
-                    <div id="feedback-text" class="feedback text-center"></div>
-                    <div class="flex justify-center space-x-2 mt-1.5 button-group">
-                        <button id="check-answer-btn" class="btn btn-primary hidden">Revisar</button>
-                        <button id="learned-btn" class="btn btn-learned hidden">¡Lo sé!</button>
-                        <button id="next-card-btn" class="btn btn-secondary hidden">Siguiente</button>
+                    <div class="button-group mt-2">
+                        <button id="open-shop-btn" class="btn btn-tertiary w-full">Tienda</button>
                     </div>
                 </section>
 
-                <section class="stats-grid" aria-label="Estadísticas del jugador"> <!-- SEO: aria-label -->
-                    <div class="stat-item">
-                        <h3>Puntos</h3>
-                        <p id="score">0</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>Fertilizante</h3>
-                        <p id="fertilizer-count">0</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>Manzanas</h3>
-                        <p id="apples-count">0 🍎</p>
-                    </div>
-                     <div class="stat-item">
-                        <h3>Producción</h3>
-                        <p id="apples-per-day" class="text-xs sm:text-sm">0 / día</p> </div>
-                    <div class="stat-item">
-                        <h3>Próximas 🍎</h3>
-                        <p id="apple-countdown" class="text-xs sm:text-sm">--:--:--</p> </div>
-                    <div class="stat-item col-span-full">
-                        <button id="open-shop-btn" class="btn btn-tertiary mt-0.5 w-full">Tienda</button> </div>
-                </section>
 
-                <section class="bottom-section" aria-label="Gestión de palabras"> <!-- SEO: aria-label -->
-                    <h2 class="section-title text-[var(--duo-blue)]">Gestionar Palabras</h2>
+                <section class="sidebar-section" aria-label="Gestión de progreso general">
+                    <h3 class="section-title text-[var(--duo-blue)]">Progreso General</h3>
                     <div class="button-group">
-                         <button id="show-add-card-modal-btn" class="btn btn-primary">Añadir</button>
-                         <button id="show-delete-card-modal-btn" class="btn btn-danger">Eliminar</button>
-                         <button id="show-review-learned-modal-btn" class="btn btn-secondary">Ver Aprendidas</button>
-                    </div>
-                </section>
-            </section> <!-- Fin de left-column -->
-
-            <!-- SEO: Cambiado div por section para semántica -->
-            <section class="right-column">
-                 <h2 class="column-title">Panel de Progreso</h2>
-                 <section id="tree-section" class="text-center flex flex-col flex-grow tree-section-container" aria-label="Progreso del Árbol de Palabras"> <!-- SEO: aria-label -->
-                    <h2 class="section-title text-[var(--duo-green)]">Tu Árbol de Palabras</h2>
-                    <div id="tree-display" class="tree-display">
-                        <!-- El GIF del árbol se inserta aquí -->
-                    </div>
-                    <p id="tree-level-text">Nivel: Semilla</p>
-                    <div class="mt-2 button-group">
-                        <button id="use-fertilizer-btn" class="btn btn-secondary w-full sm:w-auto">Usar Fertilizante</button>
-                    </div>
-                </section>
-
-                <section class="bottom-section" aria-label="Gestión de progreso general"> <!-- SEO: aria-label -->
-                    <h2 class="section-title text-[var(--duo-blue)]">Progreso</h2>
-                    <div class="button-group">
-                         <button id="export-progress-btn" class="btn btn-tertiary">Exportar Progreso</button>
-                         <button id="import-progress-btn" class="btn btn-tertiary">Importar Progreso</button>
-                         <button id="download-words-btn" class="btn btn-tertiary">Descargar Palabras (TXT)</button>
+                         <button id="export-progress-btn" class="btn btn-tertiary">Exportar</button>
+                         <button id="import-progress-btn" class="btn btn-tertiary">Importar</button>
+                         <button id="download-words-btn" class="btn btn-tertiary">Descargar Palabras</button>
                          <input type="file" id="import-progress-input" accept=".json, .enc">
                     </div>
                     <div id="import-export-feedback" class="feedback text-center mt-1.5"></div>
                 </section>
-            </section> <!-- Fin de right-column -->
-        </div> <!-- Fin de main-content-area -->
+            </aside>
+
+            <div class="content-wrapper-main">
+                <section class="study-panel">
+                    <h2 class="column-title">Panel de Estudio</h2>
+                    <section id="flashcard-section" aria-labelledby="flashcard-title">
+                        <div class="flashcard">
+                            <p id="question-text"></p>
+                        </div>
+                        <input type="text" id="answer-input" class="input-field mx-auto block hidden" placeholder="Escribe la traducción...">
+                        <div id="multiple-choice-options" class="mt-3 space-y-2 w-full max-w-sm mx-auto"></div>
+                        <div id="feedback-text" class="feedback text-center"></div>
+                        <div class="flex justify-center space-x-2 mt-1.5 button-group">
+                            <button id="check-answer-btn" class="btn btn-primary hidden">Revisar</button>
+                            <button id="learned-btn" class="btn btn-learned hidden">¡Lo sé!</button>
+                            <button id="next-card-btn" class="btn btn-secondary hidden">Siguiente</button>
+                        </div>
+                    </section>
+                                    <section class="sidebar-section" aria-label="Gestión de palabras">
+                    <h3 class="section-title text-[var(--duo-blue)]">Gestionar Palabras</h3>
+                    <div class="button-group">
+                         <button id="show-add-card-modal-btn" class="btn btn-primary ">Añadir</button>
+                         <button id="show-delete-card-modal-btn" class="btn btn-danger">Eliminar</button>
+                         <button id="show-review-learned-modal-btn" class="btn btn-secondary">Ver Aprendidas</button>
+                    </div>
+                </section>
+                </section>
+
+                <section class="tree-panel">
+                     <h2 class="column-title">Tu Árbol de Palabras</h2>
+                     <section id="tree-section" class="text-center flex flex-col flex-grow tree-section-container" aria-label="Progreso del Árbol de Palabras">
+                        <div id="tree-display" class="tree-display"></div>
+                        <p id="tree-level-text">Nivel: Semilla</p>
+                        <div class="mt-2 button-group">
+                            <button id="use-fertilizer-btn" class="btn btn-secondary w-full sm:w-auto">Usar Fertilizante</button>
+                        </div>
+                        <div class="stats-grid tree-panel-stats mt-3" aria-label="Estadísticas de producción del árbol">
+                            <div class="stat-item">
+                                <h3>Producción</h3>
+                                <p id="apples-per-day" class="text-xs sm:text-sm">0 / día</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>Próximas 🍎</h3>
+                                <p id="apple-countdown" class="text-xs sm:text-sm">--:--:--</p>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </div>
+        </div>
 
         <button id="scroll-left-btn" class="scroll-arrow left hidden" aria-label="Desplazar a la izquierda">«</button>
         <button id="scroll-right-btn" class="scroll-arrow right hidden" aria-label="Desplazar a la derecha">»</button>
+    </main>
 
-    </main> <!-- Fin de app-wrapper -->
-
-    <!-- Modales -->
+    <!-- Modales (sin cambios en su HTML interno) -->
     <div id="add-card-modal" class="modal hidden" role="dialog" aria-labelledby="addCardModalTitle" aria-modal="true">
         <div class="modal-content">
             <h3 id="addCardModalTitle">Nueva Palabra</h3>
@@ -718,22 +838,22 @@
         const learnedBtn = document.getElementById('learned-btn');
         const nextCardBtn = document.getElementById('next-card-btn');
         const feedbackTextEl = document.getElementById('feedback-text');
-        const scoreEl = document.getElementById('score');
-        const fertilizerCountEl = document.getElementById('fertilizer-count');
+        const scoreEl = document.getElementById('score'); 
+        const fertilizerCountEl = document.getElementById('fertilizer-count'); 
+        const applesCountEl = document.getElementById('apples-count'); 
         const treeDisplayEl = document.getElementById('tree-display');
         const treeLevelTextEl = document.getElementById('tree-level-text');
         const useFertilizerBtn = document.getElementById('use-fertilizer-btn');
-        const applesCountEl = document.getElementById('apples-count');
-        const applesPerDayEl = document.getElementById('apples-per-day');
-        const appleCountdownEl = document.getElementById('apple-countdown');
-        const showAddCardModalBtn = document.getElementById('show-add-card-modal-btn');
+        const applesPerDayEl = document.getElementById('apples-per-day'); 
+        const appleCountdownEl = document.getElementById('apple-countdown'); 
+        const showAddCardModalBtn = document.getElementById('show-add-card-modal-btn'); 
         const addCardModal = document.getElementById('add-card-modal');
         const newQuestionInput = document.getElementById('new-question');
         const newAnswerInput = document.getElementById('new-answer');
         const saveCardBtn = document.getElementById('save-card-btn');
         const cancelAddCardBtn = document.getElementById('cancel-add-card-btn');
         const addCardFeedbackEl = document.getElementById('add-card-feedback');
-        const showDeleteCardModalBtn = document.getElementById('show-delete-card-modal-btn');
+        const showDeleteCardModalBtn = document.getElementById('show-delete-card-modal-btn'); 
         const deleteCardModal = document.getElementById('delete-card-modal');
         const deleteCardListContainerEl = document.getElementById('delete-card-list-container');
         const noCardsToDeleteMsgEl = document.getElementById('no-cards-to-delete-msg');
@@ -746,7 +866,7 @@
         const noLearnedCardsMsgEl = document.getElementById('no-learned-cards-msg');
         const closeReviewLearnedBtn = document.getElementById('close-review-learned-btn');
         const reviewModalFeedbackEl = document.getElementById('review-modal-feedback');
-        const openShopBtn = document.getElementById('open-shop-btn');
+        const openShopBtn = document.getElementById('open-shop-btn'); 
         const shopModal = document.getElementById('shop-modal');
         const closeShopBtn = document.getElementById('close-shop-btn');
         const buyFertilizerShopBtn = document.getElementById('buy-fertilizer-shop-btn');
@@ -756,19 +876,19 @@
         const appleShopCostDisplayEl = document.getElementById('apple-shop-cost-display');
         const shopDecksContainerEl = document.getElementById('shop-decks-container');
         const loadingDecksMsgEl = document.getElementById('loading-decks-msg');
-        const exportProgressBtn = document.getElementById('export-progress-btn');
-        const importProgressBtn = document.getElementById('import-progress-btn');
-        const importProgressInput = document.getElementById('import-progress-input');
-        const importExportFeedbackEl = document.getElementById('import-export-feedback');
-        const showReviewLearnedModalBtn = document.getElementById('show-review-learned-modal-btn');
-        const downloadWordsBtn = document.getElementById('download-words-btn');
+        const exportProgressBtn = document.getElementById('export-progress-btn'); 
+        const importProgressBtn = document.getElementById('import-progress-btn'); 
+        const importProgressInput = document.getElementById('import-progress-input'); 
+        const importExportFeedbackEl = document.getElementById('import-export-feedback'); 
+        const showReviewLearnedModalBtn = document.getElementById('show-review-learned-modal-btn'); 
+        const downloadWordsBtn = document.getElementById('download-words-btn'); 
         const scrollLeftBtn = document.getElementById('scroll-left-btn');
         const scrollRightBtn = document.getElementById('scroll-right-btn');
         const mainContentAreaEl = document.querySelector('.main-content-area');
         const correctSound = document.getElementById('correct-sound');
         const incorrectSound = document.getElementById('incorrect-sound');
 
-
+        // --- Funciones Crypto ---
         async function initCryptoKey() {
             try {
                 const keyMaterial = await window.crypto.subtle.importKey(
@@ -821,6 +941,7 @@
             }
         }
 
+        // --- Funciones de Import/Export ---
         async function exportProgress() {
             clearFeedback(importExportFeedbackEl);
             const gameData = {
@@ -944,6 +1065,8 @@
             showTemporaryFeedback(importExportFeedbackEl, "Archivo de palabras (TXT) descargado.", "correct", 3000);
         }
 
+
+        // --- Lógica del Juego ---
         function generateAndDisplayOptions() {
             multipleChoiceOptionsEl.innerHTML = '';
             const correctAnswer = flashcards[currentCardIndex].answer;
@@ -1075,10 +1198,12 @@
             }
         }
 
+
         function markAsLearned() {
             if (flashcards.length === 0) return;
             const cardToLearn = flashcards[currentCardIndex];
             let feedbackMessage = "";
+
             if (learnedFlashcards.findIndex(card => card.question.toLowerCase() === cardToLearn.question.toLowerCase()) === -1) {
                 learnedFlashcards.push(cardToLearn);
                 checkHourlyPointLimit();
@@ -1093,7 +1218,7 @@
                         actualPointsAdded = MAX_POINTS_PER_HOUR - pointsThisHour;
                         feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. +${actualPointsAdded} pts! (Límite horario alcanzado)`;
                     } else {
-                        feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. +${actualPointsAdded} pts!`;
+                         feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. +${actualPointsAdded} pts!`;
                     }
                     score += actualPointsAdded;
                     pointsThisHour += actualPointsAdded;
@@ -1103,12 +1228,14 @@
             } else {
                 showTemporaryFeedback(feedbackTextEl, `"${cardToLearn.question}" ya estaba marcada como aprendida.`, "info", 2500);
             }
+
             const previousFlashcardCount = flashcards.length;
             flashcards.splice(currentCardIndex, 1);
             saveGameData();
             learnedBtn.classList.add('hidden');
             nextCardBtn.classList.remove('hidden');
             nextCardBtn.focus();
+
             if (flashcards.length === 0) {
                 handleNoCardsState();
             } else {
@@ -1147,7 +1274,6 @@
                 [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
             }
         }
-
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -1169,7 +1295,6 @@
         function updateTreeVisual() {
             const currentLevelData = TREE_LEVEL_DATA[treeLevel];
             const gifPath = `gifs/${currentLevelData.gifName}`;
-            // SEO: Modificación del alt text de la imagen del árbol
             treeDisplayEl.innerHTML = `<img src="${gifPath}" alt="Árbol de progreso del vocabulario: Nivel ${currentLevelData.name}" class="tree-gif mx-auto">`;
             treeLevelTextEl.textContent = `Nivel: ${currentLevelData.name}`;
             applesPerDay = currentLevelData.applesPerDay;
@@ -1212,6 +1337,7 @@
             const now = Date.now();
             const timeElapsedMs = now - lastAppleGenerationTime;
             const generationIntervalMs = ((24 * 60 * 60) / applesPerDay) * 1000;
+
             if (timeElapsedMs >= generationIntervalMs) {
                 const applesToGenerate = Math.floor(timeElapsedMs / generationIntervalMs);
                 applesCount += applesToGenerate;
@@ -1229,6 +1355,7 @@
                 appleCountdownEl.textContent = "--:--:--";
                 return;
             }
+
             function calculateAndDisplayCountdown() {
                 const now = Date.now();
                 const generationIntervalMs = ((24 * 60 * 60) / applesPerDay) * 1000;
@@ -1255,6 +1382,7 @@
                 }
                 if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
 
+
                 const h = String(Math.floor((timeToNextAppleMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
                 const m = String(Math.floor((timeToNextAppleMs / (1000 * 60)) % 60)).padStart(2, '0');
                 const s = String(Math.floor((timeToNextAppleMs / 1000) % 60)).padStart(2, '0');
@@ -1263,6 +1391,7 @@
             calculateAndDisplayCountdown();
             appleCountdownInterval = setInterval(calculateAndDisplayCountdown, 1000);
         }
+
 
         function saveGameData() {
             const gameData = {
@@ -1289,6 +1418,7 @@
                     lastAppleGenerationTime = parsedData.lastAppleGenerationTime || Date.now();
                     pointsThisHour = parsedData.pointsThisHour || 0;
                     lastPointResetTime = parsedData.lastPointResetTime || Date.now();
+
 
                     if (flashcards.length === 0 && DEFAULT_FLASHCARDS.length > 0 && learnedFlashcards.length === 0) {
                         flashcards = DEFAULT_FLASHCARDS.slice();
@@ -1323,9 +1453,9 @@
             updateFertilizerCount();
             updateApplesCount();
             updateTreeVisual();
-            updateApplesPerDay();
         }
 
+        // --- Funciones de Modales y UI ---
         function openModal(modalElement) { modalElement.classList.remove('hidden'); }
         function closeModal(modalElement) { modalElement.classList.add('hidden'); }
 
@@ -1345,6 +1475,7 @@
             clearFeedback(element);
             element.textContent = message;
             element.classList.add(type);
+
             if (duration > 0) {
                 setTimeout(() => {
                     if (element.textContent === message) {
@@ -1418,6 +1549,7 @@
         function populateDeleteCardList() {
             deleteCardListContainerEl.innerHTML = '';
             clearFeedback(deleteFeedbackEl);
+
             const cardsToDeleteFrom = [...flashcards, ...learnedFlashcards];
             const uniqueCardsMap = new Map();
             cardsToDeleteFrom.forEach(card => {
@@ -1724,6 +1856,8 @@
             }
         });
 
+
+        // --- Event Listeners ---
         learnedBtn.addEventListener('click', markAsLearned);
         nextCardBtn.addEventListener('click', () => moveToNextCard());
         useFertilizerBtn.addEventListener('click', growTree);
@@ -1739,21 +1873,39 @@
         selectAllDeleteBtn.addEventListener('click', () => {
             const checkboxes = deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]');
             if (checkboxes.length === 0) return;
+
             const shouldSelectAll = selectAllDeleteBtn.textContent === 'Seleccionar Todas';
             checkboxes.forEach(checkbox => { checkbox.checked = shouldSelectAll; });
             selectAllDeleteBtn.textContent = shouldSelectAll ? 'Deseleccionar Todas' : 'Seleccionar Todas';
         });
 
+        // Scroll arrow logic is now mostly disabled by CSS in mobile view.
+        // Keeping the JS for desktop or if layout changes.
         scrollRightBtn.addEventListener('click', () => {
-            mainContentAreaEl.scrollBy({ left: mainContentAreaEl.offsetWidth, behavior: 'smooth' });
+            if (window.innerWidth <= 1024 && mainContentAreaEl.classList.contains('horizontal-scroll-mobile')) { // Condition for old behavior if needed
+                mainContentAreaEl.scrollBy({ left: mainContentAreaEl.offsetWidth, behavior: 'smooth' });
+            }
         });
         scrollLeftBtn.addEventListener('click', () => {
-            mainContentAreaEl.scrollBy({ left: -mainContentAreaEl.offsetWidth, behavior: 'smooth' });
+             if (window.innerWidth <= 1024 && mainContentAreaEl.classList.contains('horizontal-scroll-mobile')) { // Condition for old behavior if needed
+                mainContentAreaEl.scrollBy({ left: -mainContentAreaEl.offsetWidth, behavior: 'smooth' });
+            }
         });
         mainContentAreaEl.addEventListener('scroll', () => {
-            if (window.innerWidth <= 1024) {
-                scrollLeftBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft < 10);
-                scrollRightBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft + mainContentAreaEl.offsetWidth >= mainContentAreaEl.scrollWidth - 10);
+            // This logic might not be needed if scroll-arrows are always hidden in mobile.
+            // Or, it could be adapted if horizontal scroll is re-introduced in some specific mobile context.
+            if (window.innerWidth <= 1024 && mainContentAreaEl.classList.contains('horizontal-scroll-mobile')) {
+                const hasHorizontalScroll = mainContentAreaEl.scrollWidth > mainContentAreaEl.clientWidth + 5;
+                 if (hasHorizontalScroll) {
+                    scrollLeftBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft < 10);
+                    scrollRightBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft + mainContentAreaEl.offsetWidth >= mainContentAreaEl.scrollWidth - 10);
+                } else {
+                    scrollLeftBtn.classList.add('hidden');
+                    scrollRightBtn.classList.add('hidden');
+                }
+            } else if (window.innerWidth > 1024) { // Ensure hidden on desktop
+                 scrollLeftBtn.classList.add('hidden');
+                 scrollRightBtn.classList.add('hidden');
             }
         });
 
@@ -1769,7 +1921,7 @@
             }
             updateAllStats();
             checkAndGenerateApples();
-            checkScrollArrowsVisibility();
+            // checkScrollArrowsVisibility(); // This might be obsolete or need adjustment
         }
 
 
@@ -1782,22 +1934,25 @@
             }
         }
 
+        // Obsolete with new CSS, but kept for reference or future changes
+        /*
         function checkScrollArrowsVisibility() {
              if (window.innerWidth <= 1024) {
-                scrollLeftBtn.classList.add('hidden');
-                scrollRightBtn.classList.add('hidden');
-                if (mainContentAreaEl.scrollWidth > mainContentAreaEl.clientWidth + 5) {
-                     scrollRightBtn.classList.remove('hidden');
-                }
-                mainContentAreaEl.dispatchEvent(new Event('scroll'));
-            } else {
+                const hasHorizontalScroll = mainContentAreaEl.scrollWidth > mainContentAreaEl.clientWidth + 5;
+                // Logic to show/hide arrows based on scroll position for horizontal scroll
+             } else {
                 scrollLeftBtn.classList.add('hidden');
                 scrollRightBtn.classList.add('hidden');
             }
         }
+        */
 
         window.onload = initGame;
-        window.addEventListener('resize', checkScrollArrowsVisibility);
+        // window.addEventListener('resize', checkScrollArrowsVisibility); // May no longer be needed for arrows
+        window.addEventListener('resize', () => {
+            // Potentially re-evaluate layout aspects on resize if needed,
+            // but CSS media queries should handle most of it.
+        });
 
     </script>
 </body>
