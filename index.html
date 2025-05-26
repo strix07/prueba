@@ -4,19 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <!-- SEO: Título optimizado -->
-    <title>Flashcards de Inglés Fácil: Aprende Vocabulario Interactivo</title>
+    <title>Flashcards de Inglés Fácil: Aprende Vocabulario Interactivo con Mazos y Audio</title>
 
-    <!-- SEO: Meta Descripción -->
-    <meta name="description" content="Mejora tu vocabulario en inglés de forma divertida y efectiva con nuestras flashcards interactivas. Aprende nuevas palabras, gestiona tu progreso y haz crecer tu árbol de conocimiento. ¡Empieza a estudiar inglés fácil hoy!">
+    <meta name="description" content="Mejora tu vocabulario en inglés con flashcards interactivas, mazos personalizables y pronunciación de audio. Aprende nuevas palabras, gestiona tus mazos y progreso, y haz crecer tu árbol de conocimiento. ¡Estudia inglés fácil!">
 
-    <!-- SEO: Meta Palabras Clave (opcional, menos impacto en Google) -->
-    <meta name="keywords" content="flashcards inglés, aprender inglés, vocabulario inglés, inglés fácil, tarjetas de memoria, estudiar inglés, memorizar palabras, app inglés, aplicación para aprender inglés, mejorar inglés">
+    <meta name="keywords" content="flashcards inglés, aprender inglés, vocabulario inglés, pronunciación inglés, audio inglés, mazos de estudio, inglés fácil, tarjetas de memoria, estudiar inglés, memorizar palabras, app inglés, aplicación para aprender inglés, mejorar inglés">
 
-    <!-- SEO: Canonical URL - ¡REEMPLAZA ESTO CON TU URL REAL! -->
     <link rel="canonical" href="https://flashcards-inglesfacil.netlify.app/">
 
-    <!-- SEO: Robots meta tag (generalmente es el default, pero explícito es bueno) -->
     <meta name="robots" content="index, follow">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,16 +25,15 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
 
-    <!-- SEO: Datos Estructurados JSON-LD para WebApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Flashcards de Inglés Fácil",
-      "description": "Aplicación web interactiva con flashcards para aprender y memorizar vocabulario en inglés de forma fácil y divertida, con seguimiento de progreso y elementos de gamificación como un árbol de palabras.",
+      "name": "Flashcards de Inglés Fácil con Mazos y Audio",
+      "description": "Aplicación web interactiva con flashcards, gestión de mazos y pronunciación de audio para aprender y memorizar vocabulario en inglés de forma fácil y divertida, con seguimiento de progreso y elementos de gamificación como un árbol de palabras.",
       "applicationCategory": "EducationalApplication, GameApplication",
       "operatingSystem": "Web",
-      "browserRequirements": "Requires HTML5 support, JavaScript enabled.",
+      "browserRequirements": "Requires HTML5 support, JavaScript enabled, Web Speech API.",
       "url": "https://www.tu-dominio.com/ruta-a-esta-app/", /* ¡REEMPLAZA ESTO! */
       "offers": {
         "@type": "Offer",
@@ -50,7 +44,7 @@
         "@type": "Person", /* O "Person" si eres un desarrollador individual */
         "name": "Nemus" /* ¡REEMPLAZA ESTO! */
       },
-      "keywords": "flashcards, inglés, aprender inglés, vocabulario, estudiar, memorizar, aplicación educativa, juego educativo"
+      "keywords": "flashcards, inglés, aprender inglés, vocabulario, pronunciación, audio, estudiar, memorizar, aplicación educativa, juego educativo, mazos de estudio"
     }
     </script>
 
@@ -161,8 +155,8 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            gap: 1rem; /* Este gap separará study-panel y tree-panel en desktop. En móvil, display:contents lo anula. */
-            overflow: visible; /* Cambiará en móvil si es necesario */
+            gap: 1rem; 
+            overflow: visible; 
         }
 
         .study-panel, .tree-panel {
@@ -173,7 +167,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
-            overflow-y: visible; /* Cambiará en móvil */
+            overflow-y: visible; 
         }
 
         #flashcard-section { margin-bottom: 0.75rem; }
@@ -185,16 +179,40 @@
             margin-bottom: 0.75rem;
             min-height: 100px;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+        .question-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; 
         }
         #question-text {
             font-size: 1.15rem;
             font-weight: 700;
             color: var(--duo-text-dark);
         }
+        #speaker-icon-button { 
+            background: none;
+            border: none;
+            font-size: 1.5rem; 
+            color: var(--duo-blue);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1; 
+        }
+        #speaker-icon-button:hover {
+            color: var(--duo-blue-dark);
+        }
+        #speaker-icon-button:disabled {
+            color: var(--duo-gray-medium);
+            cursor: not-allowed;
+        }
+
+
         .input-field {
             padding: 0.6rem 0.9rem;
             border: 2px solid var(--duo-gray-light);
@@ -252,34 +270,35 @@
             font-size: 0.85rem;
             color: var(--duo-text-light);
         }
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
-        .btn:active {
+        .btn:active:not(:disabled) {
             transform: translateY(0px);
             border-bottom-width: 1px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .btn-primary { background-color: var(--duo-green); border-bottom-color: var(--duo-green-dark); }
-        .btn-primary:hover { background-color: var(--duo-green-light); }
+        .btn-primary:hover:not(:disabled) { background-color: var(--duo-green-light); }
         .btn-secondary { background-color: var(--duo-blue); border-bottom-color: var(--duo-blue-dark); }
-        .btn-secondary:hover { background-color: #4acaff; }
+        .btn-secondary:hover:not(:disabled) { background-color: #4acaff; }
         .btn-tertiary { background-color: var(--duo-orange); border-bottom-color: var(--duo-orange-dark); }
-        .btn-tertiary:hover { background-color: #ffae40; }
+        .btn-tertiary:hover:not(:disabled) { background-color: #ffae40; }
         .btn-danger { background-color: var(--duo-red); border-bottom-color: var(--duo-red-dark); }
-        .btn-danger:hover { background-color: #ff6a6a; }
+        .btn-danger:hover:not(:disabled) { background-color: #ff6a6a; }
         .btn-learned { background-color: var(--duo-yellow); border-bottom-color: #e6b400; color: var(--duo-text-dark); }
-        .btn-learned:hover { background-color: #ffd433; }
-        .btn-disabled {
-            background-color: var(--duo-gray-light);
-            border-bottom-color: var(--duo-gray-medium);
-            color: var(--duo-gray-dark);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 2px 3px rgba(0,0,0,0.05);
+        .btn-learned:hover:not(:disabled) { background-color: #ffd433; }
+        .btn-disabled, .btn:disabled { 
+            background-color: var(--duo-gray-light) !important;
+            border-bottom-color: var(--duo-gray-medium) !important;
+            color: var(--duo-gray-dark) !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.05) !important;
         }
-        .btn-disabled:hover { background-color: var(--duo-gray-light); }
+        .btn-disabled:hover, .btn:disabled:hover { background-color: var(--duo-gray-light) !important; }
+
 
         .option-btn {
             background-color: var(--duo-text-light);
@@ -389,6 +408,8 @@
             background-color: rgba(0,0,0,0.7);
             display: flex; justify-content: center; align-items: center; z-index: 1000;
             backdrop-filter: blur(3px);
+            overflow-y: auto; 
+            padding: 1rem; 
         }
         .modal-content {
             background-color: white;
@@ -398,6 +419,8 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             border-top: 5px solid var(--duo-green);
         }
+        .modal-content.max-w-2xl { max-width: 672px; } 
+
         .modal-content h3 {
             font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--duo-text-dark);
             text-align: center;
@@ -426,8 +449,32 @@
         }
         #import-progress-input { display: none; }
 
+        .deck-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--duo-gray-light);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: var(--duo-gray-lightest);
+        }
+        .deck-list-item.active-deck-item {
+            border-left: 4px solid var(--duo-green);
+            background-color: #e8f5e9; 
+        }
+        .deck-list-item .deck-name {
+            font-weight: 600;
+            color: var(--duo-text-dark);
+            flex-grow: 1;
+        }
+        .deck-list-item .deck-actions .btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            margin-left: 0.25rem;
+        }
        
-        @media (max-width: 1024px) { /* Móvil y Tablet */
+        @media (max-width: 1024px) { 
             
             html, body {
                 height: 100%; 
@@ -435,13 +482,12 @@
             }
 
             .app-header h1 {
-                display: none; /* Esto ocultará el título */
+                display: none; 
             }
             
         .app-wrapper {
-            height: 100dvh; /* O 100vh si dvh causa problemas inesperados */
-            padding: 0.5rem; /* Padding general para los bordes del app-wrapper */
-            /* Eliminamos el padding-bottom específico con env() aquí si main-content-area lo maneja */
+            height: 100dvh; 
+            padding: 0.5rem; 
             box-sizing: border-box;
             overflow: hidden;
             display: flex;
@@ -455,35 +501,30 @@
             overflow-y: auto;
             scroll-snap-type: y mandatory;
             gap: 0;
-            scrollbar-width: none;  /* Firefox */
-            -ms-overflow-style: none;  /* IE 10+ */
-            padding-bottom: env(safe-area-inset-bottom, 0px); /* Ajusta el 0px si necesitas un padding mínimo adicional */
-            box-sizing: border-box; /* Importante para que el padding no aumente el tamaño del scroll */
+            scrollbar-width: none;  
+            -ms-overflow-style: none;  
+            padding-bottom: env(safe-area-inset-bottom, 0px); 
+            box-sizing: border-box; 
         }
-        .main-content-area::-webkit-scrollbar { /* WebKit */
+        .main-content-area::-webkit-scrollbar { 
             display: none;
         }
 
             .content-wrapper-main {
-                /* width: 100%; ya lo tiene */
-                /* flex-direction: column; ya lo tiene (pero display:contents lo hace irrelevante para sus hijos directos) */
-                order: 1; /* Ya lo tiene */
+                order: 1; 
                 display: contents; 
             }
 
-                        .study-panel, .tree-panel, .sidebar {
+            .study-panel, .tree-panel, .sidebar {
                 scroll-snap-align: start;
                 height: 100%;
                 min-height: 100%;
                 margin-bottom: 0 !important;
                 overflow-y: auto;
                 flex-shrink: 0;
-                /* Para Firefox */
                 scrollbar-width: none;
-                /* Para IE (opcional, más antiguo) */
                 -ms-overflow-style: none;
             }
-            /* Para Webkit (Chrome, Safari, Edge) - FUERA de la regla combinada */
             .study-panel::-webkit-scrollbar,
             .tree-panel::-webkit-scrollbar,
             .sidebar::-webkit-scrollbar {
@@ -491,115 +532,84 @@
             }
 
             .sidebar {
-                order: 2; /* Ya lo tiene */
-                /* width: 100%; margin-bottom: 1rem; (originales) -> Sobrescritos por la regla de panel */
+                order: 2; 
             }
 
 
             .scroll-arrow {
                 display: none !important; 
             }
-            /* END: TikTok Scroll Snap Changes */
-
-            /* Estilos originales de la media query que no entran en conflicto o ya están cubiertos: */
             .app-header h1 { font-size: 1.5rem; }
-
-            /* .study-panel, .tree-panel (originales width y margin-bottom) -> Sobrescritos por la regla de panel */
-            
-            /* .content-wrapper-main > section:last-child { margin-bottom: 0; } /* Ya no es necesario */
         }
 
-        @media (min-width: 1025px) { /* Escritorio */
+        @media (min-width: 1025px) { 
             html, body {
-                overflow-x: hidden; /* Mantener para evitar scroll horizontal accidental */
-                height: auto; /* Volver a auto para que el contenido determine la altura */
-                overflow-y: auto; /* Permitir scroll normal en desktop */
+                overflow-x: hidden; 
+                height: auto; 
+                overflow-y: auto; 
             }
-             .app-wrapper { /* Restaurar comportamiento de escritorio */
+             .app-wrapper { 
                 min-height: 100vh;
                 height: auto;
                 padding: 0.75rem;
-                overflow: visible; /* Permitir que el contenido se desborde si es necesario */
+                overflow: visible; 
             }
             .main-content-area {
                 flex-direction: row; 
                 align-items: flex-start;
                 gap: 1.5rem;
-                overflow: visible; /* Restaurar */
-                scroll-snap-type: none; /* Desactivar snap en escritorio */
+                overflow: visible; 
+                scroll-snap-type: none; 
             }
             .sidebar {
                 width: 380px;
                 flex-shrink: 0;
-                margin-bottom: 0; /* Ya lo tenía */
+                margin-bottom: 0; 
                 position: sticky; 
                 top: 1rem; 
                 align-self: flex-start;
                 max-height: calc(100vh - 2rem); 
                 overflow-y: auto; 
-                height: auto; /* Restaurar altura automática */
-                min-height: auto; /* Restaurar */
-                scroll-snap-align: unset; /* Quitar snap */
+                height: auto; 
+                min-height: auto; 
+                scroll-snap-align: unset; 
             }
             .content-wrapper-main {
                 flex-grow: 1;
                 flex-direction: row; 
                 gap: 1.5rem;
-                display: flex; /* Restaurar a flex si display:contents lo afectó */
+                display: flex; 
             }
             .study-panel {
                 flex-basis: 45%; 
                 flex-grow: 1;
-                margin-bottom: 0; /* Ya lo tenía */
-                height: auto; /* Restaurar altura automática */
-                min-height: auto; /* Restaurar */
-                overflow-y: visible; /* Restaurar, el scroll interno es manejado por sidebar si es sticky */
-                scroll-snap-align: unset; /* Quitar snap */
-                flex-shrink: 1; /* Restaurar comportamiento flex normal */
+                margin-bottom: 0; 
+                height: auto; 
+                min-height: auto; 
+                overflow-y: visible; 
+                scroll-snap-align: unset; 
+                flex-shrink: 1; 
             }
             .tree-panel {
                 flex-basis: 55%; 
                 flex-grow: 1;
-                margin-bottom: 0; /* Ya lo tenía */
-                height: auto; /* Restaurar altura automática */
-                min-height: auto; /* Restaurar */
-                overflow-y: visible; /* Restaurar */
-                scroll-snap-align: unset; /* Quitar snap */
-                flex-shrink: 1; /* Restaurar comportamiento flex normal */
+                margin-bottom: 0; 
+                height: auto; 
+                min-height: auto; 
+                overflow-y: visible; 
+                scroll-snap-align: unset; 
+                flex-shrink: 1; 
             }
             .scroll-arrow { display: none !important; } 
         }
+        .sidebar-section .button-group.grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            display: grid;
+        }
 
-        /* Styles for scroll arrows (solo relevantes para móvil si .main-content-area tiene scroll) */
-        /* Se mantienen por si se revierte, pero ahora ocultas en móvil y desktop */
-        .scroll-arrow {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            cursor: pointer;
-            z-index: 100;
-            font-size: 1.5rem;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            justify-content: center;
-            align-items: center;
-            opacity: 0.8;
-            transition: opacity 0.2s ease;
-        }
-        .scroll-arrow:hover {
-            opacity: 1;
-        }
-        .scroll-arrow.left { left: 0.5rem; }
-        .scroll-arrow.right { right: 0.5rem; }
     </style>
 
-     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H1P5HZZZYT"></script>
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H1P5HZZZYT"></script>
     <script>
      window.dataLayer = window.dataLayer || [];
      function gtag(){dataLayer.push(arguments);}
@@ -619,7 +629,7 @@
                 <h2 class="column-title">Panel de Control</h2>
 
                 <section class="sidebar-section" aria-label="Recursos y Tienda">
-                    <h3 class="section-title text-[var(--duo-green)]">Recursos y Tienda</h3>
+                    <h3 class="section-title text-[var(--duo-green)]">Recursos y Acciones</h3>
                     <div class="stats-grid sidebar-stats">
                         <div class="stat-item">
                             <h3>Puntos</h3>
@@ -634,9 +644,8 @@
                             <p id="apples-count">0 🍎</p>
                         </div>
                     </div>
-                    <div class="button-group mt-2">
-                        <button id="open-shop-btn" class="btn btn-tertiary w-full">Tienda</button>
-                    </div>
+                    <div class="button-group mt-2 grid grid-cols-2 gap-2"> <button id="open-shop-btn" class="btn btn-tertiary w-full">Tienda</button>
+                        <button id="open-decks-modal-btn" class="btn btn-secondary w-full">Mazos</button> </div>
                 </section>
 
 
@@ -655,9 +664,16 @@
             <div class="content-wrapper-main">
                 <section class="study-panel">
                     <h2 class="column-title">Panel de Estudio</h2>
+                    <div class="text-center mb-2">
+                        <span class="text-sm font-semibold text-[var(--duo-gray-dark)]">Mazo Activo: </span>
+                        <span id="active-deck-display-study-panel" class="text-sm font-bold text-[var(--duo-blue)]">Ninguno</span>
+                    </div>
                     <section id="flashcard-section" aria-labelledby="flashcard-title">
                         <div class="flashcard">
-                            <p id="question-text"></p>
+                            <div class="question-container">
+                                <p id="question-text"></p>
+                                <button id="speaker-icon-button" class="hidden" title="Escuchar palabra">🔊</button>
+                            </div>
                         </div>
                         <input type="text" id="answer-input" class="input-field mx-auto block hidden" placeholder="Escribe la traducción...">
                         <div id="multiple-choice-options" class="mt-3 space-y-2 w-full max-w-sm mx-auto"></div>
@@ -668,14 +684,14 @@
                             <button id="next-card-btn" class="btn btn-secondary hidden">Siguiente</button>
                         </div>
                     </section>
-                                    <section class="sidebar-section" aria-label="Gestión de palabras">
-                    <h3 class="section-title text-[var(--duo-blue)]">Gestionar Palabras</h3>
-                    <div class="button-group">
-                         <button id="show-add-card-modal-btn" class="btn btn-primary ">Añadir</button>
-                         <button id="show-delete-card-modal-btn" class="btn btn-danger">Eliminar</button>
-                         <button id="show-review-learned-modal-btn" class="btn btn-secondary">Ver Aprendidas</button>
-                    </div>
-                </section>
+                    <section class="sidebar-section" aria-label="Gestión de palabras">
+                        <h3 class="section-title text-[var(--duo-blue)]">Gestionar Palabras (Mazo Activo)</h3>
+                        <div class="button-group">
+                             <button id="show-add-card-modal-btn" class="btn btn-primary ">Añadir</button>
+                             <button id="show-delete-card-modal-btn" class="btn btn-danger">Eliminar</button>
+                             <button id="show-review-learned-modal-btn" class="btn btn-secondary">Ver Aprendidas</button>
+                        </div>
+                    </section>
                 </section>
 
                 <section class="tree-panel">
@@ -705,10 +721,9 @@
         <button id="scroll-right-btn" class="scroll-arrow right hidden" aria-label="Desplazar a la derecha">»</button>
     </main>
 
-    <!-- Modales (sin cambios en su HTML interno) -->
     <div id="add-card-modal" class="modal hidden" role="dialog" aria-labelledby="addCardModalTitle" aria-modal="true">
         <div class="modal-content">
-            <h3 id="addCardModalTitle">Nueva Palabra</h3>
+            <h3 id="addCardModalTitle">Nueva Palabra (al mazo activo)</h3>
             <label for="new-question">Palabra en Inglés:</label>
             <input type="text" id="new-question" class="input-field w-full" placeholder="Ej: Hello">
             <label for="new-answer">Traducción al Español:</label>
@@ -723,12 +738,12 @@
 
     <div id="delete-card-modal" class="modal hidden" role="dialog" aria-labelledby="deleteCardModalTitle" aria-modal="true">
         <div class="modal-content">
-            <h3 id="deleteCardModalTitle">Eliminar Palabra</h3>
+            <h3 id="deleteCardModalTitle">Eliminar Palabra (del mazo activo)</h3>
             <div class="flex justify-end mb-1">
                  <button id="select-all-delete-btn" class="btn btn-secondary btn-sm !py-1 !px-2 !text-xs hidden">Seleccionar Todas</button>
             </div>
             <div id="delete-card-list-container" class="my-2 max-h-48 overflow-y-auto p-2 border border-[var(--duo-gray-light)] rounded-md">
-                <p id="no-cards-to-delete-msg" class="text-[var(--duo-gray-dark)] text-sm hidden">No hay palabras para eliminar.</p>
+                <p id="no-cards-to-delete-msg" class="text-[var(--duo-gray-dark)] text-sm hidden">No hay palabras para eliminar en el mazo activo.</p>
             </div>
             <div id="delete-feedback" class="feedback text-center"></div>
             <div class="flex justify-end space-x-2 mt-3">
@@ -740,7 +755,7 @@
 
     <div id="review-learned-modal" class="modal hidden" role="dialog" aria-labelledby="reviewLearnedModalTitle" aria-modal="true">
         <div class="modal-content">
-            <h3 id="reviewLearnedModalTitle">Palabras Aprendidas</h3>
+            <h3 id="reviewLearnedModalTitle">Palabras Aprendidas (Global)</h3>
             <div id="review-learned-list-container" class="my-2 max-h-52 overflow-y-auto p-2 border border-[var(--duo-gray-light)] rounded-md">
                  <p id="no-learned-cards-msg" class="text-[var(--duo-gray-dark)] text-sm hidden">Aún no has marcado ninguna palabra como aprendida.</p>
             </div>
@@ -774,7 +789,7 @@
                         <button id="buy-apple-shop-btn" class="btn btn-primary btn-sm">Comprar</button>
                     </div>
                 </div>
-                <h4 class="text-md font-semibold text-[var(--duo-text-dark)] pt-3 mt-3 border-t border-[var(--duo-gray-light)]">Mazos de Palabras</h4>
+                <h4 class="text-md font-semibold text-[var(--duo-text-dark)] pt-3 mt-3 border-t border-[var(--duo-gray-light)]">Mazos de Palabras (Tienda)</h4>
                 <div id="shop-decks-container" class="space-y-2">
                     <p id="loading-decks-msg" class="text-sm text-center text-[var(--duo-gray-dark)]">Cargando mazos disponibles...</p>
                 </div>
@@ -785,13 +800,54 @@
         </div>
     </div>
 
+    <div id="decks-modal" class="modal hidden" role="dialog" aria-labelledby="decksModalTitle" aria-modal="true">
+        <div class="modal-content max-w-2xl"> <h3 id="decksModalTitle" class="text-lg font-bold">Mis Mazos</h3>
+            
+            <div class="my-4 flex flex-wrap gap-2">
+                <button id="open-add-new-deck-modal-btn" class="btn btn-primary btn-sm">Crear Nuevo Mazo</button>
+                <button id="select-main-deck-btn" class="btn btn-secondary btn-sm">Estudiar Mazo Principal (Todas)</button>
+            </div>
+
+            <p class="text-sm text-gray-600 mb-1">Mazo activo para estudiar: 
+                <strong id="active-deck-name-modal-display" class="text-[var(--duo-blue)]">Ninguno</strong>
+            </p>
+
+            <div id="decks-list-container" class="my-3 max-h-72 overflow-y-auto p-2 border border-[var(--duo-gray-light)] rounded-md bg-white">
+                <p id="no-user-decks-msg" class="text-[var(--duo-gray-dark)] text-sm p-2">No tienes mazos creados. ¡Crea uno para empezar!</p>
+            </div>
+
+            <div id="deck-management-feedback" class="feedback text-center mt-2"></div>
+
+            <div class="flex justify-end space-x-2 mt-6">
+                <button id="close-decks-modal-btn" class="btn bg-slate-300 hover:bg-slate-400 text-slate-800 btn-sm">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-edit-deck-name-modal" class="modal hidden" role="dialog" aria-labelledby="addEditDeckNameModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <h3 id="addEditDeckNameModalTitle">Crear Nuevo Mazo</h3>
+            <label for="deck-name-input">Nombre del Mazo:</label>
+            <input type="text" id="deck-name-input" class="input-field w-full" placeholder="Ej: Verbos Comunes">
+            <input type="hidden" id="editing-deck-id-input"> 
+            <div id="add-edit-deck-name-feedback" class="feedback text-center"></div>
+            <div class="flex justify-end space-x-2 mt-3">
+                <button id="save-deck-name-btn" class="btn btn-primary btn-sm">Guardar</button>
+                <button id="cancel-add-edit-deck-name-btn" class="btn bg-slate-300 hover:bg-slate-400 text-slate-800 btn-sm">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
     <audio id="correct-sound" src="sounds/correct-sound.mp3" preload="auto"></audio>
     <audio id="incorrect-sound" src="sounds/incorrect-sound.mp3" preload="auto"></audio>
 
     <script>
-        // --- Variables del Juego ---
-        let flashcards = [];
-        let learnedFlashcards = [];
+        // --- Game State Variables ---
+        let userDecks = []; 
+        let activeDeckId = null; 
+        let currentStudyCards = []; 
+        let learnedFlashcards = []; 
         let currentCardIndex = 0;
         let score = 0;
         let fertilizerCount = 0;
@@ -800,21 +856,21 @@
         let applesPerDay = 0;
         let lastAppleGenerationTime = Date.now();
         let appleCountdownInterval = null;
-        let shopDecksData = {};
+        let shopDecksData = {}; 
         let pointsThisHour = 0;
         let lastPointResetTime = Date.now();
 
-
-        // --- Constantes del Juego ---
+        // --- Game Constants ---
         const POINTS_PER_CORRECT_ANSWER = 10;
-        const POINTS_FOR_LEARNED_WORD = 20;
-        const DEFAULT_FLASHCARDS = [
+        const POINTS_FOR_LEARNED_WORD = 20; 
+        const DEFAULT_FLASHCARDS_DATA = [ 
             { question: "Hello", answer: "Hola" }, { question: "Goodbye", answer: "Adiós" },
             { question: "Thank you", answer: "Gracias" }, { question: "Please", answer: "Por favor" },
             { question: "Yes", answer: "Sí" }, { question: "No", answer: "No" },
             { question: "Friend", answer: "Amigo" }, { question: "Love", answer: "Amor" }
         ];
-        const CHECK_APPLES_INTERVAL = 60 * 1000;
+        const MAIN_DECK_ID = '__main_all_decks__'; 
+        const CHECK_APPLES_INTERVAL = 60 * 1000; 
         const FERTILIZER_SHOP_COST = 50;
         const APPLE_SHOP_COST = 500;
         const TREE_LEVEL_DATA = [
@@ -826,8 +882,7 @@
             { name: 'Árbol Divino',   gifName: 'gif_6.gif', fertilizerToNext: 160, applesPerDay: 8 }
         ];
         const MAX_TREE_LEVEL_INDEX = TREE_LEVEL_DATA.length - 1;
-
-       const SHOP_DECK_DEFINITIONS = [
+        const SHOP_DECK_DEFINITIONS = [
             { id: "basic_verbs_pack", fileName: "decks/deck_basic_verbs.json" },
             { id: "birds_pack", fileName: "decks/birds.json" },
             { id: "body_parts_pack", fileName: "decks/body.json" },
@@ -836,18 +891,19 @@
             { id: "land_animals_pack", fileName: "decks/land_animals.json" },
             { id: "marine_animals_pack", fileName: "decks/marine_animals.json" }
         ];
-
-        const ENCRYPTION_KEY_STRING = "miClaveSuperSecreta1234567890!";
+        const ENCRYPTION_KEY_STRING = "miClaveSuperSecreta1234567890!"; 
         let cryptoKey;
-        const MIN_CARDS_FOR_POINTS = 5;
+        const MIN_CARDS_FOR_POINTS = 5; 
+        const MIN_CARDS_FOR_MULTIPLE_CHOICE = 3; 
         const MAX_POINTS_PER_HOUR = 500;
         const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 
-        // --- Elementos del DOM ---
+
+        // --- DOM Elements ---
         const questionTextEl = document.getElementById('question-text');
-        const answerInputEl = document.getElementById('answer-input');
+        const answerInputEl = document.getElementById('answer-input'); 
         const multipleChoiceOptionsEl = document.getElementById('multiple-choice-options');
-        const checkAnswerBtn = document.getElementById('check-answer-btn');
+        const checkAnswerBtn = document.getElementById('check-answer-btn'); 
         const learnedBtn = document.getElementById('learned-btn');
         const nextCardBtn = document.getElementById('next-card-btn');
         const feedbackTextEl = document.getElementById('feedback-text');
@@ -859,6 +915,8 @@
         const useFertilizerBtn = document.getElementById('use-fertilizer-btn');
         const applesPerDayEl = document.getElementById('apples-per-day'); 
         const appleCountdownEl = document.getElementById('apple-countdown'); 
+        let speakerIconButtonEl = document.getElementById('speaker-icon-button'); // Changed to let
+        
         const showAddCardModalBtn = document.getElementById('show-add-card-modal-btn'); 
         const addCardModal = document.getElementById('add-card-modal');
         const newQuestionInput = document.getElementById('new-question');
@@ -866,6 +924,7 @@
         const saveCardBtn = document.getElementById('save-card-btn');
         const cancelAddCardBtn = document.getElementById('cancel-add-card-btn');
         const addCardFeedbackEl = document.getElementById('add-card-feedback');
+        
         const showDeleteCardModalBtn = document.getElementById('show-delete-card-modal-btn'); 
         const deleteCardModal = document.getElementById('delete-card-modal');
         const deleteCardListContainerEl = document.getElementById('delete-card-list-container');
@@ -874,11 +933,14 @@
         const cancelDeleteCardBtn = document.getElementById('cancel-delete-card-btn');
         const deleteFeedbackEl = document.getElementById('delete-feedback');
         const selectAllDeleteBtn = document.getElementById('select-all-delete-btn');
+
+        const showReviewLearnedModalBtn = document.getElementById('show-review-learned-modal-btn'); 
         const reviewLearnedModal = document.getElementById('review-learned-modal');
         const reviewLearnedListContainerEl = document.getElementById('review-learned-list-container');
         const noLearnedCardsMsgEl = document.getElementById('no-learned-cards-msg');
         const closeReviewLearnedBtn = document.getElementById('close-review-learned-btn');
         const reviewModalFeedbackEl = document.getElementById('review-modal-feedback');
+
         const openShopBtn = document.getElementById('open-shop-btn'); 
         const shopModal = document.getElementById('shop-modal');
         const closeShopBtn = document.getElementById('close-shop-btn');
@@ -889,26 +951,175 @@
         const appleShopCostDisplayEl = document.getElementById('apple-shop-cost-display');
         const shopDecksContainerEl = document.getElementById('shop-decks-container');
         const loadingDecksMsgEl = document.getElementById('loading-decks-msg');
+
         const exportProgressBtn = document.getElementById('export-progress-btn'); 
         const importProgressBtn = document.getElementById('import-progress-btn'); 
         const importProgressInput = document.getElementById('import-progress-input'); 
         const importExportFeedbackEl = document.getElementById('import-export-feedback'); 
-        const showReviewLearnedModalBtn = document.getElementById('show-review-learned-modal-btn'); 
         const downloadWordsBtn = document.getElementById('download-words-btn'); 
-        const scrollLeftBtn = document.getElementById('scroll-left-btn');
-        const scrollRightBtn = document.getElementById('scroll-right-btn');
-        const mainContentAreaEl = document.querySelector('.main-content-area');
+
+        const openDecksModalBtn = document.getElementById('open-decks-modal-btn');
+        const decksModal = document.getElementById('decks-modal');
+        const closeDecksModalBtn = document.getElementById('close-decks-modal-btn');
+        const openAddNewDeckModalBtn = document.getElementById('open-add-new-deck-modal-btn');
+        const selectMainDeckBtn = document.getElementById('select-main-deck-btn');
+        const decksListContainerEl = document.getElementById('decks-list-container');
+        const noUserDecksMsgEl = document.getElementById('no-user-decks-msg');
+        const deckManagementFeedbackEl = document.getElementById('deck-management-feedback');
+        const activeDeckNameModalDisplayEl = document.getElementById('active-deck-name-modal-display');
+        
+        const addEditDeckNameModal = document.getElementById('add-edit-deck-name-modal');
+        const addEditDeckNameModalTitleEl = document.getElementById('addEditDeckNameModalTitle');
+        const deckNameInputEl = document.getElementById('deck-name-input');
+        const editingDeckIdInputEl = document.getElementById('editing-deck-id-input');
+        const saveDeckNameBtn = document.getElementById('save-deck-name-btn');
+        const cancelAddEditDeckNameBtn = document.getElementById('cancel-add-edit-deck-name-btn');
+        const addEditDeckNameFeedbackEl = document.getElementById('add-edit-deck-name-feedback');
+
+        const activeDeckDisplayStudyPanelEl = document.getElementById('active-deck-display-study-panel');
+        
         const correctSound = document.getElementById('correct-sound');
         const incorrectSound = document.getElementById('incorrect-sound');
 
-        // --- Funciones Crypto ---
+        // --- Utility Functions ---
+        function generateUUID() { return crypto.randomUUID(); }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        
+        function openModal(modalElement) { modalElement.classList.remove('hidden'); }
+        function closeModal(modalElement) { modalElement.classList.add('hidden'); }
+
+        function clearFeedback(element) {
+            const baseClass = element.className.split(' ').filter(cls => cls === 'feedback' || cls === 'text-center' || cls.startsWith('mt-') || cls.startsWith('mb-')).join(' ');
+            element.textContent = '';
+            element.className = baseClass;
+        }
+
+        function showTemporaryFeedback(element, message, type = 'info', duration = 3000) {
+            clearFeedback(element);
+            element.textContent = message;
+            element.classList.add(type);
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    if (element.textContent === message) { 
+                        clearFeedback(element);
+                        if (element === feedbackTextEl) updateDefaultFeedbackMessage();
+                    }
+                }, duration);
+            }
+        }
+        
+        // --- Speech Synthesis Function ---
+        let synth = window.speechSynthesis;
+        let voices = []; // Store available voices
+
+        function populateVoices() {
+            if (!synth) return; // Guard against synth not being available
+            voices = synth.getVoices();
+            // console.log("Voices updated, count:", voices.length); // For debugging
+        }
+
+        // Initial population and listen for changes
+        if (synth) {
+            populateVoices(); // Attempt to populate voices immediately
+            if (synth.onvoiceschanged !== undefined) {
+                synth.onvoiceschanged = populateVoices; // Update when the voice list changes
+            }
+        }
+
+        function speakWord(text) {
+            if (!synth) {
+                console.warn("Speech synthesis not supported.");
+                if (speakerIconButtonEl) { 
+                    speakerIconButtonEl.disabled = true;
+                    speakerIconButtonEl.classList.add('hidden');
+                }
+                return;
+            }
+            if (!text) { 
+                console.warn("No text to speak."); 
+                return; 
+            }
+
+            // Ensure voices are loaded if they weren't on initial call to populateVoices
+            if (voices.length === 0) {
+                populateVoices(); // Try one more time
+            }
+            
+            try {
+                synth.cancel(); // Cancel any ongoing speech before starting a new one
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US'; // Specify the language
+                
+                // Attempt to select a preferred English voice
+                const englishVoice = voices.find(voice => voice.lang === 'en-US' && voice.localService) || // Prefer local US English
+                                     voices.find(voice => voice.lang.startsWith('en-') && voice.localService) || // Fallback to any local English
+                                     voices.find(voice => voice.lang === 'en-US') || // Fallback to any US English
+                                     voices.find(voice => voice.lang.startsWith('en-')); // Fallback to any English
+
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                    // console.log("Using voice:", englishVoice.name); // For debugging
+                } else if (voices.length > 0) {
+                    console.warn("No specific English voice found, using browser default for 'en-US'.");
+                } else {
+                    console.warn("Voice list empty or not yet loaded, relying on browser default for 'en-US'.");
+                }
+
+                utterance.onstart = () => {
+                    if (speakerIconButtonEl) speakerIconButtonEl.disabled = true; // Disable button while speaking
+                };
+
+                utterance.onend = () => {
+                    if (speakerIconButtonEl && currentStudyCards.length > 0) { // Re-enable if there are cards
+                         speakerIconButtonEl.disabled = false;
+                    }
+                };
+
+                utterance.onerror = (event) => {
+                    console.error('SpeechSynthesisUtterance.onerror triggered.');
+                    let errorMsg = "Error de audio: ";
+                    if (event.error) {
+                        console.error('Specific error from event.error:', event.error);
+                        errorMsg += event.error; // Append the specific error message from the event
+                    } else {
+                        errorMsg += "desconocido. Revisa la consola para el objeto de evento completo.";
+                        console.error('Error event object (no event.error property):', event); // Log the full event if no .error
+                    }
+                    showTemporaryFeedback(feedbackTextEl, errorMsg, "incorrect", 4000); // Show more informative error
+                    if (speakerIconButtonEl) {
+                        speakerIconButtonEl.disabled = true; 
+                        // Consider not hiding, so user is aware of the feature but it's currently broken
+                    }
+                };
+                
+                synth.speak(utterance);
+
+            } catch (e) {
+                console.error("Error in speakWord function itself (e.g., synth object issue):", e);
+                showTemporaryFeedback(feedbackTextEl, "Error interno en la función de audio.", "incorrect", 3000);
+                if (speakerIconButtonEl) {
+                    speakerIconButtonEl.disabled = true;
+                }
+            }
+        }
+
+
+        // --- Crypto Functions ---
         async function initCryptoKey() {
             try {
                 const keyMaterial = await window.crypto.subtle.importKey(
                     "raw", new TextEncoder().encode(ENCRYPTION_KEY_STRING.slice(0, 32)),
                     { name: "PBKDF2" }, false, ["deriveKey"]
                 );
-                const salt = new TextEncoder().encode("someFixedSaltValue");
+                const salt = new TextEncoder().encode("someFixedSaltValueForDecksApp"); 
                 cryptoKey = await window.crypto.subtle.deriveKey(
                     { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
                     keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
@@ -953,13 +1164,250 @@
                 showTemporaryFeedback(importExportFeedbackEl, "Error al desencriptar. ¿Archivo o clave incorrectos?", "incorrect", 4000); return null;
             }
         }
+        
+        // --- Data Persistence ---
+        function saveGameData() {
+            const gameData = {
+                userDecks, activeDeckId, learnedFlashcards, 
+                score, fertilizerCount, treeLevel, applesCount, 
+                lastAppleGenerationTime, pointsThisHour, lastPointResetTime 
+            };
+            localStorage.setItem('flashcardGameDataWithDecks', JSON.stringify(gameData));
+        }
 
-        // --- Funciones de Import/Export ---
+        function loadGameData() {
+            const savedData = localStorage.getItem('flashcardGameDataWithDecks');
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    userDecks = parsedData.userDecks || [];
+                    activeDeckId = parsedData.activeDeckId || null;
+                    learnedFlashcards = parsedData.learnedFlashcards || [];
+                    score = parsedData.score || 0;
+                    fertilizerCount = parsedData.fertilizerCount || 0;
+                    treeLevel = parsedData.treeLevel || 0;
+                    applesCount = parsedData.applesCount || 0;
+                    lastAppleGenerationTime = parsedData.lastAppleGenerationTime || Date.now();
+                    pointsThisHour = parsedData.pointsThisHour || 0;
+                    lastPointResetTime = parsedData.lastPointResetTime || Date.now();
+
+                    userDecks.forEach(deck => {
+                        if (!Array.isArray(deck.cards)) deck.cards = [];
+                        deck.cards = deck.cards.filter(c => typeof c.question === 'string' && typeof c.answer === 'string');
+                    });
+                    learnedFlashcards = learnedFlashcards.filter(c => typeof c.question === 'string' && typeof c.answer === 'string');
+
+
+                    if (userDecks.length === 0) { 
+                        const defaultDeck = { 
+                            id: generateUUID(), 
+                            name: "Primer Mazo", 
+                            cards: DEFAULT_FLASHCARDS_DATA.map(c => ({...c})) 
+                        };
+                        userDecks.push(defaultDeck);
+                        activeDeckId = defaultDeck.id;
+                    } else if (!activeDeckId || !userDecks.find(d => d.id === activeDeckId) && activeDeckId !== MAIN_DECK_ID) {
+                        activeDeckId = userDecks.length > 0 ? userDecks[0].id : MAIN_DECK_ID;
+                    }
+                } catch (e) {
+                    console.error("Error parseando datos guardados (con mazos), reseteando a default:", e);
+                    resetToDeckDefaults();
+                }
+            } else {
+                resetToDeckDefaults();
+            }
+            checkHourlyPointLimit();
+            updateCurrentStudyCards(); 
+        }
+
+        function resetToDeckDefaults() {
+            const defaultDeck = { 
+                id: generateUUID(), 
+                name: "Primer Mazo", 
+                cards: DEFAULT_FLASHCARDS_DATA.map(c => ({...c})) 
+            };
+            userDecks = [defaultDeck];
+            activeDeckId = defaultDeck.id;
+            learnedFlashcards = [];
+            currentStudyCards = defaultDeck.cards.slice(); 
+            currentCardIndex = 0;
+            score = 0;
+            fertilizerCount = 0;
+            treeLevel = 0;
+            applesCount = 0;
+            lastAppleGenerationTime = Date.now();
+            pointsThisHour = 0;
+            lastPointResetTime = Date.now();
+        }
+        
+        // --- Deck Management Logic ---
+        function updateCurrentStudyCards() {
+            currentStudyCards = []; 
+            if (activeDeckId === MAIN_DECK_ID) {
+                userDecks.forEach(deck => {
+                    deck.cards.forEach(card => {
+                        currentStudyCards.push({ ...card, originalDeckId: deck.id });
+                    });
+                });
+                if (currentStudyCards.length > 1) shuffleArray(currentStudyCards);
+            } else {
+                const deck = userDecks.find(d => d.id === activeDeckId);
+                if (deck) {
+                    currentStudyCards = deck.cards.slice(); 
+                    if (currentStudyCards.length > 1) shuffleArray(currentStudyCards);
+                }
+            }
+            currentCardIndex = 0; 
+            updateActiveDeckDisplay();
+            updateStudyPanelWordManagementButtons();
+        }
+
+        function getActiveDeckName() {
+            if (activeDeckId === MAIN_DECK_ID) return "Mazo Principal (Todas)";
+            const deck = userDecks.find(d => d.id === activeDeckId);
+            return deck ? deck.name : "Ninguno Seleccionado";
+        }
+
+        function updateActiveDeckDisplay() {
+            const name = getActiveDeckName();
+            activeDeckDisplayStudyPanelEl.textContent = name;
+            activeDeckNameModalDisplayEl.textContent = name;
+        }
+        
+        function populateDecksListInModal() {
+            decksListContainerEl.innerHTML = ''; 
+            if (userDecks.length === 0) {
+                noUserDecksMsgEl.classList.remove('hidden');
+                return;
+            }
+            noUserDecksMsgEl.classList.add('hidden');
+
+            userDecks.forEach(deck => {
+                const item = document.createElement('div');
+                item.className = 'deck-list-item p-3 border rounded-lg mb-2 flex justify-between items-center hover:bg-gray-50 transition-colors';
+                if (deck.id === activeDeckId) {
+                    item.classList.add('active-deck-item', 'border-green-500', 'bg-green-50');
+                }
+
+                item.innerHTML = `
+                    <div class="flex-grow">
+                        <span class="deck-name font-semibold text-gray-700">${deck.name}</span>
+                        <span class="text-xs text-gray-500 ml-2">(${deck.cards.length} palabras)</span>
+                    </div>
+                    <div class="deck-actions space-x-1">
+                        <button class="btn btn-secondary btn-sm select-deck-btn !py-1 !px-2 !text-xs" data-deck-id="${deck.id}">Estudiar</button>
+                        <button class="btn btn-tertiary btn-sm edit-deck-name-btn !py-1 !px-2 !text-xs" data-deck-id="${deck.id}" data-deck-name="${deck.name}">Editar Nombre</button>
+                        <button class="btn btn-danger btn-sm delete-deck-btn !py-1 !px-2 !text-xs" data-deck-id="${deck.id}">Eliminar</button>
+                    </div>
+                `;
+                decksListContainerEl.appendChild(item);
+            });
+
+            decksListContainerEl.querySelectorAll('.select-deck-btn').forEach(btn => 
+                btn.addEventListener('click', (e) => handleSelectDeckForStudy(e.target.dataset.deckId))
+            );
+            decksListContainerEl.querySelectorAll('.edit-deck-name-btn').forEach(btn => 
+                btn.addEventListener('click', (e) => handleOpenEditDeckNameModal(e.target.dataset.deckId, e.target.dataset.deckName))
+            );
+            decksListContainerEl.querySelectorAll('.delete-deck-btn').forEach(btn => 
+                btn.addEventListener('click', (e) => handleDeleteDeck(e.target.dataset.deckId))
+            );
+        }
+
+        function handleOpenAddNewDeckModal() {
+            editingDeckIdInputEl.value = ''; 
+            deckNameInputEl.value = '';
+            addEditDeckNameModalTitleEl.textContent = 'Crear Nuevo Mazo';
+            clearFeedback(addEditDeckNameFeedbackEl);
+            openModal(addEditDeckNameModal);
+            deckNameInputEl.focus();
+        }
+        
+        function handleOpenEditDeckNameModal(deckId, currentName) {
+            editingDeckIdInputEl.value = deckId;
+            deckNameInputEl.value = currentName;
+            addEditDeckNameModalTitleEl.textContent = 'Editar Nombre del Mazo';
+            clearFeedback(addEditDeckNameFeedbackEl);
+            openModal(addEditDeckNameModal);
+            deckNameInputEl.focus();
+        }
+
+        function handleSaveDeckName() {
+            const deckName = deckNameInputEl.value.trim();
+            const editingDeckId = editingDeckIdInputEl.value;
+
+            if (!deckName) {
+                showTemporaryFeedback(addEditDeckNameFeedbackEl, "El nombre del mazo no puede estar vacío.", "incorrect");
+                return;
+            }
+
+            if (editingDeckId) { 
+                const deck = userDecks.find(d => d.id === editingDeckId);
+                if (deck) {
+                    deck.name = deckName;
+                    showTemporaryFeedback(deckManagementFeedbackEl, `Nombre del mazo actualizado a "${deckName}".`, "correct", 2000);
+                }
+            } else { 
+                const newDeck = { id: generateUUID(), name: deckName, cards: [] };
+                userDecks.push(newDeck);
+                showTemporaryFeedback(deckManagementFeedbackEl, `Mazo "${deckName}" creado.`, "correct", 2000);
+            }
+            saveGameData();
+            populateDecksListInModal();
+            updateActiveDeckDisplay(); 
+            closeModal(addEditDeckNameModal);
+        }
+
+        function handleDeleteDeck(deckIdToDelete) {
+            const deck = userDecks.find(d => d.id === deckIdToDelete);
+            if (!deck) return;
+
+            if (!confirm(`¿Estás seguro de que quieres eliminar el mazo "${deck.name}" y todas sus ${deck.cards.length} palabras? Esta acción no se puede deshacer.`)) {
+                return;
+            }
+
+            userDecks = userDecks.filter(d => d.id !== deckIdToDelete);
+            
+            if (activeDeckId === deckIdToDelete) {
+                activeDeckId = userDecks.length > 0 ? userDecks[0].id : MAIN_DECK_ID;
+                updateCurrentStudyCards();
+                displayCard(); 
+            }
+            
+            saveGameData();
+            populateDecksListInModal(); 
+            updateActiveDeckDisplay(); 
+            showTemporaryFeedback(deckManagementFeedbackEl, `Mazo "${deck.name}" eliminado.`, "correct", 2500);
+        }
+
+        function handleSelectDeckForStudy(deckId) {
+            activeDeckId = deckId;
+            updateCurrentStudyCards();
+            displayCard(); 
+            saveGameData();
+            populateDecksListInModal(); 
+            updateActiveDeckDisplay();
+            showTemporaryFeedback(deckManagementFeedbackEl, `Mazo "${getActiveDeckName()}" seleccionado para estudiar.`, "info", 2000);
+            closeModal(decksModal); 
+        }
+
+        function handleSelectMainDeckForStudy() {
+            activeDeckId = MAIN_DECK_ID;
+            updateCurrentStudyCards();
+            displayCard();
+            saveGameData();
+            populateDecksListInModal(); 
+            updateActiveDeckDisplay();
+            showTemporaryFeedback(deckManagementFeedbackEl, `Mazo Principal seleccionado para estudiar.`, "info", 2000);
+            closeModal(decksModal); 
+        }
+        
+        // --- Import/Export Progress ---
         async function exportProgress() {
             clearFeedback(importExportFeedbackEl);
-            const gameData = {
-                flashcards, learnedFlashcards, currentCardIndex, score,
-                fertilizerCount, treeLevel, applesCount, applesPerDay,
+            const gameData = { 
+                userDecks, activeDeckId, learnedFlashcards,
+                score, fertilizerCount, treeLevel, applesCount,
                 lastAppleGenerationTime,
                 pointsThisHour, lastPointResetTime
             };
@@ -974,17 +1422,12 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "flashcards_progress_encrypted.json";
+            a.download = "flashcards_progress_encrypted_v2.json"; 
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             showTemporaryFeedback(importExportFeedbackEl, "Progreso exportado y encriptado.", "correct", 3000);
-        }
-
-        function triggerImport() {
-            clearFeedback(importExportFeedbackEl);
-            importProgressInput.click();
         }
 
         async function handleImportFile(event) {
@@ -1002,30 +1445,39 @@
                         throw new Error("Formato de archivo encriptado inválido.");
                     }
                     const decryptedJson = await decryptData(encryptedPayload.ciphertext, encryptedPayload.iv);
-                    if (!decryptedJson) { return; }
+                    if (!decryptedJson) { return; } 
+                    
                     const importedData = JSON.parse(decryptedJson);
-                    if (typeof importedData.score !== 'number' || !Array.isArray(importedData.flashcards)) {
-                        throw new Error("Datos importados inválidos o corruptos.");
+                    if (typeof importedData.score !== 'number' || !Array.isArray(importedData.userDecks)) {
+                        if (Array.isArray(importedData.flashcards)) { 
+                            userDecks = [{ id: generateUUID(), name: "Mazo Importado", cards: importedData.flashcards || [] }];
+                            activeDeckId = userDecks[0].id;
+                            learnedFlashcards = importedData.learnedFlashcards || [];
+                        } else {
+                            throw new Error("Datos importados inválidos o corruptos (mazos).");
+                        }
+                    } else { 
+                        userDecks = importedData.userDecks || [];
+                        activeDeckId = importedData.activeDeckId || (userDecks.length > 0 ? userDecks[0].id : MAIN_DECK_ID);
+                        learnedFlashcards = importedData.learnedFlashcards || [];
                     }
-                    flashcards = importedData.flashcards || DEFAULT_FLASHCARDS.slice();
-                    learnedFlashcards = importedData.learnedFlashcards || [];
-                    currentCardIndex = importedData.currentCardIndex || 0;
+                    
                     score = importedData.score || 0;
                     fertilizerCount = importedData.fertilizerCount || 0;
                     treeLevel = importedData.treeLevel || 0;
                     applesCount = importedData.applesCount || 0;
                     lastAppleGenerationTime = importedData.lastAppleGenerationTime || Date.now();
                     pointsThisHour = importedData.pointsThisHour || 0;
-                    lastPointResetTime = importedData.lastPointResetTime || Date.now();
+                    lastPointResetTime = parsedData.lastPointResetTime || Date.now();
 
-                    saveGameData();
-                    initGameVisuals();
+                    saveGameData(); 
+                    initGameVisuals(); 
                     showTemporaryFeedback(importExportFeedbackEl, "Progreso importado exitosamente.", "correct", 4000);
                 } catch (error) {
                     console.error("Error importando progreso:", error);
                     showTemporaryFeedback(importExportFeedbackEl, `Error al importar: ${error.message}`, "incorrect", 5000);
                 } finally {
-                    importProgressInput.value = "";
+                    importProgressInput.value = ""; 
                 }
             };
             reader.onerror = () => {
@@ -1033,81 +1485,114 @@
             };
             reader.readAsText(file);
         }
-
-        function formatWordsArrayToTxt(wordsArray) {
-            if (!wordsArray || wordsArray.length === 0) {
-                return "Ninguna por el momento.";
-            }
-            let textParts = [];
-            for (let i = 0; i < wordsArray.length; i++) {
-                const card = wordsArray[i];
-                let currentPart = `${card.question}: ${card.answer}`;
-                if (wordsArray.length === 1) {
-                    currentPart += ".";
-                } else {
-                    if (i === 0) {
-                        currentPart += ".";
-                    } else if (i < wordsArray.length - 1) {
-                        currentPart += ",";
-                    }
-                }
-                textParts.push(currentPart);
-            }
-            return textParts.join(' ');
-        }
-
-        function downloadFlashcardsJson() {
-            clearFeedback(importExportFeedbackEl);
-            if (flashcards.length === 0 && learnedFlashcards.length === 0) {
-                showTemporaryFeedback(importExportFeedbackEl, "No hay palabras para descargar.", "info", 3000);
+        
+        // --- Study Panel Logic (Flashcards) ---
+        function displayCard() {
+            clearFeedback(feedbackTextEl); 
+            if (currentStudyCards.length === 0) {
+                handleNoCardsInActiveDeckState();
                 return;
             }
-            let textContent = "=== Palabras por Aprender ===\r\n";
-            textContent += formatWordsArrayToTxt(flashcards) + "\r\n\r\n";
-            textContent += "=== Palabras Aprendidas ===\r\n";
-            textContent += formatWordsArrayToTxt(learnedFlashcards);
-            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "flashcards_palabras.txt";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showTemporaryFeedback(importExportFeedbackEl, "Archivo de palabras (TXT) descargado.", "correct", 3000);
+            if (currentCardIndex >= currentStudyCards.length || currentCardIndex < 0) {
+                currentCardIndex = 0; 
+            }
+            const englishWord = currentStudyCards[currentCardIndex].question;
+            questionTextEl.textContent = englishWord;
+            answerInputEl.value = ""; 
+            answerInputEl.classList.add('hidden'); 
+            checkAnswerBtn.classList.add('hidden'); 
+            
+            generateAndDisplayOptions(); 
+
+            learnedBtn.classList.add('hidden');
+            nextCardBtn.classList.add('hidden');
+
+            if (speakerIconButtonEl) {
+                if (englishWord && synth) { 
+                    speakerIconButtonEl.classList.remove('hidden');
+                    speakerIconButtonEl.disabled = false;
+                    
+                    // Re-create the button or its listener to ensure it has the correct word
+                    // This is a common pattern to avoid issues with stale closures in event listeners
+                    const newSpeakerButton = speakerIconButtonEl.cloneNode(true);
+                    speakerIconButtonEl.parentNode.replaceChild(newSpeakerButton, speakerIconButtonEl);
+                    speakerIconButtonEl = newSpeakerButton; // Update the global reference
+                    
+                    speakerIconButtonEl.classList.remove('hidden'); // Ensure it's visible
+                    speakerIconButtonEl.disabled = false; // Ensure it's enabled
+                    speakerIconButtonEl.addEventListener('click', () => speakWord(englishWord));
+                    
+                    speakWord(englishWord); 
+                } else {
+                    speakerIconButtonEl.classList.add('hidden');
+                    speakerIconButtonEl.disabled = true;
+                }
+            }
+            
+            updateDefaultFeedbackMessage(); 
+        }
+
+        function updateDefaultFeedbackMessage() {
+            if (currentStudyCards.length === 0) { 
+                return;
+            }
+            const activeDeckIsSpecific = activeDeckId && activeDeckId !== MAIN_DECK_ID;
+            const currentDeckCardCount = activeDeckIsSpecific ? (userDecks.find(d=>d.id === activeDeckId)?.cards.length || 0) : currentStudyCards.length;
+
+            if (activeDeckIsSpecific && currentDeckCardCount < MIN_CARDS_FOR_POINTS) {
+                showTemporaryFeedback(feedbackTextEl, `El mazo activo "${getActiveDeckName()}" tiene ${currentDeckCardCount} palabras. Necesitas al menos ${MIN_CARDS_FOR_POINTS} para ganar puntos.`, "info", 0);
+            } else if (activeDeckIsSpecific && currentDeckCardCount < MIN_CARDS_FOR_MULTIPLE_CHOICE) {
+                 showTemporaryFeedback(feedbackTextEl, `El mazo activo "${getActiveDeckName()}" tiene ${currentDeckCardCount} palabras. Añade más para tener ${MIN_CARDS_FOR_MULTIPLE_CHOICE} opciones de respuesta.`, "info", 0);
+            } else {
+                clearFeedback(feedbackTextEl); 
+            }
         }
 
 
-        // --- Lógica del Juego ---
+        function handleNoCardsInActiveDeckState() {
+            questionTextEl.textContent = `¡No hay palabras en "${getActiveDeckName()}"!`;
+            if (activeDeckId !== MAIN_DECK_ID) {
+                questionTextEl.textContent += " Añade algunas o selecciona otro mazo.";
+            } else {
+                 questionTextEl.textContent = "¡No hay palabras en ningún mazo! Crea mazos y añade palabras.";
+            }
+            multipleChoiceOptionsEl.innerHTML = '';
+            answerInputEl.classList.add('hidden');
+            checkAnswerBtn.classList.add('hidden');
+            learnedBtn.classList.add('hidden');
+            nextCardBtn.classList.add('hidden');
+            if(speakerIconButtonEl) speakerIconButtonEl.classList.add('hidden'); 
+            showTemporaryFeedback(feedbackTextEl, `Usa 'Añadir Palabra' (si un mazo específico está activo) o gestiona tus mazos.`, "info", 0);
+        }
+
         function generateAndDisplayOptions() {
             multipleChoiceOptionsEl.innerHTML = '';
-            const correctAnswer = flashcards[currentCardIndex].answer;
+            if (currentStudyCards.length === 0 || currentCardIndex >= currentStudyCards.length) return;
+
+            const correctAnswer = currentStudyCards[currentCardIndex].answer;
             let options = [correctAnswer];
-            let distractorPool = flashcards
-                .filter((card, index) => index !== currentCardIndex)
-                .map(card => card.answer)
-                .filter(answer => answer.toLowerCase() !== correctAnswer.toLowerCase());
-            distractorPool = [...new Set(distractorPool)];
-            shuffleArray(distractorPool);
-            for (let i = 0; i < Math.min(2, distractorPool.length); i++) {
-                options.push(distractorPool[i]);
-            }
-            if (options.length < 3 && flashcards.length >= 3) {
-                let allAnswers = [...new Set(flashcards.map(card => card.answer))];
-                shuffleArray(allAnswers);
-                for (const ans of allAnswers) {
-                    if (options.length < 3 && !options.includes(ans)) {
-                        options.push(ans);
+            
+            let distractorPool = [];
+            userDecks.forEach(deck => {
+                deck.cards.forEach(card => {
+                    if (card.answer.toLowerCase() !== correctAnswer.toLowerCase()) {
+                        distractorPool.push(card.answer);
                     }
-                }
+                });
+            });
+
+            distractorPool = [...new Set(distractorPool)]; 
+            shuffleArray(distractorPool);
+
+            for (let i = 0; i < Math.min(MIN_CARDS_FOR_MULTIPLE_CHOICE - 1, distractorPool.length); i++) {
+                options.push(distractorPool[i]);
             }
             shuffleArray(options);
             options.forEach(optionText => {
                 const button = document.createElement('button');
                 button.classList.add('btn', 'option-btn');
                 button.textContent = optionText;
-                button.dataset.answer = optionText;
+                button.dataset.answer = optionText; 
                 button.addEventListener('click', handleOptionClick);
                 multipleChoiceOptionsEl.appendChild(button);
             });
@@ -1116,15 +1601,23 @@
         function handleOptionClick(event) {
             const clickedButton = event.target;
             const selectedAnswer = clickedButton.dataset.answer;
-            const correctAnswer = flashcards[currentCardIndex].answer;
+            const cardBeingStudied = currentStudyCards[currentCardIndex];
+            const correctAnswer = cardBeingStudied.answer;
+
             const optionButtons = multipleChoiceOptionsEl.querySelectorAll('.option-btn');
-            optionButtons.forEach(btn => btn.disabled = true);
+            optionButtons.forEach(btn => btn.disabled = true); 
             nextCardBtn.classList.remove('hidden');
+
             if (selectedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
                 clickedButton.classList.add('selected-correct');
-                checkHourlyPointLimit();
-                if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                    showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 Pero necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos. Añade más. (Tienes ${flashcards.length})`, "info", 4000);
+                checkHourlyPointLimit(); 
+
+                const activeDeckIsSpecific = activeDeckId && activeDeckId !== MAIN_DECK_ID;
+                const currentDeckForPointsCheck = activeDeckIsSpecific ? userDecks.find(d=>d.id === activeDeckId) : null;
+                const canEarnPoints = activeDeckIsSpecific ? (currentDeckForPointsCheck && currentDeckForPointsCheck.cards.length >= MIN_CARDS_FOR_POINTS) : true; 
+
+                if (!canEarnPoints && activeDeckIsSpecific) {
+                    showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 Pero el mazo "${getActiveDeckName()}" necesita al menos ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos. (Tiene ${currentDeckForPointsCheck.cards.length})`, "info", 4000);
                 } else if (pointsThisHour >= MAX_POINTS_PER_HOUR) {
                     showTemporaryFeedback(feedbackTextEl, `¡Correcto! 🎉 Has alcanzado el límite de ${MAX_POINTS_PER_HOUR} puntos esta hora. Intenta más tarde.`, "info", 4000);
                 } else {
@@ -1138,13 +1631,10 @@
                     }
                     score += actualPointsAdded;
                     pointsThisHour += actualPointsAdded;
-                    updateScore();
+                    updateScoreDisplay();
                 }
-                learnedBtn.classList.remove('hidden');
-                if (correctSound) {
-                    correctSound.currentTime = 0;
-                    correctSound.play().catch(error => console.error("Error al reproducir sonido correcto:", error));
-                }
+                learnedBtn.classList.remove('hidden'); 
+                if (correctSound) { correctSound.currentTime = 0; correctSound.play().catch(console.error); }
             } else {
                 clickedButton.classList.add('selected-incorrect');
                 optionButtons.forEach(btn => {
@@ -1152,76 +1642,49 @@
                         btn.classList.add('actual-correct');
                     }
                 });
-                const pointsToDeduct = 20;
+                const pointsToDeduct = Math.floor(POINTS_PER_CORRECT_ANSWER / 2); 
                 score -= pointsToDeduct;
-                if (score < 0) { score = 0; }
-                updateScore();
+                if (score < 0) score = 0;
+                updateScoreDisplay();
                 showTemporaryFeedback(feedbackTextEl, `Incorrecto. Respuesta correcta: ${correctAnswer}. Has perdido ${pointsToDeduct} puntos. 📉`, "incorrect", 3500);
-                learnedBtn.classList.add('hidden');
-                if (incorrectSound) {
-                    incorrectSound.currentTime = 0;
-                    incorrectSound.play().catch(error => console.error("Error al reproducir sonido incorrecto:", error));
-                }
+                learnedBtn.classList.add('hidden'); 
+                if (incorrectSound) { incorrectSound.currentTime = 0; incorrectSound.play().catch(console.error); }
             }
             nextCardBtn.focus();
             saveGameData();
         }
 
-        function displayCard() {
-            if (flashcards.length === 0) {
-                handleNoCardsState();
-                return;
-            }
-            if (currentCardIndex >= flashcards.length || currentCardIndex < 0) {
-                currentCardIndex = 0;
-            }
-            questionTextEl.textContent = flashcards[currentCardIndex].question;
-            answerInputEl.value = "";
-            answerInputEl.classList.add('hidden');
-            checkAnswerBtn.classList.add('hidden');
-            generateAndDisplayOptions();
-            clearFeedback(feedbackTextEl);
-            if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                 showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
-            } else if (flashcards.length > 0 && flashcards.length < 3) {
-                showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
-            }
-            learnedBtn.classList.add('hidden');
-            nextCardBtn.classList.add('hidden');
-        }
-
-        function handleNoCardsState() {
-            questionTextEl.textContent = "¡No hay palabras! Añade algunas o compra un mazo para empezar.";
-            answerInputEl.value = "";
-            answerInputEl.disabled = true;
-            answerInputEl.classList.add('hidden');
-            multipleChoiceOptionsEl.innerHTML = '';
-            checkAnswerBtn.classList.add('hidden');
-            learnedBtn.classList.add('hidden');
-            nextCardBtn.classList.add('hidden');
-            showTemporaryFeedback(feedbackTextEl, `Usa 'Añadir Palabra' o visita la Tienda. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
-        }
-
-        function checkHourlyPointLimit() {
-            const now = Date.now();
-            if (now - lastPointResetTime >= ONE_HOUR_IN_MS) {
-                pointsThisHour = 0;
-                lastPointResetTime = now;
-                saveGameData();
-            }
-        }
-
-
         function markAsLearned() {
-            if (flashcards.length === 0) return;
-            const cardToLearn = flashcards[currentCardIndex];
+            if (currentStudyCards.length === 0 || currentCardIndex >= currentStudyCards.length) return;
+
+            const cardToLearn = { ...currentStudyCards[currentCardIndex] }; 
             let feedbackMessage = "";
 
             if (learnedFlashcards.findIndex(card => card.question.toLowerCase() === cardToLearn.question.toLowerCase()) === -1) {
-                learnedFlashcards.push(cardToLearn);
+                
+                learnedFlashcards.push({ question: cardToLearn.question, answer: cardToLearn.answer });
+
+                let originalDeckIdToRemoveFrom = null;
+                if (activeDeckId === MAIN_DECK_ID) {
+                    originalDeckIdToRemoveFrom = cardToLearn.originalDeckId; 
+                } else {
+                    originalDeckIdToRemoveFrom = activeDeckId;
+                }
+
+                if (originalDeckIdToRemoveFrom) {
+                    const deck = userDecks.find(d => d.id === originalDeckIdToRemoveFrom);
+                    if (deck) {
+                        deck.cards = deck.cards.filter(c => c.question.toLowerCase() !== cardToLearn.question.toLowerCase());
+                    }
+                }
+                
                 checkHourlyPointLimit();
-                if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                    feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. Necesitas ${MIN_CARDS_FOR_POINTS} palabras en el mazo principal para ganar puntos por aprender.`;
+                const activeDeckIsSpecific = activeDeckId && activeDeckId !== MAIN_DECK_ID;
+                const currentDeckForPointsCheck = activeDeckIsSpecific ? userDecks.find(d=>d.id === activeDeckId) : null;
+                const canEarnPointsForLearning = activeDeckIsSpecific ? (currentDeckForPointsCheck && currentDeckForPointsCheck.cards.length + 1 >= MIN_CARDS_FOR_POINTS) : true; 
+
+                if (!canEarnPointsForLearning && activeDeckIsSpecific) {
+                     feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. El mazo necesita ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos por aprender.`;
                 } else if (pointsThisHour >= MAX_POINTS_PER_HOUR) {
                     feedbackMessage = `"${cardToLearn.question}" marcada como aprendida. Límite de ${MAX_POINTS_PER_HOUR} puntos/hora alcanzado.`;
                 } else {
@@ -1235,83 +1698,76 @@
                     }
                     score += actualPointsAdded;
                     pointsThisHour += actualPointsAdded;
-                    updateScore();
+                    updateScoreDisplay();
                 }
                 showTemporaryFeedback(feedbackTextEl, feedbackMessage, "info", 3500);
             } else {
                 showTemporaryFeedback(feedbackTextEl, `"${cardToLearn.question}" ya estaba marcada como aprendida.`, "info", 2500);
             }
-
-            const previousFlashcardCount = flashcards.length;
-            flashcards.splice(currentCardIndex, 1);
+            
+            currentStudyCards.splice(currentCardIndex, 1);
+            
             saveGameData();
             learnedBtn.classList.add('hidden');
             nextCardBtn.classList.remove('hidden');
             nextCardBtn.focus();
 
-            if (flashcards.length === 0) {
-                handleNoCardsState();
+            if (currentStudyCards.length === 0) {
+                handleNoCardsInActiveDeckState();
             } else {
-                if (flashcards.length < MIN_CARDS_FOR_POINTS && previousFlashcardCount >= MIN_CARDS_FOR_POINTS) {
-                }
-                if (currentCardIndex >= flashcards.length) {
+                if (currentCardIndex >= currentStudyCards.length) { 
                     currentCardIndex = 0;
-                    shuffleFlashcards();
                 }
-                moveToNextCard(false);
+                displayCard(); 
             }
+            updateStudyPanelWordManagementButtons(); 
         }
 
-        function moveToNextCard(shuffleDeckIfNeeded = true) {
-            if (flashcards.length === 0) {
-                handleNoCardsState();
+
+        function moveToNextCard() { 
+            if (currentStudyCards.length === 0) {
+                handleNoCardsInActiveDeckState();
                 return;
             }
             currentCardIndex++;
-            if (currentCardIndex >= flashcards.length) {
+            if (currentCardIndex >= currentStudyCards.length) {
                 currentCardIndex = 0;
-                if (shuffleDeckIfNeeded && flashcards.length > 1) {
-                    shuffleFlashcards();
-                    if (!feedbackTextEl.textContent || feedbackTextEl.textContent.includes("¡Correcto!") || feedbackTextEl.textContent.includes("Respuesta correcta:")) {
-                         showTemporaryFeedback(feedbackTextEl, "¡Mazo barajado para la siguiente ronda!", "info", 1500);
-                    }
+                updateCurrentStudyCards(); 
+                if (currentStudyCards.length > 0 && (!feedbackTextEl.textContent || feedbackTextEl.textContent.includes("¡Correcto!") || feedbackTextEl.textContent.includes("Respuesta correcta:"))) {
+                    showTemporaryFeedback(feedbackTextEl, "¡Mazo barajado para la siguiente ronda!", "info", 1500);
                 }
             }
             displayCard();
-            saveGameData();
         }
-
-        function shuffleFlashcards() {
-            for (let i = flashcards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
-            }
-        }
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+        
+        function checkHourlyPointLimit() {
+            const now = Date.now();
+            if (now - lastPointResetTime >= ONE_HOUR_IN_MS) {
+                pointsThisHour = 0;
+                lastPointResetTime = now;
+                saveGameData(); 
             }
         }
 
-        function updateScore() { scoreEl.textContent = score; }
-        function updateFertilizerCount() {
+        // --- UI Updates for Stats ---
+        function updateScoreDisplay() { scoreEl.textContent = score; } 
+        function updateFertilizerCountDisplay() { 
             fertilizerCountEl.textContent = fertilizerCount;
             const currentLevelData = TREE_LEVEL_DATA[treeLevel];
-            useFertilizerBtn.disabled = treeLevel >= MAX_TREE_LEVEL_INDEX ||
+            useFertilizerBtn.disabled = treeLevel >= MAX_TREE_LEVEL_INDEX || 
                                        (treeLevel < MAX_TREE_LEVEL_INDEX && fertilizerCount < currentLevelData.fertilizerToNext);
             useFertilizerBtn.classList.toggle('btn-disabled', useFertilizerBtn.disabled);
         }
-        function updateApplesCount() { applesCountEl.textContent = `${applesCount} 🍎`; }
-        function updateApplesPerDay() { applesPerDayEl.textContent = `${applesPerDay} / día`; }
+        function updateApplesCountDisplay() { applesCountEl.textContent = `${applesCount} 🍎`; } 
+        function updateApplesPerDayDisplay() { applesPerDayEl.textContent = `${applesPerDay} / día`; } 
 
         function updateTreeVisual() {
             const currentLevelData = TREE_LEVEL_DATA[treeLevel];
-            const gifPath = `gifs/${currentLevelData.gifName}`;
-            treeDisplayEl.innerHTML = `<img src="${gifPath}" alt="Árbol de progreso del vocabulario: Nivel ${currentLevelData.name}" class="tree-gif mx-auto">`;
+            const gifPath = `gifs/${currentLevelData.gifName}`; 
+            treeDisplayEl.innerHTML = `<img src="${gifPath}" alt="Árbol de progreso: Nivel ${currentLevelData.name}" class="tree-gif mx-auto">`;
             treeLevelTextEl.textContent = `Nivel: ${currentLevelData.name}`;
             applesPerDay = currentLevelData.applesPerDay;
-            updateApplesPerDay();
+            updateApplesPerDayDisplay();
             if (treeLevel >= MAX_TREE_LEVEL_INDEX) {
                 useFertilizerBtn.textContent = "¡Árbol Maximizado!";
                 useFertilizerBtn.disabled = true;
@@ -1332,7 +1788,7 @@
                 fertilizerCount -= requiredFertilizer;
                 treeLevel++;
                 updateTreeVisual();
-                updateFertilizerCount();
+                updateFertilizerCountDisplay();
                 showTemporaryFeedback(feedbackTextEl, `¡Tu árbol creció a ${TREE_LEVEL_DATA[treeLevel].name}!`, "correct", 2500);
                 treeDisplayEl.style.transform = 'scale(1.15)';
                 setTimeout(() => { treeDisplayEl.style.transform = 'scale(1)'; }, 300);
@@ -1341,11 +1797,11 @@
                  showTemporaryFeedback(feedbackTextEl, `Necesitas ${requiredFertilizer - fertilizerCount} más fertilizante.`, "info", 3000);
             }
         }
-
+        
+        // --- Apple Generation ---
         function checkAndGenerateApples() {
             if (applesPerDay <= 0) {
-                updateAppleCountdown();
-                return;
+                updateAppleCountdown(); return;
             }
             const now = Date.now();
             const timeElapsedMs = now - lastAppleGenerationTime;
@@ -1354,8 +1810,8 @@
             if (timeElapsedMs >= generationIntervalMs) {
                 const applesToGenerate = Math.floor(timeElapsedMs / generationIntervalMs);
                 applesCount += applesToGenerate;
-                lastAppleGenerationTime += applesToGenerate * generationIntervalMs;
-                updateApplesCount();
+                lastAppleGenerationTime += applesToGenerate * generationIntervalMs; 
+                updateApplesCountDisplay();
                 showTemporaryFeedback(feedbackTextEl, `¡Cosechaste ${applesToGenerate} manzana(s) 🍎!`, "correct", 2000);
                 saveGameData();
             }
@@ -1365,8 +1821,7 @@
         function updateAppleCountdown() {
             if (appleCountdownInterval) clearInterval(appleCountdownInterval);
             if (applesPerDay <= 0) {
-                appleCountdownEl.textContent = "--:--:--";
-                return;
+                appleCountdownEl.textContent = "--:--:--"; return;
             }
 
             function calculateAndDisplayCountdown() {
@@ -1374,298 +1829,191 @@
                 const generationIntervalMs = ((24 * 60 * 60) / applesPerDay) * 1000;
                 const timeSinceLastApple = now - lastAppleGenerationTime;
 
-                if (timeSinceLastApple >= generationIntervalMs && applesPerDay > 0) {
-                    checkAndGenerateApples();
+                if (timeSinceLastApple >= generationIntervalMs && applesPerDay > 0) { 
+                    checkAndGenerateApples(); 
                     const newTimeSinceLastApple = now - lastAppleGenerationTime;
                     let timeToNextAppleMs = generationIntervalMs - (newTimeSinceLastApple % generationIntervalMs);
-                    if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
-
+                    if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs; 
+                    
                     const h = String(Math.floor((timeToNextAppleMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
                     const m = String(Math.floor((timeToNextAppleMs / (1000 * 60)) % 60)).padStart(2, '0');
                     const s = String(Math.floor((timeToNextAppleMs / 1000) % 60)).padStart(2, '0');
                     appleCountdownEl.textContent = `${h}:${m}:${s}`;
-                    return;
+                    return; 
                 }
-
+                
                 let timeToNextAppleMs = generationIntervalMs - (timeSinceLastApple % generationIntervalMs);
 
-                if (timeToNextAppleMs <= 1000 && timeToNextAppleMs > 0) {
-                     appleCountdownEl.textContent = "¡Ahora!";
-                     return;
+                if (timeToNextAppleMs <= 1000 && timeToNextAppleMs > 0) { 
+                     appleCountdownEl.textContent = "¡Ahora!"; return;
                 }
-                if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
-
+                if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs; 
 
                 const h = String(Math.floor((timeToNextAppleMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
                 const m = String(Math.floor((timeToNextAppleMs / (1000 * 60)) % 60)).padStart(2, '0');
                 const s = String(Math.floor((timeToNextAppleMs / 1000) % 60)).padStart(2, '0');
                 appleCountdownEl.textContent = `${h}:${m}:${s}`;
             }
-            calculateAndDisplayCountdown();
+            calculateAndDisplayCountdown(); 
             appleCountdownInterval = setInterval(calculateAndDisplayCountdown, 1000);
         }
 
+        // --- Word Management in Study Panel ---
+        function updateStudyPanelWordManagementButtons() {
+            const isSpecificDeckActive = activeDeckId && activeDeckId !== MAIN_DECK_ID;
+            showAddCardModalBtn.disabled = !isSpecificDeckActive;
+            showDeleteCardModalBtn.disabled = !isSpecificDeckActive;
+            
+            showAddCardModalBtn.classList.toggle('btn-disabled', !isSpecificDeckActive);
+            showDeleteCardModalBtn.classList.toggle('btn-disabled', !isSpecificDeckActive);
 
-        function saveGameData() {
-            const gameData = {
-                flashcards, learnedFlashcards, currentCardIndex, score,
-                fertilizerCount, treeLevel, applesCount,
-                lastAppleGenerationTime,
-                pointsThisHour, lastPointResetTime
-            };
-            localStorage.setItem('flashcardGameData', JSON.stringify(gameData));
-        }
-
-        function loadGameData() {
-            const savedData = localStorage.getItem('flashcardGameData');
-            if (savedData) {
-                try {
-                    const parsedData = JSON.parse(savedData);
-                    flashcards = parsedData.flashcards || DEFAULT_FLASHCARDS.slice();
-                    learnedFlashcards = parsedData.learnedFlashcards || [];
-                    currentCardIndex = parsedData.currentCardIndex || 0;
-                    score = parsedData.score || 0;
-                    fertilizerCount = parsedData.fertilizerCount || 0;
-                    treeLevel = parsedData.treeLevel || 0;
-                    applesCount = parsedData.applesCount || 0;
-                    lastAppleGenerationTime = parsedData.lastAppleGenerationTime || Date.now();
-                    pointsThisHour = parsedData.pointsThisHour || 0;
-                    lastPointResetTime = parsedData.lastPointResetTime || Date.now();
-
-
-                    if (flashcards.length === 0 && DEFAULT_FLASHCARDS.length > 0 && learnedFlashcards.length === 0) {
-                        flashcards = DEFAULT_FLASHCARDS.slice();
-                        shuffleFlashcards();
-                    }
-                } catch (e) {
-                    console.error("Error parseando datos guardados, reseteando a default:", e);
-                    resetToDefaults();
-                }
+            if (!isSpecificDeckActive) {
+                addCardModal.querySelector('h3').textContent = "Añadir Palabra (Selecciona un mazo específico)";
+                deleteCardModal.querySelector('h3').textContent = "Eliminar Palabra (Selecciona un mazo específico)";
             } else {
-                resetToDefaults();
-            }
-             checkHourlyPointLimit();
-        }
-
-        function resetToDefaults() {
-            flashcards = DEFAULT_FLASHCARDS.slice();
-            shuffleFlashcards();
-            learnedFlashcards = [];
-            currentCardIndex = 0;
-            score = 0;
-            fertilizerCount = 0;
-            treeLevel = 0;
-            applesCount = 0;
-            lastAppleGenerationTime = Date.now();
-            pointsThisHour = 0;
-            lastPointResetTime = Date.now();
-        }
-
-        function updateAllStats() {
-            updateScore();
-            updateFertilizerCount();
-            updateApplesCount();
-            updateTreeVisual();
-        }
-
-        // --- Funciones de Modales y UI ---
-        function openModal(modalElement) { modalElement.classList.remove('hidden'); }
-        function closeModal(modalElement) { modalElement.classList.add('hidden'); }
-
-        function clearFeedback(element, delay = 0) {
-            const baseClass = element.className.split(' ').filter(cls => cls === 'feedback' || cls === 'text-center' || cls.startsWith('mt-') || cls.startsWith('h-')).join(' ');
-            element.textContent = '';
-            element.className = baseClass;
-            if (delay > 0) {
-                setTimeout(() => {
-                    element.textContent = '';
-                    element.className = baseClass;
-                }, delay);
+                addCardModal.querySelector('h3').textContent = `Nueva Palabra (a "${getActiveDeckName()}")`;
+                deleteCardModal.querySelector('h3').textContent = `Eliminar Palabra (de "${getActiveDeckName()}")`;
             }
         }
-
-        function showTemporaryFeedback(element, message, type = 'info', duration = 3000) {
-            clearFeedback(element);
-            element.textContent = message;
-            element.classList.add(type);
-
-            if (duration > 0) {
-                setTimeout(() => {
-                    if (element.textContent === message) {
-                        clearFeedback(element);
-                        if (element === feedbackTextEl) {
-                            if (flashcards.length === 0) {
-                                 showTemporaryFeedback(feedbackTextEl, `¡No hay palabras! Añade algunas o compra un mazo para empezar. Necesitas ${MIN_CARDS_FOR_POINTS} palabras para ganar puntos.`, "info", 0);
-                            } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                                showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
-                            } else if (flashcards.length > 0 && flashcards.length < 3) {
-                                showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
-                            }
-                        }
-                    }
-                }, duration);
-            }
-        }
-
-
+        
         showAddCardModalBtn.addEventListener('click', () => {
+            if (!activeDeckId || activeDeckId === MAIN_DECK_ID) {
+                showTemporaryFeedback(feedbackTextEl, "Selecciona un mazo específico para añadir palabras.", "info", 3000);
+                return;
+            }
             newQuestionInput.value = ''; newAnswerInput.value = '';
             clearFeedback(addCardFeedbackEl);
+            addCardModal.querySelector('h3').textContent = `Nueva Palabra (a "${getActiveDeckName()}")`;
             openModal(addCardModal);
             newQuestionInput.focus();
         });
+
         cancelAddCardBtn.addEventListener('click', () => closeModal(addCardModal));
-        saveCardBtn.addEventListener('click', () => {
+
+        saveCardBtn.addEventListener('click', () => { 
+            if (!activeDeckId || activeDeckId === MAIN_DECK_ID) {
+                showTemporaryFeedback(addCardFeedbackEl, "Error: No hay un mazo específico activo.", "incorrect");
+                return;
+            }
+            const activeDeck = userDecks.find(d => d.id === activeDeckId);
+            if (!activeDeck) {
+                showTemporaryFeedback(addCardFeedbackEl, "Error: Mazo activo no encontrado.", "incorrect");
+                return;
+            }
+
             const newQ = newQuestionInput.value.trim();
             const newA = newAnswerInput.value.trim();
             if (newQ && newA) {
-                if (flashcards.some(c => c.question.toLowerCase() === newQ.toLowerCase()) ||
-                    learnedFlashcards.some(c => c.question.toLowerCase() === newQ.toLowerCase())) {
-                    showTemporaryFeedback(addCardFeedbackEl, "Esa palabra ya existe en tus mazos.", "incorrect", 2500);
+                if (activeDeck.cards.some(c => c.question.toLowerCase() === newQ.toLowerCase())) {
+                    showTemporaryFeedback(addCardFeedbackEl, `La palabra "${newQ}" ya existe en el mazo "${activeDeck.name}".`, "incorrect", 2500);
                     return;
                 }
-                const previousFlashcardCount = flashcards.length;
-                flashcards.push({ question: newQ, answer: newA });
-                shuffleFlashcards();
+                activeDeck.cards.push({ question: newQ, answer: newA });
+                updateCurrentStudyCards(); 
                 saveGameData();
                 showTemporaryFeedback(addCardFeedbackEl, "¡Palabra añadida con éxito!", "correct", 1500);
                 newQuestionInput.value = ''; newAnswerInput.value = '';
                 newQuestionInput.focus();
-
-                const currentlyNoCards = questionTextEl.textContent.startsWith("¡No hay palabras!");
-
-                if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                    clearFeedback(feedbackTextEl);
-                    showTemporaryFeedback(feedbackTextEl, `¡Genial! Ahora tienes ${flashcards.length} palabras. Ya puedes ganar puntos de nuevo.`, "correct", 4000);
-                } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                    showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
-                } else if (flashcards.length > 0 && flashcards.length < 3) {
-                     showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
-                }
-
-
-                if (currentlyNoCards && flashcards.length > 0) {
-                    currentCardIndex = 0;
-                    displayCard();
-                } else if (flashcards.length === 1 && previousFlashcardCount === 0) {
-                    displayCard();
-                } else if (flashcards.length > 0 && multipleChoiceOptionsEl.innerHTML === '') {
+                
+                if (questionTextEl.textContent.startsWith("¡No hay palabras en")) {
                     displayCard();
                 }
-
-
+                updateDefaultFeedbackMessage(); 
+                populateDecksListInModal(); 
             } else {
                 showTemporaryFeedback(addCardFeedbackEl, "Ambos campos son obligatorios.", "incorrect", 2000);
             }
         });
 
-        function populateDeleteCardList() {
+        showDeleteCardModalBtn.addEventListener('click', () => {
+            if (!activeDeckId || activeDeckId === MAIN_DECK_ID) {
+                showTemporaryFeedback(feedbackTextEl, "Selecciona un mazo específico para eliminar palabras.", "info", 3000);
+                return;
+            }
+            deleteCardModal.querySelector('h3').textContent = `Eliminar Palabra (de "${getActiveDeckName()}")`;
+            populateDeleteCardList(); 
+            openModal(deleteCardModal); 
+        });
+        cancelDeleteCardBtn.addEventListener('click', () => closeModal(deleteCardModal));
+        
+        function populateDeleteCardList() { 
             deleteCardListContainerEl.innerHTML = '';
             clearFeedback(deleteFeedbackEl);
+            selectAllDeleteBtn.classList.add('hidden'); 
 
-            const cardsToDeleteFrom = [...flashcards, ...learnedFlashcards];
-            const uniqueCardsMap = new Map();
-            cardsToDeleteFrom.forEach(card => {
-                const key = card.question.toLowerCase();
-                if (!uniqueCardsMap.has(key)) {
-                    uniqueCardsMap.set(key, {
-                        question: card.question,
-                        answer: card.answer,
-                        isLearned: learnedFlashcards.some(lc => lc.question.toLowerCase() === key)
-                    });
-                } else {
-                    if (learnedFlashcards.some(lc => lc.question.toLowerCase() === key)) {
-                        uniqueCardsMap.get(key).isLearned = true;
-                    }
-                }
-            });
-            const displayableCards = Array.from(uniqueCardsMap.values());
-
-
-            if (displayableCards.length === 0) {
+            const activeDeck = userDecks.find(d => d.id === activeDeckId);
+            if (!activeDeck || activeDeck.cards.length === 0) {
+                noCardsToDeleteMsgEl.textContent = `No hay palabras para eliminar en el mazo "${getActiveDeckName()}".`;
                 noCardsToDeleteMsgEl.classList.remove('hidden');
                 confirmDeleteCardBtn.disabled = true;
                 confirmDeleteCardBtn.classList.add('btn-disabled');
-                selectAllDeleteBtn.classList.add('hidden');
                 return;
             }
 
             noCardsToDeleteMsgEl.classList.add('hidden');
             confirmDeleteCardBtn.disabled = false;
             confirmDeleteCardBtn.classList.remove('btn-disabled');
-
-            selectAllDeleteBtn.classList.remove('hidden');
+            if (activeDeck.cards.length > 1) selectAllDeleteBtn.classList.remove('hidden');
             selectAllDeleteBtn.textContent = 'Seleccionar Todas';
 
-            displayableCards.sort((a, b) => a.question.localeCompare(b.question)).forEach((card, index) => {
+            activeDeck.cards.sort((a, b) => a.question.localeCompare(b.question)).forEach((card, index) => {
                 const listItem = document.createElement('div');
                 listItem.className = 'flex items-center p-1.5 hover:bg-gray-50 rounded';
                 listItem.innerHTML = `
                     <input type="checkbox" id="delete-card-${index}" value="${card.question}" class="mr-2 rounded border-gray-300 text-[var(--duo-blue)] focus:ring-[var(--duo-blue)] h-4 w-4">
                     <label for="delete-card-${index}" class="flex-grow text-sm text-[var(--duo-text-dark)] cursor-pointer">
                         ${card.question} - ${card.answer}
-                        ${card.isLearned ? '<span class="text-xs text-[var(--duo-green)] ml-1 font-semibold">(Aprendida)</span>' : ''}
                     </label>`;
                 deleteCardListContainerEl.appendChild(listItem);
             });
         }
-        showDeleteCardModalBtn.addEventListener('click', () => { populateDeleteCardList(); openModal(deleteCardModal); });
-        cancelDeleteCardBtn.addEventListener('click', () => closeModal(deleteCardModal));
 
         confirmDeleteCardBtn.addEventListener('click', () => {
+            const activeDeck = userDecks.find(d => d.id === activeDeckId);
+            if (!activeDeck) {
+                showTemporaryFeedback(deleteFeedbackEl, "Error: Mazo activo no encontrado.", "incorrect");
+                return;
+            }
+
             const checkboxes = deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]:checked');
             if (checkboxes.length === 0) {
                 showTemporaryFeedback(deleteFeedbackEl, "Selecciona al menos una palabra para eliminar.", "incorrect", 2500);
                 return;
             }
             const questionsToDelete = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
-            let deletedCount = 0;
-            const currentQuestionBeforeDelete = flashcards.length > 0 && currentCardIndex < flashcards.length ? flashcards[currentCardIndex].question : null;
-            const previousFlashcardCount = flashcards.length;
-
-            const initialFlashcardsLength = flashcards.length;
-            flashcards = flashcards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
-            deletedCount += (initialFlashcardsLength - flashcards.length);
-
-            const initialLearnedLength = learnedFlashcards.length;
-            learnedFlashcards = learnedFlashcards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
-
-            if (questionsToDelete.length > 0) {
-                saveGameData();
-                showTemporaryFeedback(deleteFeedbackEl, `${questionsToDelete.length} palabra(s) eliminada(s) permanentemente.`, "correct", 2000);
-
-                const deckWasEmpty = previousFlashcardCount === 0;
-
-                if (flashcards.length < MIN_CARDS_FOR_POINTS && previousFlashcardCount >= MIN_CARDS_FOR_POINTS && flashcards.length > 0) {
-                     showTemporaryFeedback(feedbackTextEl, `Atención: Ahora tienes ${flashcards.length} palabras. Necesitas al menos ${MIN_CARDS_FOR_POINTS} para ganar puntos.`, "info", 0);
-                } else if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                    clearFeedback(feedbackTextEl);
-                    showTemporaryFeedback(feedbackTextEl, `¡Ahora tienes ${flashcards.length} palabras y puedes ganar puntos!`, "correct", 3000);
-                } else if (flashcards.length > 0 && flashcards.length < 3) {
-                    showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
+            
+            activeDeck.cards = activeDeck.cards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
+            
+            updateCurrentStudyCards(); 
+            saveGameData();
+            showTemporaryFeedback(deleteFeedbackEl, `${questionsToDelete.length} palabra(s) eliminada(s) de "${activeDeck.name}".`, "correct", 2000);
+            
+            if (currentStudyCards.length > 0) {
+                if (questionsToDelete.includes(questionTextEl.textContent.toLowerCase())) {
+                    currentCardIndex = 0; 
                 }
-
-
-                if (flashcards.length > 0) {
-                    const currentQuestionStillExists = flashcards.some(card => card.question === currentQuestionBeforeDelete);
-                    if (!currentQuestionStillExists || currentCardIndex >= flashcards.length) {
-                        currentCardIndex = 0;
-                        shuffleFlashcards();
-                    }
-                    displayCard();
-                } else {
-                    handleNoCardsState();
-                }
+                displayCard();
             } else {
-                showTemporaryFeedback(deleteFeedbackEl, "No se eliminaron palabras.", "info", 2500);
+                handleNoCardsInActiveDeckState();
             }
-            populateDeleteCardList();
-             if (deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]').length === 0) {
-                 noCardsToDeleteMsgEl.classList.remove('hidden');
-                 confirmDeleteCardBtn.disabled = true; confirmDeleteCardBtn.classList.add('btn-disabled');
-                 selectAllDeleteBtn.classList.add('hidden');
-            }
+            populateDeleteCardList(); 
+            updateDefaultFeedbackMessage();
+            populateDecksListInModal(); 
         });
+
+        selectAllDeleteBtn.addEventListener('click', () => {
+            const checkboxes = deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]');
+            if (checkboxes.length === 0) return;
+            const shouldSelectAll = selectAllDeleteBtn.textContent === 'Seleccionar Todas';
+            checkboxes.forEach(checkbox => { checkbox.checked = shouldSelectAll; });
+            selectAllDeleteBtn.textContent = shouldSelectAll ? 'Deseleccionar Todas' : 'Seleccionar Todas';
+        });
+
+        showReviewLearnedModalBtn.addEventListener('click', () => {
+            populateReviewLearnedList();
+            openModal(reviewLearnedModal);
+        });
+        closeReviewLearnedBtn.addEventListener('click', () => closeModal(reviewLearnedModal));
 
         function populateReviewLearnedList() {
             reviewLearnedListContainerEl.innerHTML = '';
@@ -1685,162 +2033,50 @@
             });
             reviewLearnedListContainerEl.querySelectorAll('.remove-learned-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    const questionToRemove = e.target.dataset.question;
-                    const cardIndexInLearned = learnedFlashcards.findIndex(c => c.question.toLowerCase() === questionToRemove.toLowerCase());
+                    const questionToForget = e.target.dataset.question;
+                    const cardIndexInLearned = learnedFlashcards.findIndex(c => c.question.toLowerCase() === questionToForget.toLowerCase());
+                    
                     if (cardIndexInLearned > -1) {
-                        const removedCard = learnedFlashcards.splice(cardIndexInLearned, 1)[0];
-                        const previousFlashcardCount = flashcards.length;
-                        const deckWasEmpty = previousFlashcardCount === 0;
-
-
-                        if (!flashcards.some(fc => fc.question.toLowerCase() === removedCard.question.toLowerCase())) {
-                            flashcards.push(removedCard);
-                            shuffleFlashcards();
+                        const forgottenCard = learnedFlashcards.splice(cardIndexInLearned, 1)[0];
+                        
+                        let movedToDeckName = null;
+                        if (activeDeckId && activeDeckId !== MAIN_DECK_ID) {
+                            const targetDeck = userDecks.find(d => d.id === activeDeckId);
+                            if (targetDeck && !targetDeck.cards.some(c => c.question.toLowerCase() === forgottenCard.question.toLowerCase())) {
+                                targetDeck.cards.push({ question: forgottenCard.question, answer: forgottenCard.answer });
+                                movedToDeckName = targetDeck.name;
+                            }
+                        } else if (userDecks.length > 0) { 
+                             const targetDeck = userDecks[0];
+                             if (!targetDeck.cards.some(c => c.question.toLowerCase() === forgottenCard.question.toLowerCase())) {
+                                targetDeck.cards.push({ question: forgottenCard.question, answer: forgottenCard.answer });
+                                movedToDeckName = targetDeck.name;
+                            }
                         }
+                        
+                        updateCurrentStudyCards(); 
                         saveGameData();
-                        populateReviewLearnedList();
-                        showTemporaryFeedback(reviewModalFeedbackEl, `"${questionToRemove}" movida de nuevo al mazo principal.`, "info", 2000);
-
-                        if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                             clearFeedback(feedbackTextEl);
-                             showTemporaryFeedback(feedbackTextEl, `¡Bien! "${removedCard.question}" ha vuelto al mazo. Ya puedes ganar puntos de nuevo. (Total: ${flashcards.length})`, "correct", 4000);
-                        } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                            showTemporaryFeedback(feedbackTextEl, `Necesitas al menos ${MIN_CARDS_FOR_POINTS} palabras en el mazo para ganar puntos. Actualmente tienes ${flashcards.length}.`, "info", 0);
-                        } else if (flashcards.length > 0 && flashcards.length < 3) {
-                            showTemporaryFeedback(feedbackTextEl, `Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
+                        populateReviewLearnedList(); 
+                        if (movedToDeckName) {
+                            showTemporaryFeedback(reviewModalFeedbackEl, `"${questionToForget}" movida de nuevo al mazo "${movedToDeckName}".`, "info", 2500);
+                            populateDecksListInModal(); 
+                        } else {
+                             showTemporaryFeedback(reviewModalFeedbackEl, `"${questionToForget}" olvidada.`, "info", 2000);
                         }
-
-
-                        if (deckWasEmpty && flashcards.length > 0) {
-                             currentCardIndex = flashcards.findIndex(c => c.question === removedCard.question);
-                             if (currentCardIndex === -1) currentCardIndex = 0;
-                             displayCard();
-                        } else if (multipleChoiceOptionsEl.innerHTML === '' && flashcards.length > 0) {
-                            displayCard();
+                        if (currentStudyCards.length > 0 && questionTextEl.textContent.startsWith("¡No hay palabras")) {
+                            displayCard(); 
                         }
+                         updateDefaultFeedbackMessage();
                     }
                 });
             });
         }
-        closeReviewLearnedBtn.addEventListener('click', () => closeModal(reviewLearnedModal));
 
-        function updateShopCosts() {
-            fertilizerShopCostDisplayEl.textContent = FERTILIZER_SHOP_COST;
-            appleShopCostDisplayEl.textContent = APPLE_SHOP_COST;
-        }
-
-        async function loadShopDecks() {
-            shopDecksContainerEl.innerHTML = '';
-            loadingDecksMsgEl.classList.remove('hidden');
-            let decksDisplayed = 0;
-
-            for (const deckDef of SHOP_DECK_DEFINITIONS) {
-                try {
-                    const response = await fetch(deckDef.fileName + `?v=${Date.now()}`);
-                    if (!response.ok) {
-                        throw new Error(`No se pudo cargar el mazo: ${deckDef.fileName} (Status: ${response.status})`);
-                    }
-                    const deckData = await response.json();
-                    shopDecksData[deckDef.id] = deckData;
-
-                    const deckItemEl = document.createElement('div');
-                    deckItemEl.className = 'p-2.5 border border-[var(--duo-gray-light)] rounded-lg bg-[var(--duo-gray-lightest)]';
-                    deckItemEl.innerHTML = `
-    <div class="flex justify-between items-center">
-        <div>
-            <h4 class="font-semibold text-sm text-[var(--duo-text-dark)]">${deckData.name}</h4>
-            <p class="text-xs text-[var(--duo-gray-dark)]">Costo: <span class="deck-cost">${deckData.cost}</span> 🍎 </p>
-            <p class="text-xs text-[var(--duo-gray-dark)]">Palabras: ${deckData.cards.length}</p>
-        </div>
-        <button class="btn btn-primary btn-sm buy-deck-btn" data-deck-id="${deckDef.id}">Comprar</button>
-    </div>
-`;
-                    shopDecksContainerEl.appendChild(deckItemEl);
-                    decksDisplayed++;
-                } catch (error) {
-                    console.error(`Error cargando el mazo ${deckDef.fileName}:`, error);
-                    const errorEl = document.createElement('p');
-                    errorEl.className = 'text-xs text-center text-[var(--duo-red)]';
-                    errorEl.textContent = `Error al cargar mazo: ${deckDef.id.replace(/_/g, ' ')}`;
-                    shopDecksContainerEl.appendChild(errorEl);
-                }
-            }
-
-            loadingDecksMsgEl.classList.add('hidden');
-            if (decksDisplayed === 0 && SHOP_DECK_DEFINITIONS.length > 0) {
-                 const noDecksMsg = document.createElement('p');
-                 noDecksMsg.className = 'text-sm text-center text-[var(--duo-gray-dark)]';
-                 noDecksMsg.textContent = 'No se pudieron cargar los mazos.';
-                 shopDecksContainerEl.appendChild(noDecksMsg);
-            } else if (SHOP_DECK_DEFINITIONS.length === 0) {
-                const noDecksMsg = document.createElement('p');
-                 noDecksMsg.className = 'text-sm text-center text-[var(--duo-gray-dark)]';
-                 noDecksMsg.textContent = 'No hay mazos disponibles en este momento.';
-                 shopDecksContainerEl.appendChild(noDecksMsg);
-            }
-
-            shopDecksContainerEl.querySelectorAll('.buy-deck-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const deckId = e.target.dataset.deckId;
-                    handleBuyDeck(deckId);
-                });
-            });
-        }
-
-        function handleBuyDeck(deckId) {
-            const deckData = shopDecksData[deckId];
-            if (!deckData) {
-                showTemporaryFeedback(shopFeedbackEl, "Error: Mazo no encontrado.", "incorrect", 2500);
-                return;
-            }
-
-            if (applesCount >= deckData.cost) {
-                applesCount -= deckData.cost;
-                let newCardsAddedCount = 0;
-                const previousFlashcardCount = flashcards.length;
-                const deckWasEmpty = previousFlashcardCount === 0;
-
-
-                deckData.cards.forEach(cardFromDeck => {
-                    const cardExists = flashcards.some(fc => fc.question.toLowerCase() === cardFromDeck.question.toLowerCase()) ||
-                                       learnedFlashcards.some(lc => lc.question.toLowerCase() === cardFromDeck.question.toLowerCase());
-                    if (!cardExists) {
-                        flashcards.push({ question: cardFromDeck.question, answer: cardFromDeck.answer });
-                        newCardsAddedCount++;
-                    }
-                });
-
-                if (newCardsAddedCount > 0) {
-                    shuffleFlashcards();
-                     if (deckWasEmpty && flashcards.length > 0) {
-                        currentCardIndex = 0;
-                        displayCard();
-                    } else if (multipleChoiceOptionsEl.innerHTML === '' && flashcards.length > 0) {
-                        displayCard();
-                    }
-
-                    if (flashcards.length >= MIN_CARDS_FOR_POINTS && previousFlashcardCount < MIN_CARDS_FOR_POINTS) {
-                         clearFeedback(feedbackTextEl);
-                         showTemporaryFeedback(feedbackTextEl, `¡Mazo comprado! Ahora tienes ${flashcards.length} palabras y puedes ganar puntos.`, "correct", 4000);
-                    } else if (flashcards.length < MIN_CARDS_FOR_POINTS) {
-                        showTemporaryFeedback(feedbackTextEl, `Mazo comprado. Aún necesitas ${MIN_CARDS_FOR_POINTS - flashcards.length} palabras más para ganar puntos (Tienes ${flashcards.length}).`, "info", 0);
-                    } else if (flashcards.length > 0 && flashcards.length < 3) {
-                         showTemporaryFeedback(feedbackTextEl, `Mazo comprado. Añade más palabras para tener 3 opciones de respuesta (tienes ${flashcards.length}).`, "info", 0);
-                    }
-                }
-                updateApplesCount();
-                saveGameData();
-                showTemporaryFeedback(shopFeedbackEl, `¡Mazo "${deckData.name}" comprado! Se añadieron ${newCardsAddedCount} nuevas palabras.`, "correct", 3000);
-            } else {
-                showTemporaryFeedback(shopFeedbackEl, `Manzanas insuficientes para comprar "${deckData.name}". Necesitas ${deckData.cost - applesCount} más.`, "incorrect", 3000);
-            }
-        }
-
-
+        // --- Shop Logic ---
         openShopBtn.addEventListener('click', () => {
             clearFeedback(shopFeedbackEl);
             updateShopCosts();
-            loadShopDecks();
+            loadShopDecks(); 
             openModal(shopModal);
         });
         closeShopBtn.addEventListener('click', () => closeModal(shopModal));
@@ -1848,124 +2084,175 @@
             if (score >= FERTILIZER_SHOP_COST) {
                 score -= FERTILIZER_SHOP_COST;
                 fertilizerCount++;
-                updateScore();
-                updateFertilizerCount();
+                updateScoreDisplay();
+                updateFertilizerCountDisplay();
                 saveGameData();
-                showTemporaryFeedback(shopFeedbackEl, "¡Fertilizante comprado! Úsalo para crecer tu árbol.", "correct", 2000);
+                showTemporaryFeedback(shopFeedbackEl, "¡Fertilizante comprado!", "correct", 2000);
             } else {
-                showTemporaryFeedback(shopFeedbackEl, "Puntos insuficientes para comprar fertilizante.", "incorrect", 2000);
+                showTemporaryFeedback(shopFeedbackEl, "Puntos insuficientes.", "incorrect", 2000);
             }
         });
         buyAppleShopBtn.addEventListener('click', () => {
             if (score >= APPLE_SHOP_COST) {
                 score -= APPLE_SHOP_COST;
                 applesCount++;
-                updateScore();
-                updateApplesCount();
+                updateScoreDisplay();
+                updateApplesCountDisplay();
                 saveGameData();
-                showTemporaryFeedback(shopFeedbackEl, "¡Manzana comprada! 🍎 Deliciosa.", "correct", 2000);
+                showTemporaryFeedback(shopFeedbackEl, "¡Manzana comprada! 🍎", "correct", 2000);
             } else {
-                showTemporaryFeedback(shopFeedbackEl, "Puntos insuficientes para comprar una manzana.", "incorrect", 2000);
+                showTemporaryFeedback(shopFeedbackEl, "Puntos insuficientes.", "incorrect", 2000);
             }
         });
+        function updateShopCosts() {
+            fertilizerShopCostDisplayEl.textContent = FERTILIZER_SHOP_COST;
+            appleShopCostDisplayEl.textContent = APPLE_SHOP_COST;
+        }
+        async function loadShopDecks() {
+            shopDecksContainerEl.innerHTML = '';
+            loadingDecksMsgEl.classList.remove('hidden');
+            let decksDisplayed = 0;
 
+            for (const deckDef of SHOP_DECK_DEFINITIONS) {
+                try {
+                    const response = await fetch(deckDef.fileName + `?v=${Date.now()}`); 
+                    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                    const deckData = await response.json();
+                    shopDecksData[deckDef.id] = deckData; 
 
-        // --- Event Listeners ---
-        learnedBtn.addEventListener('click', markAsLearned);
-        nextCardBtn.addEventListener('click', () => moveToNextCard());
-        useFertilizerBtn.addEventListener('click', growTree);
-        exportProgressBtn.addEventListener('click', exportProgress);
-        importProgressBtn.addEventListener('click', triggerImport);
-        importProgressInput.addEventListener('change', handleImportFile);
-        showReviewLearnedModalBtn.addEventListener('click', () => {
-            populateReviewLearnedList();
-            openModal(reviewLearnedModal);
-        });
-        downloadWordsBtn.addEventListener('click', downloadFlashcardsJson);
-
-        selectAllDeleteBtn.addEventListener('click', () => {
-            const checkboxes = deleteCardListContainerEl.querySelectorAll('input[type="checkbox"]');
-            if (checkboxes.length === 0) return;
-
-            const shouldSelectAll = selectAllDeleteBtn.textContent === 'Seleccionar Todas';
-            checkboxes.forEach(checkbox => { checkbox.checked = shouldSelectAll; });
-            selectAllDeleteBtn.textContent = shouldSelectAll ? 'Deseleccionar Todas' : 'Seleccionar Todas';
-        });
-
-        // Scroll arrow logic is now mostly disabled by CSS in mobile view.
-        // Keeping the JS for desktop or if layout changes.
-        scrollRightBtn.addEventListener('click', () => {
-            if (window.innerWidth <= 1024 && mainContentAreaEl.classList.contains('horizontal-scroll-mobile')) { // Condition for old behavior if needed
-                mainContentAreaEl.scrollBy({ left: mainContentAreaEl.offsetWidth, behavior: 'smooth' });
-            }
-        });
-        scrollLeftBtn.addEventListener('click', () => {
-             if (window.innerWidth <= 1024 && mainContentAreaEl.classList.contains('horizontal-scroll-mobile')) { // Condition for old behavior if needed
-                mainContentAreaEl.scrollBy({ left: -mainContentAreaEl.offsetWidth, behavior: 'smooth' });
-            }
-        });
-        mainContentAreaEl.addEventListener('scroll', () => {
-            // This logic might not be needed if scroll-arrows are always hidden in mobile.
-            // Or, it could be adapted if horizontal scroll is re-introduced in some specific mobile context.
-            if (window.innerWidth <= 1024 && mainContentAreaEl.classList.contains('horizontal-scroll-mobile')) {
-                const hasHorizontalScroll = mainContentAreaEl.scrollWidth > mainContentAreaEl.clientWidth + 5;
-                 if (hasHorizontalScroll) {
-                    scrollLeftBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft < 10);
-                    scrollRightBtn.classList.toggle('hidden', mainContentAreaEl.scrollLeft + mainContentAreaEl.offsetWidth >= mainContentAreaEl.scrollWidth - 10);
-                } else {
-                    scrollLeftBtn.classList.add('hidden');
-                    scrollRightBtn.classList.add('hidden');
+                    const deckItemEl = document.createElement('div');
+                    deckItemEl.className = 'p-2.5 border rounded-lg bg-gray-50';
+                    deckItemEl.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-semibold text-sm">${deckData.name}</h4>
+                                <p class="text-xs text-gray-500">Costo: <span class="deck-cost">${deckData.cost}</span> 🍎 | Palabras: ${deckData.cards.length}</p>
+                            </div>
+                            <button class="btn btn-primary btn-sm buy-deck-btn !py-1 !px-2 !text-xs" data-deck-id="${deckDef.id}">Comprar</button>
+                        </div>`;
+                    shopDecksContainerEl.appendChild(deckItemEl);
+                    decksDisplayed++;
+                } catch (error) {
+                    console.error(`Error cargando mazo de tienda ${deckDef.fileName}:`, error);
                 }
-            } else if (window.innerWidth > 1024) { // Ensure hidden on desktop
-                 scrollLeftBtn.classList.add('hidden');
-                 scrollRightBtn.classList.add('hidden');
             }
-        });
-
-        function initGameVisuals() {
-            answerInputEl.classList.add('hidden');
-            checkAnswerBtn.classList.add('hidden');
-
-            if (flashcards.length > 0) {
-                if (currentCardIndex >= flashcards.length || currentCardIndex < 0) currentCardIndex = 0;
-                displayCard();
-            } else {
-                handleNoCardsState();
-            }
-            updateAllStats();
-            checkAndGenerateApples();
-            // checkScrollArrowsVisibility(); // This might be obsolete or need adjustment
+            loadingDecksMsgEl.classList.add('hidden');
+            if (decksDisplayed === 0 && SHOP_DECK_DEFINITIONS.length > 0) { /* ... error message ... */ }
+            
+            shopDecksContainerEl.querySelectorAll('.buy-deck-btn').forEach(button => {
+                button.addEventListener('click', (e) => handleBuyShopDeck(e.target.dataset.deckId));
+            });
         }
 
+        function handleBuyShopDeck(deckId) {
+            const deckDataFromShop = shopDecksData[deckId];
+            if (!deckDataFromShop) {
+                showTemporaryFeedback(shopFeedbackEl, "Error: Mazo de tienda no encontrado.", "incorrect"); return;
+            }
+            if (applesCount >= deckDataFromShop.cost) {
+                if (userDecks.some(d => d.name.toLowerCase() === deckDataFromShop.name.toLowerCase())) {
+                     showTemporaryFeedback(shopFeedbackEl, `Ya tienes un mazo llamado "${deckDataFromShop.name}". Renombra el existente o este no se añadirá.`, "info", 4000);
+                     return; 
+                }
 
+                applesCount -= deckDataFromShop.cost;
+                const newDeckFromShop = {
+                    id: generateUUID(),
+                    name: deckDataFromShop.name,
+                    cards: deckDataFromShop.cards.map(c => ({...c})) 
+                };
+                userDecks.push(newDeckFromShop);
+                
+                updateApplesCountDisplay();
+                saveGameData();
+                populateDecksListInModal(); 
+                showTemporaryFeedback(shopFeedbackEl, `¡Mazo "${deckDataFromShop.name}" comprado y añadido a tus mazos!`, "correct", 3000);
+            } else {
+                showTemporaryFeedback(shopFeedbackEl, `Manzanas insuficientes.`, "incorrect");
+            }
+        }
+
+        // --- Global Event Listeners & Init ---
+        openDecksModalBtn.addEventListener('click', () => {
+            populateDecksListInModal();
+            updateActiveDeckDisplay(); 
+            clearFeedback(deckManagementFeedbackEl);
+            openModal(decksModal);
+        });
+        closeDecksModalBtn.addEventListener('click', () => closeModal(decksModal));
+        openAddNewDeckModalBtn.addEventListener('click', handleOpenAddNewDeckModal);
+        selectMainDeckBtn.addEventListener('click', handleSelectMainDeckForStudy);
+
+        saveDeckNameBtn.addEventListener('click', handleSaveDeckName);
+        cancelAddEditDeckNameBtn.addEventListener('click', () => closeModal(addEditDeckNameModal));
+
+        learnedBtn.addEventListener('click', markAsLearned);
+        nextCardBtn.addEventListener('click', () => moveToNextCard());
+        
+        useFertilizerBtn.addEventListener('click', growTree);
+        exportProgressBtn.addEventListener('click', exportProgress);
+        importProgressBtn.addEventListener('click', () => importProgressInput.click());
+        importProgressInput.addEventListener('change', handleImportFile);
+        downloadWordsBtn.addEventListener('click', () => {
+            if (currentStudyCards.length === 0) {
+                showTemporaryFeedback(importExportFeedbackEl, "No hay palabras en el mazo activo para descargar.", "info"); return;
+            }
+            let textContent = `=== Palabras del Mazo: ${getActiveDeckName()} ===\r\n`;
+            textContent += currentStudyCards.map(c => `${c.question}: ${c.answer}`).join('\r\n');
+            
+            if (learnedFlashcards.length > 0) {
+                textContent += "\r\n\r\n=== Palabras Aprendidas (Global) ===\r\n";
+                textContent += learnedFlashcards.map(c => `${c.question}: ${c.answer}`).join('\r\n');
+            }
+
+            const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `flashcards_${getActiveDeckName().replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showTemporaryFeedback(importExportFeedbackEl, "Archivo de palabras descargado.", "correct");
+        });
+        
+        function initGameVisuals() {
+            updateCurrentStudyCards(); 
+            displayCard(); 
+            updateAllStatsDisplays(); 
+            checkAndGenerateApples(); 
+            updateStudyPanelWordManagementButtons(); 
+        }
+
+        function updateAllStatsDisplays() {
+            updateScoreDisplay();
+            updateFertilizerCountDisplay();
+            updateApplesCountDisplay();
+            updateTreeVisual(); 
+        }
+        
         async function initGame() {
-            await initCryptoKey();
-            loadGameData();
-            initGameVisuals();
-            if (!window.appleCheckIntervalId) {
+            // Initialize Speech Synthesis variables and listeners first
+            synth = window.speechSynthesis;
+            if (synth) {
+                populateVoices(); // Initial attempt to populate voices
+                if (synth.onvoiceschanged !== undefined) {
+                    synth.onvoiceschanged = populateVoices; // Listen for changes in voice list
+                }
+            } else {
+                 console.warn("Speech synthesis is not supported in this browser.");
+                if(speakerIconButtonEl) speakerIconButtonEl.style.display = 'none';
+            }
+
+            await initCryptoKey(); 
+            loadGameData();       
+            initGameVisuals();    
+            
+            if (!window.appleCheckIntervalId) { 
                  window.appleCheckIntervalId = setInterval(checkAndGenerateApples, CHECK_APPLES_INTERVAL);
             }
         }
 
-        // Obsolete with new CSS, but kept for reference or future changes
-        /*
-        function checkScrollArrowsVisibility() {
-             if (window.innerWidth <= 1024) {
-                const hasHorizontalScroll = mainContentAreaEl.scrollWidth > mainContentAreaEl.clientWidth + 5;
-                // Logic to show/hide arrows based on scroll position for horizontal scroll
-             } else {
-                scrollLeftBtn.classList.add('hidden');
-                scrollRightBtn.classList.add('hidden');
-            }
-        }
-        */
-
         window.onload = initGame;
-        // window.addEventListener('resize', checkScrollArrowsVisibility); // May no longer be needed for arrows
-        window.addEventListener('resize', () => {
-            // Potentially re-evaluate layout aspects on resize if needed,
-            // but CSS media queries should handle most of it.
-        });
 
     </script>
 </body>
