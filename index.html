@@ -742,15 +742,17 @@
                 </section>
 
 
-                <section class="sidebar-section" aria-label="Gestión de progreso general">
-                    <h3 class="section-title text-[var(--duo-blue)]">Progreso General</h3>
-                    <div class="button-group">
-                         <button id="export-progress-btn" class="btn btn-tertiary">Exportar</button>
-                         <button id="import-progress-btn" class="btn btn-tertiary">Importar</button>
-                         <button id="download-words-btn" class="btn btn-tertiary">Descargar Palabras</button>
-                         <input type="file" id="import-progress-input" accept=".json, .enc">
-                    </div>
-                    <div id="import-export-feedback" class="feedback text-center mt-1.5"></div>
+    <div class="p-4 bg-white shadow-md rounded-lg mx-auto max-w-md mt-4">
+    <h3 class="text-lg font-semibold mb-2 text-gray-800">Generar Nuevo Mazo con IA</h3>
+    <input type="text" id="deckTopicInput" placeholder="Tema del mazo (ej: 'animales', 'tecnología')"
+           class="w-full p-2 border border-gray-300 rounded-md mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <input type="number" id="numCardsInput" value="10" min="1" max="50"
+           class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <button id="generateDeckButton"
+            class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        Generar Mazo
+    </button>
+</div>
                 </section>
             </aside>
 
@@ -935,8 +937,9 @@
     <audio id="correct-sound" src="sounds/correct-sound.mp3" preload="auto"></audio>
     <audio id="incorrect-sound" src="sounds/incorrect-sound.mp3" preload="auto"></audio>
 
-    <script>
+    <script type="module">
         // --- Game State Variables ---
+        import { generateFlashcardDeck } from './geminiApi.js';
         let userDecks = [];
         let activeDeckId = null;
         let currentStudyCards = [];
@@ -2431,6 +2434,71 @@
         }
 
         window.onload = initGame;
+
+
+document.addEventListener('DOMContentLoaded', () => { // Asegúrate de que el DOM esté cargado
+    const generateDeckButton = document.getElementById('generateDeckButton');
+    if (generateDeckButton) {
+        generateDeckButton.addEventListener('click', handleGenerateDeckButtonClick);
+    }
+
+        // AHORA PUEDES IMPORTAR geminiApi.js
+        import { generateFlashcardDeck } from './geminiApi.js'; // Ajusta la ruta si geminiApi.js no está en la misma carpeta que index.html
+
+        // Define la función para manejar la generación del mazo
+        async function handleGenerateDeckButtonClick() {
+            // Asume que tienes un input para el tema y otro para el número de tarjetas en tu HTML
+            const topicInput = document.getElementById('deckTopicInput'); // Asegúrate de que exista este ID en tu HTML
+            const numCardsInput = document.getElementById('numCardsInput'); // Asegúrate de que exista este ID en tu HTML
+
+            const topic = topicInput ? topicInput.value : ''; // Manejo si el input no existe aún
+            const numCards = numCardsInput ? parseInt(numCardsInput.value, 10) : 10;
+
+            if (!topic) {
+                alert("Por favor, ingresa un tema para el mazo.");
+                return;
+            }
+
+            // Aquí puedes mostrar un spinner o deshabilitar el botón de generación
+            console.log("Generando mazo sobre:", topic);
+
+            try {
+                const newDeck = await generateFlashcardDeck(topic, numCards);
+
+                if (newDeck) {
+                    console.log("Mazo generado exitosamente:", newDeck);
+                    // Aquí es donde integrarías el nuevo mazo con la lógica de tu juego.
+                    // Por ejemplo, añadiéndolo a una lista de mazos disponibles,
+                    // guardándolo en tu `gameData`, y actualizando la UI.
+
+                    // Ejemplo (adaptado a tu lógica de juego):
+                    // Asumiendo que 'gameData' es una variable global o accesible aquí
+                    if (typeof gameData !== 'undefined' && gameData.decks) {
+                        gameData.decks.push({
+                            name: `Mazo de IA: ${topic}`, // Nombre descriptivo para el mazo generado
+                            cards: newDeck
+                        });
+                        saveGameData(); // Llama a tu función para guardar el estado del juego
+                        // Aquí necesitarías una función para actualizar la UI que muestre los mazos
+                        // Por ejemplo, volver a renderizar la lista de mazos o añadir dinámicamente el nuevo.
+                        alert(`Mazo "${topic}" generado y añadido.`);
+                    } else {
+                        console.warn("gameData.decks no está disponible o no es un array. El mazo no se añadió a la data del juego.");
+                        alert("Mazo generado, pero no se pudo añadir al juego. Revisa la consola.");
+                    }
+                } else {
+                    alert("No se pudo generar el mazo. Intenta de nuevo.");
+                }
+            } catch (error) {
+                console.error("Hubo un error al generar el mazo:", error);
+                alert("Hubo un error al generar el mazo. Revisa la consola para más detalles.");
+            } finally {
+                // Aquí puedes ocultar el spinner o habilitar el botón de nuevo
+            }
+        }
+
+
+
 
     </script>
 </body>
