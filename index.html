@@ -937,7 +937,8 @@
         const MIN_CARDS_FOR_MULTIPLE_CHOICE = 3; // Min cards in a deck for multiple choice to have enough distractors
         const MAX_POINTS_PER_HOUR = 500;
         const ONE_HOUR_IN_MS = 60 * 60 * 1000;
-        
+        const GEMINI_API_KEY = "AIzaSyDsL7fpWEthgnJYU4EXALDNm2AENUFS4PY"; // IMPORTANT: Replace with your actual API key or use Netlify Functions for security
+                                   // For Canvas environment, this will be handled automatically.
 
         // --- DOM Elements ---
         const questionTextEl = document.getElementById('question-text');
@@ -2305,54 +2306,15 @@
                 }
             };
             
-          // ... (código anterior en la función generateAiDeckBtn) ...
-// const apiKey = GEMINI_API_KEY; // Ya no se necesita aquí
-const netlifyFunctionUrl = `/.netlify/functions/generate-ai-deck`; // URL de tu función
+            const apiKey = GEMINI_API_KEY; // This will be an empty string for Canvas, handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-// El payload para tu función de Netlify solo necesita los datos que la función espera
-const functionPayload = {
-    topic: topic,
-    wordCount: wordCount,
-    deckName: deckName // Si tu función lo usa, si no, puedes omitirlo del payload a la función
-};
-
-try {
-    const response = await fetch(netlifyFunctionUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(functionPayload) // Envía el topic, wordCount, etc. a tu función
-    });
-
-    // El resto del manejo de la respuesta de la función es similar,
-    // ya que la función de Netlify debería devolver la respuesta de Gemini (o un error).
-    if (!response.ok) {
-        const errorBody = await response.json(); // Error de tu Netlify Function
-        console.error("Netlify Function Error Response:", errorBody);
-        let errorMessage = `Error llamando a la función: ${response.status}`;
-        if (errorBody && errorBody.error) {
-            errorMessage += ` - ${errorBody.error}`;
-        }
-        throw new Error(errorMessage);
-    }
-
-    const result = await response.json(); // Esto ahora es la respuesta de tu Netlify Function, que contiene la respuesta de Gemini
-
-    // El resto de la lógica para procesar `result.candidates` sigue igual
-    if (result.candidates && result.candidates.length > 0 &&
-        result.candidates[0].content && result.candidates[0].content.parts &&
-        result.candidates[0].content.parts.length > 0) {
-
-        const jsonText = result.candidates[0].content.parts[0].text;
-        // ... resto de tu lógica para crear el mazo ...
-    } else if (result.error) { // Si la función de Netlify devolvió un error estructurado de Gemini
-         console.error("Error desde la API de Gemini (vía Netlify Function):", result.error);
-         throw new Error(`Error de la API de Gemini: ${result.error}`);
-    }
-     else {
-         console.error("Netlify Function Unexpected Response Structure:", result);
-        throw new Error("Respuesta inesperada de la función de IA. No se encontraron 'candidates' o 'parts'.");
-    }
-// ... (resto del try-catch) ...
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
                 if (!response.ok) {
                     const errorBody = await response.json();
