@@ -7,11 +7,8 @@
     <title>Flashcards de Inglés Fácil: Aprende Vocabulario Interactivo con Mazos y Audio</title>
 
     <meta name="description" content="Mejora tu vocabulario en inglés con flashcards interactivas, mazos personalizables y pronunciación de audio. Aprende nuevas palabras, gestiona tus mazos y progreso, y haz crecer tu árbol de conocimiento. ¡Estudia inglés fácil!">
-
     <meta name="keywords" content="flashcards inglés, aprender inglés, vocabulario inglés, pronunciación inglés, audio inglés, mazos de estudio, inglés fácil, tarjetas de memoria, estudiar inglés, memorizar palabras, app inglés, aplicación para aprender inglés, mejorar inglés">
-
     <link rel="canonical" href="https://flashcards-inglesfacil.netlify.app/">
-
     <meta name="robots" content="index, follow">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -34,15 +31,15 @@
       "applicationCategory": "EducationalApplication, GameApplication",
       "operatingSystem": "Web",
       "browserRequirements": "Requires HTML5 support, JavaScript enabled, Web Speech API.",
-      "url": "https://www.tu-dominio.com/ruta-a-esta-app/", /* ¡REEMPLAZA ESTO! */
+      "url": "https://www.tu-dominio.com/ruta-a-esta-app/",
       "offers": {
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
       },
       "author": {
-        "@type": "Person", /* O "Person" si eres un desarrollador individual */
-        "name": "Nemus" /* ¡REEMPLAZA ESTO! */
+        "@type": "Person",
+        "name": "Nemus"
       },
       "keywords": "flashcards, inglés, aprender inglés, vocabulario, pronunciación, audio, estudiar, memorizar, aplicación educativa, juego educativo, mazos de estudio"
     }
@@ -255,6 +252,12 @@
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
+        .feedback.loading {
+            background-color: #fff3cd; /* Light yellow */
+            color: #856404; /* Dark yellow text */
+            border: 1px solid #ffeeba; /* Yellow border */
+        }
+
 
         .btn {
             padding: 0.65rem 1.1rem;
@@ -289,6 +292,9 @@
         .btn-danger:hover:not(:disabled) { background-color: #ff6a6a; }
         .btn-learned { background-color: var(--duo-yellow); border-bottom-color: #e6b400; color: var(--duo-text-dark); }
         .btn-learned:hover:not(:disabled) { background-color: #ffd433; }
+        .btn-ai { background-color: #6A0DAD; border-bottom-color: #4B0082; /* Purple shades */ }
+        .btn-ai:hover:not(:disabled) { background-color: #8A2BE2; }
+
         .btn-disabled, .btn:disabled {
             background-color: var(--duo-gray-light) !important;
             border-bottom-color: var(--duo-gray-medium) !important;
@@ -473,6 +479,20 @@
             font-size: 0.7rem;
             margin-left: 0.25rem;
         }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--duo-blue);
+            animation: spin 1s ease infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
 
         @media (max-width: 1024px) {
 
@@ -607,99 +627,6 @@
             display: grid;
         }
 
-        @media (max-width: 500px) {
-    /* --- Rediseño Modal "Mis Mazos" para pantallas <= 500px --- */
-
-    /* 1. Contenido General del Modal */
-    #decks-modal .modal-content {
-        padding: 1rem; /* Reducir el padding interno del modal */
-    }
-
-    /* 2. Título del Modal y Párrafo de Mazo Activo */
-    #decks-modal .modal-content #decksModalTitle {
-        font-size: 1.125rem; /* text-lg, mantener si hay espacio, o reducir a 1rem */
-        margin-bottom: 0.75rem; /* Ajustar espacio inferior */
-    }
-
-    #decks-modal .modal-content p.text-gray-600 { /* Párrafo "Mazo activo para estudiar" */
-        font-size: 0.875rem; /* text-sm */
-        line-height: 1.4;    /* Mejorar legibilidad si el texto se envuelve */
-        margin-bottom: 1rem; /* Espacio antes de la lista de mazos */
-    }
-
-    /* 3. Botones Superiores ("Crear Nuevo Mazo", "Estudiar Mazo Principal") */
-    #decks-modal .modal-content .my-4.flex { /* El div que contiene estos botones */
-        flex-direction: column; /* Apilar botones verticalmente */
-        /* Tailwind 'gap-2' (0.5rem) ya está aplicado, lo cual es bueno para el espacio vertical */
-    }
-
-    #decks-modal .modal-content .my-4.flex > .btn { /* Botones dentro del div */
-        width: 100%; /* Hacer que los botones ocupen todo el ancho */
-    }
-
-    /* 4. Contenedor de la Lista de Mazos */
-    #decks-modal .modal-content #decks-list-container {
-        max-height: 200px;  /* Reducir altura máxima para evitar que el modal sea demasiado alto */
-        padding: 0.25rem;   /* Reducir padding si los items internos ya tienen el suyo */
-    }
-
-    /* 5. Ítems Individuales en la Lista de Mazos (.deck-list-item) */
-    #decks-modal .modal-content #decks-list-container .deck-list-item {
-        flex-direction: column;   /* Apilar información del mazo y acciones verticalmente */
-        align-items: stretch;     /* Hacer que los bloques hijos ocupen todo el ancho */
-        gap: 0.5rem;              /* Espacio entre el bloque de info y el bloque de acciones */
-        padding: 0.6rem;          /* Ajustar padding interno del ítem (originalmente p-3 vía JS) */
-        margin-bottom: 0.375rem;  /* Reducir margen inferior entre ítems */
-    }
-
-    /* 5a. Bloque de Información del Mazo (Nombre y contador de palabras) */
-    /* El div.flex-grow es el contenedor del nombre y el contador */
-    #decks-modal .modal-content #decks-list-container .deck-list-item > div.flex-grow {
-        /* Este div ocupará el ancho completo debido a align-items:stretch en .deck-list-item */
-    }
-
-    #decks-modal .modal-content #decks-list-container .deck-list-item .deck-name {
-        font-size: 0.9rem;      /* Tamaño de fuente para el nombre del mazo */
-        font-weight: 600;       /* Tailwind 'font-semibold' */
-        word-break: break-word; /* Permitir que nombres largos se corten y pasen a la siguiente línea */
-        display: block;         /* Hacer que el nombre ocupe su propia línea */
-        margin-bottom: 0.125rem;/* Pequeño espacio antes del contador de palabras */
-    }
-
-    #decks-modal .modal-content #decks-list-container .deck-list-item span.text-xs.text-gray-500 { /* Contador de palabras */
-        font-size: 0.75rem;     /* Tailwind 'text-xs' */
-        display: block;         /* Hacer que el contador ocupe su propia línea */
-        margin-left: 0;         /* Anular el 'ml-2' aplicado por JS para alinear a la izquierda */
-    }
-
-    /* 5b. Bloque de Acciones del Mazo (Botones: Estudiar, Editar, Eliminar) */
-    #decks-modal .modal-content #decks-list-container .deck-list-item .deck-actions {
-        width: 100%;            /* Ocupar todo el ancho */
-        display: flex;
-        flex-wrap: wrap;        /* Permitir que los botones pasen a la siguiente línea si no caben */
-        gap: 0.375rem;          /* Espacio entre botones (6px). Tailwind 'gap-1.5' */
-                                /* Esto reemplaza funcionalmente al 'space-x-1' que usa margin */
-        justify-content: flex-start; /* Alinear botones al inicio */
-    }
-
-    /* Anular el 'space-x-1' (que añade margin-left) si interfiere con 'gap' */
-    #decks-modal .modal-content #decks-list-container .deck-list-item .deck-actions > .btn + .btn {
-        margin-left: 0;
-    }
-
-    #decks-modal .modal-content #decks-list-container .deck-list-item .deck-actions .btn {
-        /* Los botones ya tienen !py-1 !px-2 !text-xs vía JS, lo que los hace pequeños */
-        flex-grow: 1;         /* Permitir que los botones crezcan para llenar el espacio si son pocos */
-        min-width: 75px;      /* Ancho mínimo para asegurar legibilidad y facilidad de toque */
-        text-align: center;
-    }
-
-    /* 6. Botón de Cerrar Modal */
-    #decks-modal .modal-content .flex.justify-end.mt-6 { /* El div contenedor del botón "Cerrar" */
-        margin-top: 1rem; /* Reducir el margen superior */
-    }
-}
-
     </style>
 
      <script async src="https://www.googletagmanager.com/gtag/js?id=G-H1P5HZZZYT"></script>
@@ -742,17 +669,15 @@
                 </section>
 
 
-    <div class="p-4 bg-white shadow-md rounded-lg mx-auto max-w-md mt-4">
-    <h3 class="text-lg font-semibold mb-2 text-gray-800">Generar Nuevo Mazo con IA</h3>
-    <input type="text" id="deckTopicInput" placeholder="Tema del mazo (ej: 'animales', 'tecnología')"
-           class="w-full p-2 border border-gray-300 rounded-md mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-    <input type="number" id="numCardsInput" value="10" min="1" max="50"
-           class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
-    <button id="generateDeckButton"
-            class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-        Generar Mazo
-    </button>
-</div>
+                <section class="sidebar-section" aria-label="Gestión de progreso general">
+                    <h3 class="section-title text-[var(--duo-blue)]">Progreso General</h3>
+                    <div class="button-group">
+                         <button id="export-progress-btn" class="btn btn-tertiary">Exportar</button>
+                         <button id="import-progress-btn" class="btn btn-tertiary">Importar</button>
+                         <button id="download-words-btn" class="btn btn-tertiary">Descargar Palabras</button>
+                         <input type="file" id="import-progress-input" accept=".json, .enc">
+                    </div>
+                    <div id="import-export-feedback" class="feedback text-center mt-1.5"></div>
                 </section>
             </aside>
 
@@ -900,6 +825,7 @@
 
             <div class="my-4 flex flex-wrap gap-2">
                 <button id="open-add-new-deck-modal-btn" class="btn btn-primary btn-sm">Crear Nuevo Mazo</button>
+                <button id="open-ai-deck-modal-btn" class="btn btn-ai btn-sm">✨ Generar Mazo con IA</button>
                 <button id="select-main-deck-btn" class="btn btn-secondary btn-sm">Estudiar Mazo Principal (Todas)</button>
             </div>
 
@@ -933,13 +859,31 @@
         </div>
     </div>
 
+    <div id="ai-deck-modal" class="modal hidden" role="dialog" aria-labelledby="aiDeckModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <h3 id="aiDeckModalTitle">Generar Mazo con IA ✨</h3>
+            <label for="ai-deck-topic-input">Tema para el nuevo mazo (ej: "frutas", "animales de granja"):</label>
+            <input type="text" id="ai-deck-topic-input" class="input-field w-full" placeholder="Escribe el tema aquí...">
+            
+            <label for="ai-deck-name-input" class="mt-2">Nombre para el nuevo mazo (opcional, se generará si se deja vacío):</label>
+            <input type="text" id="ai-deck-name-input" class="input-field w-full" placeholder="Ej: Mazo de Frutas (IA)">
+
+            <div id="ai-deck-feedback" class="feedback text-center"></div>
+            <div id="ai-loading-indicator" class="loading-spinner hidden my-3"></div>
+
+            <div class="flex justify-end space-x-2 mt-3">
+                <button id="generate-ai-deck-btn" class="btn btn-ai btn-sm">Generar Mazo</button>
+                <button id="cancel-ai-deck-btn" class="btn bg-slate-300 hover:bg-slate-400 text-slate-800 btn-sm">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
 
     <audio id="correct-sound" src="sounds/correct-sound.mp3" preload="auto"></audio>
     <audio id="incorrect-sound" src="sounds/incorrect-sound.mp3" preload="auto"></audio>
 
-    <script type="module">
+    <script>
         // --- Game State Variables ---
-        import { generateFlashcardDeck } from './geminiApi.js';
         let userDecks = [];
         let activeDeckId = null;
         let currentStudyCards = [];
@@ -966,7 +910,7 @@
             { question: "Friend", answer: "Amigo" }, { question: "Love", answer: "Amor" }
         ];
         const MAIN_DECK_ID = '__main_all_decks__';
-        const CHECK_APPLES_INTERVAL = 60 * 1000;
+        const CHECK_APPLES_INTERVAL = 60 * 1000; // 1 minute
         const FERTILIZER_SHOP_COST = 50;
         const APPLE_SHOP_COST = 500;
         const TREE_LEVEL_DATA = [
@@ -990,10 +934,11 @@
         const ENCRYPTION_KEY_STRING = "miClaveSuperSecreta1234567890!"; // 32 bytes for AES-256
         let cryptoKey;
         const MIN_CARDS_FOR_POINTS = 5;
-        const MIN_CARDS_FOR_MULTIPLE_CHOICE = 3;
+        const MIN_CARDS_FOR_MULTIPLE_CHOICE = 3; // Min cards in a deck for multiple choice to have enough distractors
         const MAX_POINTS_PER_HOUR = 500;
         const ONE_HOUR_IN_MS = 60 * 60 * 1000;
-
+        const GEMINI_API_KEY = "AIzaSyDsL7fpWEthgnJYU4EXALDNm2AENUFS4PY"; // IMPORTANT: Replace with your actual API key or use Netlify Functions for security
+                                   // For Canvas environment, this will be handled automatically.
 
         // --- DOM Elements ---
         const questionTextEl = document.getElementById('question-text');
@@ -1077,6 +1022,17 @@
         const correctSound = document.getElementById('correct-sound');
         const incorrectSound = document.getElementById('incorrect-sound');
 
+        // AI Deck Generation Modal Elements
+        const openAiDeckModalBtn = document.getElementById('open-ai-deck-modal-btn');
+        const aiDeckModal = document.getElementById('ai-deck-modal');
+        const aiDeckTopicInputEl = document.getElementById('ai-deck-topic-input');
+        const aiDeckNameInputEl = document.getElementById('ai-deck-name-input');
+        const aiDeckFeedbackEl = document.getElementById('ai-deck-feedback');
+        const aiLoadingIndicatorEl = document.getElementById('ai-loading-indicator');
+        const generateAiDeckBtn = document.getElementById('generate-ai-deck-btn');
+        const cancelAiDeckBtn = document.getElementById('cancel-ai-deck-btn');
+
+
         // --- Utility Functions ---
         function generateUUID() { return crypto.randomUUID(); }
 
@@ -1103,7 +1059,7 @@
 
             if (duration > 0) {
                 setTimeout(() => {
-                    if (element.textContent === message) {
+                    if (element.textContent === message) { // Only clear if the message hasn't changed
                         clearFeedback(element);
                         if (element === feedbackTextEl) updateDefaultFeedbackMessage();
                     }
@@ -1141,42 +1097,45 @@
                 return;
             }
 
-            if (voices.length === 0) {
+            if (voices.length === 0) { // Attempt to populate voices again if empty
                 populateVoices();
             }
 
             try {
-                synth.cancel();
+                synth.cancel(); // Cancel any ongoing speech
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
 
-                const englishVoice = voices.find(voice => voice.lang === 'en-US' && voice.localService) ||
-                                     voices.find(voice => voice.lang.startsWith('en-') && voice.localService) ||
-                                     voices.find(voice => voice.lang === 'en-US') ||
-                                     voices.find(voice => voice.lang.startsWith('en-'));
+                // Try to find a suitable English voice
+                const englishVoice = voices.find(voice => voice.lang === 'en-US' && voice.localService) || // Prefer local US English
+                                     voices.find(voice => voice.lang.startsWith('en-') && voice.localService) || // Prefer local any English
+                                     voices.find(voice => voice.lang === 'en-US') || // Any US English
+                                     voices.find(voice => voice.lang.startsWith('en-')); // Any English
 
                 if (englishVoice) {
                     utterance.voice = englishVoice;
+                } else {
+                    console.warn("No suitable English (en-US or en-*) voice found. Using default.");
                 }
 
                 utterance.onstart = () => {
                     if (speakerIconButtonEl) speakerIconButtonEl.disabled = true;
                 };
                 utterance.onend = () => {
-                    if (speakerIconButtonEl && currentStudyCards.length > 0) {
+                    if (speakerIconButtonEl && currentStudyCards.length > 0) { // Only re-enable if there's something to speak
                          speakerIconButtonEl.disabled = false;
                     }
                 };
                 utterance.onerror = (event) => {
                     console.error('SpeechSynthesisUtterance.onerror triggered:', event);
                     showTemporaryFeedback(feedbackTextEl, `Error de audio: ${event.error || 'desconocido'}.`, "incorrect", 4000);
-                    if (speakerIconButtonEl) speakerIconButtonEl.disabled = true;
+                    if (speakerIconButtonEl) speakerIconButtonEl.disabled = true; // Disable on error
                 };
                 synth.speak(utterance);
             } catch (e) {
                 console.error("Error in speakWord function:", e);
                 showTemporaryFeedback(feedbackTextEl, "Error interno en la función de audio.", "incorrect", 3000);
-                if (speakerIconButtonEl) speakerIconButtonEl.disabled = true;
+                if (speakerIconButtonEl) speakerIconButtonEl.disabled = true; // Disable on error
             }
         }
 
@@ -1185,10 +1144,10 @@
         async function initCryptoKey() {
             try {
                 const keyMaterial = await window.crypto.subtle.importKey(
-                    "raw", new TextEncoder().encode(ENCRYPTION_KEY_STRING.slice(0, 32)), // Ensure key is 32 bytes for AES-256
+                    "raw", new TextEncoder().encode(ENCRYPTION_KEY_STRING.slice(0, 32)),
                     { name: "PBKDF2" }, false, ["deriveKey"]
                 );
-                const salt = new TextEncoder().encode("someFixedSaltValueForDecksApp"); // Salt should ideally be unique per user or random
+                const salt = new TextEncoder().encode("someFixedSaltValueForDecksApp");
                 cryptoKey = await window.crypto.subtle.deriveKey(
                     { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
                     keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
@@ -1207,10 +1166,9 @@
                 showTemporaryFeedback(importExportFeedbackEl, "Error: Clave de encriptación no lista.", "incorrect", 3000); return null;
             }
             try {
-                const iv = window.crypto.getRandomValues(new Uint8Array(12)); // IV for AES-GCM is typically 12 bytes
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
                 const encodedText = new TextEncoder().encode(plaintext);
                 const ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, cryptoKey, encodedText);
-                // Convert IV and ciphertext to base64 for easy storage/transfer
                 const ivBase64 = btoa(String.fromCharCode.apply(null, iv));
                 const ciphertextBase64 = btoa(String.fromCharCode.apply(null, new Uint8Array(ciphertext)));
                 return { iv: ivBase64, ciphertext: ciphertextBase64 };
@@ -1231,7 +1189,6 @@
                 return new TextDecoder().decode(decryptedBuffer);
             } catch (error) {
                 console.error("Error desencriptando:", error);
-                // Provide more specific feedback if possible, but avoid leaking too much crypto detail
                 showTemporaryFeedback(importExportFeedbackEl, "Error al desencriptar. ¿Archivo o clave incorrectos?", "incorrect", 4000); return null;
             }
         }
@@ -1262,7 +1219,6 @@
                     pointsThisHour = parsedData.pointsThisHour || 0;
                     lastPointResetTime = parsedData.lastPointResetTime || Date.now();
 
-                    // Data integrity checks
                     userDecks.forEach(deck => {
                         if (!Array.isArray(deck.cards)) deck.cards = [];
                         deck.cards = deck.cards.filter(c => typeof c.question === 'string' && typeof c.answer === 'string' && c.question.trim() !== "" && c.answer.trim() !== "");
@@ -1318,18 +1274,18 @@
             if (activeDeckId === MAIN_DECK_ID) {
                 userDecks.forEach(deck => {
                     deck.cards.forEach(card => {
-                        currentStudyCards.push({ ...card, originalDeckId: deck.id }); // Keep track of original deck for "learn"
+                        currentStudyCards.push({ ...card, originalDeckId: deck.id });
                     });
                 });
                 if (currentStudyCards.length > 1) shuffleArray(currentStudyCards);
             } else {
                 const deck = userDecks.find(d => d.id === activeDeckId);
                 if (deck) {
-                    currentStudyCards = deck.cards.slice(); // Work with a copy
+                    currentStudyCards = deck.cards.slice();
                     if (currentStudyCards.length > 1) shuffleArray(currentStudyCards);
                 }
             }
-            currentCardIndex = 0; // Reset index when cards change
+            currentCardIndex = 0;
             updateActiveDeckDisplay();
             updateStudyPanelWordManagementButtons();
         }
@@ -1387,7 +1343,7 @@
         }
 
         function handleOpenAddNewDeckModal() {
-            editingDeckIdInputEl.value = ''; // Clear editing ID
+            editingDeckIdInputEl.value = '';
             deckNameInputEl.value = '';
             addEditDeckNameModalTitleEl.textContent = 'Crear Nuevo Mazo';
             clearFeedback(addEditDeckNameFeedbackEl);
@@ -1413,20 +1369,20 @@
                 return;
             }
 
-            if (editingDeckId) { // Editing existing deck
+            if (editingDeckId) {
                 const deck = userDecks.find(d => d.id === editingDeckId);
                 if (deck) {
                     deck.name = deckName;
                     showTemporaryFeedback(deckManagementFeedbackEl, `Nombre del mazo actualizado a "${deckName}".`, "correct", 2000);
                 }
-            } else { // Creating new deck
+            } else {
                 const newDeck = { id: generateUUID(), name: deckName, cards: [] };
                 userDecks.push(newDeck);
                 showTemporaryFeedback(deckManagementFeedbackEl, `Mazo "${deckName}" creado.`, "correct", 2000);
             }
             saveGameData();
             populateDecksListInModal();
-            updateActiveDeckDisplay(); // If the active deck was renamed
+            updateActiveDeckDisplay();
             closeModal(addEditDeckNameModal);
         }
 
@@ -1434,36 +1390,33 @@
             const deck = userDecks.find(d => d.id === deckIdToDelete);
             if (!deck) return;
 
-            // Using a custom modal for confirmation would be better than window.confirm
-            // For now, let's assume window.confirm is acceptable for this context
             if (!confirm(`¿Estás seguro de que quieres eliminar el mazo "${deck.name}" y todas sus ${deck.cards.length} palabras? Esta acción no se puede deshacer.`)) {
                 return;
             }
 
             userDecks = userDecks.filter(d => d.id !== deckIdToDelete);
 
-            // If the active deck was deleted, switch to main or first available
             if (activeDeckId === deckIdToDelete) {
                 activeDeckId = userDecks.length > 0 ? userDecks[0].id : MAIN_DECK_ID;
                 updateCurrentStudyCards();
-                displayCard(); // Refresh study panel
+                displayCard();
             }
 
             saveGameData();
-            populateDecksListInModal(); // Refresh modal list
-            updateActiveDeckDisplay(); // Refresh display of active deck name
+            populateDecksListInModal();
+            updateActiveDeckDisplay();
             showTemporaryFeedback(deckManagementFeedbackEl, `Mazo "${deck.name}" eliminado.`, "correct", 2500);
         }
 
         function handleSelectDeckForStudy(deckId) {
             activeDeckId = deckId;
             updateCurrentStudyCards();
-            displayCard(); // Refresh study panel
+            displayCard();
             saveGameData();
-            populateDecksListInModal(); // To highlight the new active deck
+            populateDecksListInModal();
             updateActiveDeckDisplay();
             showTemporaryFeedback(deckManagementFeedbackEl, `Mazo "${getActiveDeckName()}" seleccionado para estudiar.`, "info", 2000);
-            closeModal(decksModal); // Close the decks management modal
+            closeModal(decksModal);
         }
 
         function handleSelectMainDeckForStudy() {
@@ -1484,7 +1437,7 @@
                 userDecks, activeDeckId, learnedFlashcards,
                 score, fertilizerCount, treeLevel, applesCount,
                 lastAppleGenerationTime,
-                pointsThisHour, lastPointResetTime // Ensure all relevant data is included
+                pointsThisHour, lastPointResetTime
             };
             const jsonData = JSON.stringify(gameData);
             const encryptedPayload = await encryptData(jsonData);
@@ -1494,12 +1447,12 @@
                 return;
             }
 
-            const dataToExport = JSON.stringify(encryptedPayload); // This contains {iv, ciphertext}
+            const dataToExport = JSON.stringify(encryptedPayload);
             const blob = new Blob([dataToExport], { type: "application/json" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "flashcards_progress_encrypted_v2.json"; // Versioning in filename is good
+            a.download = "flashcards_progress_encrypted_v2.json";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -1517,7 +1470,7 @@
             reader.onload = async function(e) {
                 try {
                     const fileContent = e.target.result;
-                    const encryptedPayload = JSON.parse(fileContent); // This should be {iv, ciphertext}
+                    const encryptedPayload = JSON.parse(fileContent);
 
                     if (!encryptedPayload.iv || !encryptedPayload.ciphertext) {
                         throw new Error("Formato de archivo encriptado inválido. Faltan IV o Ciphertext.");
@@ -1525,28 +1478,23 @@
 
                     const decryptedJson = await decryptData(encryptedPayload.ciphertext, encryptedPayload.iv);
                     if (!decryptedJson) {
-                        // decryptData already shows feedback, so just return
                         return;
                     }
 
-                    const importedData = JSON.parse(decryptedJson); // This is the actual game data object
+                    const importedData = JSON.parse(decryptedJson);
 
-                    // Validate basic structure of importedData
                     if (typeof importedData.score === 'undefined' || typeof importedData.userDecks === 'undefined') {
-                         // Attempt to handle very old format if 'flashcards' array exists directly
                         if (Array.isArray(importedData.flashcards)) {
                             console.warn("Importando datos de formato antiguo (solo flashcards).");
                             userDecks = [{ id: generateUUID(), name: "Mazo Importado (Antiguo)", cards: importedData.flashcards || [] }];
                             activeDeckId = userDecks.length > 0 ? userDecks[0].id : MAIN_DECK_ID;
                             learnedFlashcards = importedData.learnedFlashcards || [];
-                            // Reset other stats for old format as they weren't saved
                             score = 0; fertilizerCount = 0; treeLevel = 0; applesCount = 0;
                             lastAppleGenerationTime = Date.now(); pointsThisHour = 0; lastPointResetTime = Date.now();
                         } else {
                             throw new Error("Datos importados inválidos o corruptos. Estructura no reconocida.");
                         }
                     } else {
-                        // Modern format, assign with fallbacks
                         userDecks = importedData.userDecks || [];
                         activeDeckId = importedData.activeDeckId || (userDecks.length > 0 ? userDecks[0].id : MAIN_DECK_ID);
                         learnedFlashcards = importedData.learnedFlashcards || [];
@@ -1556,11 +1504,9 @@
                         applesCount = importedData.applesCount || 0;
                         lastAppleGenerationTime = importedData.lastAppleGenerationTime || Date.now();
                         pointsThisHour = importedData.pointsThisHour || 0;
-                        // --- CORRECTION IS HERE ---
-                        lastPointResetTime = importedData.lastPointResetTime || Date.now(); // Was parsedData, now importedData
+                        lastPointResetTime = importedData.lastPointResetTime || Date.now();
                     }
 
-                    // Further sanitize imported data
                     userDecks.forEach(deck => {
                         if (!deck.id) deck.id = generateUUID();
                         if (!deck.name) deck.name = "Mazo Importado";
@@ -1569,25 +1515,23 @@
                     });
                     learnedFlashcards = learnedFlashcards.filter(c => typeof c.question === 'string' && typeof c.answer === 'string' && c.question.trim() !== "" && c.answer.trim() !== "");
 
-                    // Ensure activeDeckId is valid
                     if (!userDecks.find(d => d.id === activeDeckId) && activeDeckId !== MAIN_DECK_ID) {
                         activeDeckId = userDecks.length > 0 ? userDecks[0].id : MAIN_DECK_ID;
                     }
 
-
-                    saveGameData(); // Save the newly imported and validated data
-                    initGameVisuals(); // Refresh the entire game UI
+                    saveGameData();
+                    initGameVisuals();
                     showTemporaryFeedback(importExportFeedbackEl, "Progreso importado exitosamente.", "correct", 4000);
                 } catch (error) {
                     console.error("Error importando progreso:", error);
                     showTemporaryFeedback(importExportFeedbackEl, `Error al importar: ${error.message}`, "incorrect", 5000);
                 } finally {
-                    importProgressInput.value = ""; // Reset file input
+                    importProgressInput.value = "";
                 }
             };
             reader.onerror = () => {
                 showTemporaryFeedback(importExportFeedbackEl, "Error al leer el archivo.", "incorrect", 3000);
-                importProgressInput.value = ""; // Reset file input
+                importProgressInput.value = "";
             };
             reader.readAsText(file);
         }
@@ -1600,16 +1544,16 @@
                 return;
             }
             if (currentCardIndex >= currentStudyCards.length || currentCardIndex < 0) {
-                currentCardIndex = 0; // Safety reset
+                currentCardIndex = 0;
             }
             const currentCard = currentStudyCards[currentCardIndex];
             const englishWord = currentCard.question;
             questionTextEl.textContent = englishWord;
             answerInputEl.value = "";
-            answerInputEl.classList.add('hidden'); // Hide by default, only show for text input mode (not used currently)
-            checkAnswerBtn.classList.add('hidden'); // Hide by default
+            answerInputEl.classList.add('hidden');
+            checkAnswerBtn.classList.add('hidden');
 
-            generateAndDisplayOptions(); // For multiple choice
+            generateAndDisplayOptions();
 
             learnedBtn.classList.add('hidden');
             nextCardBtn.classList.add('hidden');
@@ -1619,16 +1563,15 @@
                     speakerIconButtonEl.classList.remove('hidden');
                     speakerIconButtonEl.disabled = false;
 
-                    // Re-attach listener or clone to ensure fresh closure for `englishWord`
                     const newSpeakerButton = speakerIconButtonEl.cloneNode(true);
                     speakerIconButtonEl.parentNode.replaceChild(newSpeakerButton, speakerIconButtonEl);
-                    speakerIconButtonEl = newSpeakerButton; // Update global reference
+                    speakerIconButtonEl = newSpeakerButton;
 
                     speakerIconButtonEl.classList.remove('hidden');
                     speakerIconButtonEl.disabled = false;
                     speakerIconButtonEl.addEventListener('click', () => speakWord(englishWord));
 
-                    speakWord(englishWord); // Auto-speak on new card
+                    speakWord(englishWord);
                 } else {
                     speakerIconButtonEl.classList.add('hidden');
                     speakerIconButtonEl.disabled = true;
@@ -1639,7 +1582,7 @@
 
         function updateDefaultFeedbackMessage() {
             if (currentStudyCards.length === 0) {
-                return; // No cards, no specific message needed here, handled by handleNoCardsInActiveDeckState
+                return;
             }
             const activeDeckIsSpecific = activeDeckId && activeDeckId !== MAIN_DECK_ID;
             const currentDeckCardCount = activeDeckIsSpecific ? (userDecks.find(d=>d.id === activeDeckId)?.cards.length || 0) : currentStudyCards.length;
@@ -1649,9 +1592,9 @@
             } else if (activeDeckIsSpecific && currentDeckCardCount < MIN_CARDS_FOR_MULTIPLE_CHOICE) {
                  showTemporaryFeedback(feedbackTextEl, `El mazo activo "${getActiveDeckName()}" tiene ${currentDeckCardCount} palabras. Añade más para tener ${MIN_CARDS_FOR_MULTIPLE_CHOICE} opciones de respuesta.`, "info", 0);
             } else {
-                // If no specific info message, ensure feedback is clear for interaction
-                if (!feedbackTextEl.textContent || feedbackTextEl.classList.contains('correct') || feedbackTextEl.classList.contains('incorrect')) {
-                    // Only clear if it's not already an info message from above or a result message
+                // No specific message, clear any previous non-info message
+                if (feedbackTextEl.textContent && !feedbackTextEl.classList.contains('info')) {
+                     // clearFeedback(feedbackTextEl); // Avoid clearing if it's a persistent info message
                 }
             }
         }
@@ -1670,7 +1613,7 @@
             learnedBtn.classList.add('hidden');
             nextCardBtn.classList.add('hidden');
             if(speakerIconButtonEl) speakerIconButtonEl.classList.add('hidden');
-            showTemporaryFeedback(feedbackTextEl, `Usa 'Añadir Palabra' (si un mazo específico está activo) o gestiona tus mazos.`, "info", 0); // Persistent info
+            showTemporaryFeedback(feedbackTextEl, `Usa 'Añadir Palabra' (si un mazo específico está activo) o gestiona tus mazos.`, "info", 0);
         }
 
         function generateAndDisplayOptions() {
@@ -1680,7 +1623,6 @@
             const correctAnswer = currentStudyCards[currentCardIndex].answer;
             let options = [correctAnswer];
 
-            // Pool of potential distractors from ALL decks
             let distractorPool = [];
             userDecks.forEach(deck => {
                 deck.cards.forEach(card => {
@@ -1689,7 +1631,6 @@
                     }
                 });
             });
-            // Also include learned words as potential distractors if not too many
             learnedFlashcards.forEach(card => {
                  if (card.answer.toLowerCase() !== correctAnswer.toLowerCase()) {
                         distractorPool.push(card.answer);
@@ -1697,24 +1638,19 @@
             });
 
 
-            distractorPool = [...new Set(distractorPool)]; // Remove duplicates
+            distractorPool = [...new Set(distractorPool)];
             shuffleArray(distractorPool);
 
-            // Add up to (MIN_CARDS_FOR_MULTIPLE_CHOICE - 1) distractors
             for (let i = 0; i < Math.min(MIN_CARDS_FOR_MULTIPLE_CHOICE - 1, distractorPool.length); i++) {
                 options.push(distractorPool[i]);
             }
-
-            // If not enough options, fill with generic placeholders or repeat logic (less ideal)
-            // For simplicity, if options < MIN_CARDS_FOR_MULTIPLE_CHOICE, it will just show fewer.
-            // This is handled by updateDefaultFeedbackMessage informing user to add more cards.
 
             shuffleArray(options);
             options.forEach(optionText => {
                 const button = document.createElement('button');
                 button.classList.add('btn', 'option-btn');
                 button.textContent = optionText;
-                button.dataset.answer = optionText; // Store the answer this button represents
+                button.dataset.answer = optionText;
                 button.addEventListener('click', handleOptionClick);
                 multipleChoiceOptionsEl.appendChild(button);
             });
@@ -1727,16 +1663,15 @@
             const correctAnswer = cardBeingStudied.answer;
 
             const optionButtons = multipleChoiceOptionsEl.querySelectorAll('.option-btn');
-            optionButtons.forEach(btn => btn.disabled = true); // Disable all options
+            optionButtons.forEach(btn => btn.disabled = true);
             nextCardBtn.classList.remove('hidden');
 
             if (selectedAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
                 clickedButton.classList.add('selected-correct');
-                checkHourlyPointLimit(); // Check before awarding points
+                checkHourlyPointLimit();
 
                 const activeDeckIsSpecific = activeDeckId && activeDeckId !== MAIN_DECK_ID;
                 const currentDeckForPointsCheck = activeDeckIsSpecific ? userDecks.find(d=>d.id === activeDeckId) : null;
-                // Points can be earned if main deck is active OR specific deck has enough cards
                 const canEarnPoints = (activeDeckId === MAIN_DECK_ID && currentStudyCards.length >= MIN_CARDS_FOR_POINTS) ||
                                       (activeDeckIsSpecific && currentDeckForPointsCheck && currentDeckForPointsCheck.cards.length >= MIN_CARDS_FOR_POINTS);
 
@@ -1749,7 +1684,7 @@
                     let actualPointsAdded = pointsToAdd;
                     if (pointsThisHour + pointsToAdd > MAX_POINTS_PER_HOUR) {
                         actualPointsAdded = MAX_POINTS_PER_HOUR - pointsThisHour;
-                        showTemporaryFeedback(feedbackTextEl, `¡Correcto! � +${actualPointsAdded} puntos. (Límite horario alcanzado)`, "correct", 3000);
+                        showTemporaryFeedback(feedbackTextEl, `¡Correcto!  +${actualPointsAdded} puntos. (Límite horario alcanzado)`, "correct", 3000);
                     } else {
                         showTemporaryFeedback(feedbackTextEl, "¡Correcto! 🎉", "correct", 2000);
                     }
@@ -1757,22 +1692,21 @@
                     pointsThisHour += actualPointsAdded;
                     updateScoreDisplay();
                 }
-                learnedBtn.classList.remove('hidden'); // Show "I know it!" button
+                learnedBtn.classList.remove('hidden');
                 if (correctSound) { correctSound.currentTime = 0; correctSound.play().catch(console.error); }
             } else {
                 clickedButton.classList.add('selected-incorrect');
-                // Highlight the actual correct answer
                 optionButtons.forEach(btn => {
                     if (btn.dataset.answer.toLowerCase() === correctAnswer.toLowerCase()) {
                         btn.classList.add('actual-correct');
                     }
                 });
-                const pointsToDeduct = Math.floor(POINTS_PER_CORRECT_ANSWER / 2); // Penalty
+                const pointsToDeduct = Math.floor(POINTS_PER_CORRECT_ANSWER / 2);
                 score -= pointsToDeduct;
                 if (score < 0) score = 0;
                 updateScoreDisplay();
                 showTemporaryFeedback(feedbackTextEl, `Incorrecto. Respuesta correcta: ${correctAnswer}. Has perdido ${pointsToDeduct} puntos. 📉`, "incorrect", 3500);
-                learnedBtn.classList.add('hidden'); // Don't show "I know it!" on incorrect
+                learnedBtn.classList.add('hidden');
                 if (incorrectSound) { incorrectSound.currentTime = 0; incorrectSound.play().catch(console.error); }
             }
             nextCardBtn.focus();
@@ -1782,15 +1716,12 @@
         function markAsLearned() {
             if (currentStudyCards.length === 0 || currentCardIndex >= currentStudyCards.length) return;
 
-            const cardToLearn = { ...currentStudyCards[currentCardIndex] }; // Get a copy
+            const cardToLearn = { ...currentStudyCards[currentCardIndex] };
             let feedbackMessage = "";
 
-            // Check if already learned (by question, case-insensitive)
             if (learnedFlashcards.findIndex(card => card.question.toLowerCase() === cardToLearn.question.toLowerCase()) === -1) {
-                // Add to learned list
                 learnedFlashcards.push({ question: cardToLearn.question, answer: cardToLearn.answer });
 
-                // Remove from its original deck
                 let originalDeckIdToRemoveFrom = null;
                 if (activeDeckId === MAIN_DECK_ID && cardToLearn.originalDeckId) {
                     originalDeckIdToRemoveFrom = cardToLearn.originalDeckId;
@@ -1805,11 +1736,9 @@
                     }
                 }
 
-                // Award points for learning, similar logic to correct answer
                 checkHourlyPointLimit();
                 const activeDeckIsSpecific = activeDeckId && activeDeckId !== MAIN_DECK_ID;
                 const deckWhereCardWas = originalDeckIdToRemoveFrom ? userDecks.find(d=>d.id === originalDeckIdToRemoveFrom) : null;
-                // Points for learning if the deck it came from (plus this card) met criteria, or if it was from main deck study
                 const canEarnPointsForLearning = (activeDeckId === MAIN_DECK_ID && currentStudyCards.length >= MIN_CARDS_FOR_POINTS) ||
                                                  (deckWhereCardWas && deckWhereCardWas.cards.length + 1 >= MIN_CARDS_FOR_POINTS);
 
@@ -1836,25 +1765,23 @@
                 showTemporaryFeedback(feedbackTextEl, `"${cardToLearn.question}" ya estaba marcada como aprendida.`, "info", 2500);
             }
 
-            // Remove from current study session (currentStudyCards)
             currentStudyCards.splice(currentCardIndex, 1);
 
             saveGameData();
             learnedBtn.classList.add('hidden');
-            nextCardBtn.classList.remove('hidden'); // Ensure next button is visible
+            nextCardBtn.classList.remove('hidden');
             nextCardBtn.focus();
 
             if (currentStudyCards.length === 0) {
-                handleNoCardsInActiveDeckState(); // Handle if no cards left to study
+                handleNoCardsInActiveDeckState();
             } else {
-                // If we removed the last card, loop back to the start of the current (now shorter) list
                 if (currentCardIndex >= currentStudyCards.length) {
                     currentCardIndex = 0;
                 }
-                displayCard(); // Display next or first card
+                displayCard();
             }
-            updateStudyPanelWordManagementButtons(); // Reflect changes in card counts
-            populateDecksListInModal(); // Update card counts in deck list
+            updateStudyPanelWordManagementButtons();
+            populateDecksListInModal();
         }
 
 
@@ -1865,10 +1792,9 @@
             }
             currentCardIndex++;
             if (currentCardIndex >= currentStudyCards.length) {
-                currentCardIndex = 0; // Loop back to the start
-                updateCurrentStudyCards(); // Re-shuffle if settings dictate or just reset view
-                if (currentStudyCards.length > 0 && (!feedbackTextEl.textContent || feedbackTextEl.classList.contains('correct') || feedbackTextEl.classList.contains('incorrect'))) {
-                    // Only show shuffle message if not overriding an important info message
+                currentCardIndex = 0;
+                updateCurrentStudyCards();
+                if (currentStudyCards.length > 0 && (!feedbackTextEl.textContent || !feedbackTextEl.classList.contains('info'))) {
                      showTemporaryFeedback(feedbackTextEl, "¡Mazo barajado para la siguiente ronda!", "info", 1500);
                 }
             }
@@ -1880,7 +1806,7 @@
             if (now - lastPointResetTime >= ONE_HOUR_IN_MS) {
                 pointsThisHour = 0;
                 lastPointResetTime = now;
-                saveGameData(); // Save the reset time and points
+                saveGameData();
             }
         }
 
@@ -1898,7 +1824,7 @@
 
         function updateTreeVisual() {
             const currentLevelData = TREE_LEVEL_DATA[treeLevel];
-            const gifPath = `gifs/${currentLevelData.gifName}`; // Ensure these GIFs exist
+            const gifPath = `gifs/${currentLevelData.gifName}`;
             treeDisplayEl.innerHTML = `<img src="${gifPath}" alt="Árbol de progreso: Nivel ${currentLevelData.name}" class="tree-gif mx-auto">`;
             treeLevelTextEl.textContent = `Nivel: ${currentLevelData.name}`;
             applesPerDay = currentLevelData.applesPerDay;
@@ -1940,17 +1866,17 @@
             }
             const now = Date.now();
             const timeElapsedMs = now - lastAppleGenerationTime;
-            const generationIntervalMs = ((24 * 60 * 60) / applesPerDay) * 1000; // Milliseconds per apple
+            const generationIntervalMs = ((24 * 60 * 60) / applesPerDay) * 1000;
 
             if (timeElapsedMs >= generationIntervalMs) {
                 const applesToGenerate = Math.floor(timeElapsedMs / generationIntervalMs);
                 applesCount += applesToGenerate;
-                lastAppleGenerationTime += applesToGenerate * generationIntervalMs; // Advance last generation time correctly
+                lastAppleGenerationTime += applesToGenerate * generationIntervalMs;
                 updateApplesCountDisplay();
                 showTemporaryFeedback(feedbackTextEl, `¡Cosechaste ${applesToGenerate} manzana(s) 🍎!`, "correct", 2000);
                 saveGameData();
             }
-            updateAppleCountdown(); // Always update countdown
+            updateAppleCountdown();
         }
 
         function updateAppleCountdown() {
@@ -1964,13 +1890,11 @@
                 const generationIntervalMs = ((24 * 60 * 60) / applesPerDay) * 1000;
                 const timeSinceLastApple = now - lastAppleGenerationTime;
 
-                // Check if an apple should have been generated (this might be redundant if checkAndGenerateApples is called frequently)
                 if (timeSinceLastApple >= generationIntervalMs && applesPerDay > 0) {
-                    checkAndGenerateApples(); // This will update lastAppleGenerationTime
-                    // Recalculate timeSinceLastApple based on potentially updated lastAppleGenerationTime
+                    checkAndGenerateApples();
                     const newTimeSinceLastApple = now - lastAppleGenerationTime;
                     let timeToNextAppleMs = generationIntervalMs - (newTimeSinceLastApple % generationIntervalMs);
-                    if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs; // Ensure positive countdown
+                    if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
 
                     displayTime(timeToNextAppleMs);
                     return;
@@ -1978,10 +1902,10 @@
 
                 let timeToNextAppleMs = generationIntervalMs - (timeSinceLastApple % generationIntervalMs);
 
-                if (timeToNextAppleMs <= 1000 && timeToNextAppleMs > 0) { // About to generate
+                if (timeToNextAppleMs <= 1000 && timeToNextAppleMs > 0) {
                      appleCountdownEl.textContent = "¡Ahora!"; return;
                 }
-                if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs; // Should not happen if logic is correct
+                if (timeToNextAppleMs <= 0) timeToNextAppleMs = generationIntervalMs;
 
                 displayTime(timeToNextAppleMs);
             }
@@ -1993,8 +1917,8 @@
                 appleCountdownEl.textContent = `${h}:${m}:${s}`;
             }
 
-            calculateAndDisplayCountdown(); // Initial display
-            appleCountdownInterval = setInterval(calculateAndDisplayCountdown, 1000); // Update every second
+            calculateAndDisplayCountdown();
+            appleCountdownInterval = setInterval(calculateAndDisplayCountdown, 1000);
         }
 
         // --- Word Management in Study Panel ---
@@ -2048,18 +1972,17 @@
                     return;
                 }
                 activeDeck.cards.push({ question: newQ, answer: newA });
-                updateCurrentStudyCards(); // Refresh study cards if this deck is active
+                updateCurrentStudyCards();
                 saveGameData();
                 showTemporaryFeedback(addCardFeedbackEl, "¡Palabra añadida con éxito!", "correct", 1500);
-                newQuestionInput.value = ''; newAnswerInput.value = ''; // Clear for next entry
+                newQuestionInput.value = ''; newAnswerInput.value = '';
                 newQuestionInput.focus();
 
-                // If the study panel was showing "no cards", refresh it
                 if (questionTextEl.textContent.startsWith("¡No hay palabras en")) {
                     displayCard();
                 }
-                updateDefaultFeedbackMessage(); // Update info about card counts if necessary
-                populateDecksListInModal(); // Update card count in decks modal
+                updateDefaultFeedbackMessage();
+                populateDecksListInModal();
             } else {
                 showTemporaryFeedback(addCardFeedbackEl, "Ambos campos son obligatorios.", "incorrect", 2000);
             }
@@ -2079,7 +2002,7 @@
         function populateDeleteCardList() {
             deleteCardListContainerEl.innerHTML = '';
             clearFeedback(deleteFeedbackEl);
-            selectAllDeleteBtn.classList.add('hidden'); // Hide by default
+            selectAllDeleteBtn.classList.add('hidden');
 
             const activeDeck = userDecks.find(d => d.id === activeDeckId);
             if (!activeDeck || activeDeck.cards.length === 0) {
@@ -2094,7 +2017,7 @@
             confirmDeleteCardBtn.disabled = false;
             confirmDeleteCardBtn.classList.remove('btn-disabled');
             if (activeDeck.cards.length > 1) selectAllDeleteBtn.classList.remove('hidden');
-            selectAllDeleteBtn.textContent = 'Seleccionar Todas'; // Reset button text
+            selectAllDeleteBtn.textContent = 'Seleccionar Todas';
 
             activeDeck.cards.sort((a, b) => a.question.localeCompare(b.question)).forEach((card, index) => {
                 const listItem = document.createElement('div');
@@ -2124,23 +2047,21 @@
 
             activeDeck.cards = activeDeck.cards.filter(card => !questionsToDelete.includes(card.question.toLowerCase()));
 
-            updateCurrentStudyCards(); // Refresh study cards
+            updateCurrentStudyCards();
             saveGameData();
             showTemporaryFeedback(deleteFeedbackEl, `${questionsToDelete.length} palabra(s) eliminada(s) de "${activeDeck.name}".`, "correct", 2000);
 
-            // If current card was deleted, refresh display
             if (currentStudyCards.length > 0) {
-                // Check if the currently displayed question was among those deleted
                 if (questionTextEl.textContent && questionsToDelete.includes(questionTextEl.textContent.toLowerCase())) {
-                    currentCardIndex = 0; // Reset to first card of remaining
+                    currentCardIndex = 0;
                 }
                 displayCard();
             } else {
-                handleNoCardsInActiveDeckState(); // No cards left in this deck
+                handleNoCardsInActiveDeckState();
             }
-            populateDeleteCardList(); // Refresh the delete list (it should be empty or shorter)
+            populateDeleteCardList();
             updateDefaultFeedbackMessage();
-            populateDecksListInModal(); // Update card count in decks modal
+            populateDecksListInModal();
         });
 
         selectAllDeleteBtn.addEventListener('click', () => {
@@ -2181,14 +2102,13 @@
                     if (cardIndexInLearned > -1) {
                         const forgottenCard = learnedFlashcards.splice(cardIndexInLearned, 1)[0];
 
-                        // Add back to a deck. Prioritize active specific deck, then first deck.
                         let movedToDeckName = null;
                         let targetDeckForReturn = null;
 
                         if (activeDeckId && activeDeckId !== MAIN_DECK_ID) {
                             targetDeckForReturn = userDecks.find(d => d.id === activeDeckId);
                         } else if (userDecks.length > 0) {
-                            targetDeckForReturn = userDecks[0]; // Default to first deck if main is active or no specific active
+                            targetDeckForReturn = userDecks[0];
                         }
 
                         if (targetDeckForReturn) {
@@ -2196,27 +2116,24 @@
                                 targetDeckForReturn.cards.push({ question: forgottenCard.question, answer: forgottenCard.answer });
                                 movedToDeckName = targetDeckForReturn.name;
                             } else {
-                                // Card already exists in target deck, perhaps it was never fully removed or re-added manually
                                 console.warn(`Card "${forgottenCard.question}" already in target deck "${targetDeckForReturn.name}" upon 'forgetting'.`);
                             }
                         } else {
-                            // No user decks exist, create a new one for the forgotten card
                             const newDeck = { id: generateUUID(), name: "Mazo Recuperado", cards: [forgottenCard] };
                             userDecks.push(newDeck);
                             movedToDeckName = newDeck.name;
-                            if (!activeDeckId || activeDeckId === MAIN_DECK_ID) activeDeckId = newDeck.id; // Make it active if no specific deck was
+                            if (!activeDeckId || activeDeckId === MAIN_DECK_ID) activeDeckId = newDeck.id;
                         }
 
-                        updateCurrentStudyCards(); // Refresh study cards
+                        updateCurrentStudyCards();
                         saveGameData();
-                        populateReviewLearnedList(); // Refresh this modal
+                        populateReviewLearnedList();
                         if (movedToDeckName) {
                             showTemporaryFeedback(reviewModalFeedbackEl, `"${questionToForget}" movida de nuevo al mazo "${movedToDeckName}".`, "info", 2500);
-                            populateDecksListInModal(); // Update card counts in decks modal
+                            populateDecksListInModal();
                         } else {
                              showTemporaryFeedback(reviewModalFeedbackEl, `"${questionToForget}" olvidada. No se pudo añadir a un mazo.`, "info", 2000);
                         }
-                        // If study panel was empty, refresh it
                         if (currentStudyCards.length > 0 && questionTextEl.textContent.startsWith("¡No hay palabras")) {
                             displayCard();
                         }
@@ -2230,7 +2147,7 @@
         openShopBtn.addEventListener('click', () => {
             clearFeedback(shopFeedbackEl);
             updateShopCosts();
-            loadShopDecks(); // Asynchronously load deck definitions
+            loadShopDecks();
             openModal(shopModal);
         });
         closeShopBtn.addEventListener('click', () => closeModal(shopModal));
@@ -2263,17 +2180,16 @@
             appleShopCostDisplayEl.textContent = APPLE_SHOP_COST;
         }
         async function loadShopDecks() {
-            shopDecksContainerEl.innerHTML = ''; // Clear previous items
+            shopDecksContainerEl.innerHTML = '';
             loadingDecksMsgEl.classList.remove('hidden');
             let decksDisplayed = 0;
 
             for (const deckDef of SHOP_DECK_DEFINITIONS) {
                 try {
-                    // Fetch with cache busting to get fresh data if JSON files are updated
                     const response = await fetch(deckDef.fileName + `?v=${Date.now()}`);
                     if (!response.ok) throw new Error(`HTTP error ${response.status} for ${deckDef.fileName}`);
-                    const deckData = await response.json(); // deckData should have {name, cost, cards}
-                    shopDecksData[deckDef.id] = deckData; // Store for purchase logic
+                    const deckData = await response.json();
+                    shopDecksData[deckDef.id] = deckData;
 
                     const deckItemEl = document.createElement('div');
                     deckItemEl.className = 'p-2.5 border rounded-lg bg-gray-50';
@@ -2289,7 +2205,6 @@
                     decksDisplayed++;
                 } catch (error) {
                     console.error(`Error cargando mazo de tienda ${deckDef.fileName}:`, error);
-                     // Optionally display an error for this specific deck in the shop UI
                 }
             }
             loadingDecksMsgEl.classList.add('hidden');
@@ -2308,7 +2223,6 @@
                 showTemporaryFeedback(shopFeedbackEl, "Error: Mazo de tienda no encontrado.", "incorrect"); return;
             }
             if (applesCount >= deckDataFromShop.cost) {
-                // Check if a deck with the same name already exists
                 if (userDecks.some(d => d.name.toLowerCase() === deckDataFromShop.name.toLowerCase())) {
                      showTemporaryFeedback(shopFeedbackEl, `Ya tienes un mazo llamado "${deckDataFromShop.name}". Renombra el existente o este no se añadirá.`, "info", 4000);
                      return;
@@ -2316,25 +2230,153 @@
 
                 applesCount -= deckDataFromShop.cost;
                 const newDeckFromShop = {
-                    id: generateUUID(), // Generate a new unique ID for the user's copy
+                    id: generateUUID(),
                     name: deckDataFromShop.name,
-                    cards: deckDataFromShop.cards.map(c => ({...c})) // Deep copy cards
+                    cards: deckDataFromShop.cards.map(c => ({...c}))
                 };
                 userDecks.push(newDeckFromShop);
 
                 updateApplesCountDisplay();
                 saveGameData();
-                populateDecksListInModal(); // Update "My Decks" modal
+                populateDecksListInModal();
                 showTemporaryFeedback(shopFeedbackEl, `¡Mazo "${deckDataFromShop.name}" comprado y añadido a tus mazos!`, "correct", 3000);
             } else {
                 showTemporaryFeedback(shopFeedbackEl, `Manzanas insuficientes.`, "incorrect");
             }
         }
 
+        // --- AI Deck Generation Logic ---
+        openAiDeckModalBtn.addEventListener('click', () => {
+            aiDeckTopicInputEl.value = '';
+            aiDeckNameInputEl.value = '';
+            clearFeedback(aiDeckFeedbackEl);
+            aiLoadingIndicatorEl.classList.add('hidden');
+            generateAiDeckBtn.disabled = false;
+            openModal(aiDeckModal);
+            aiDeckTopicInputEl.focus();
+        });
+
+        cancelAiDeckBtn.addEventListener('click', () => closeModal(aiDeckModal));
+
+        generateAiDeckBtn.addEventListener('click', async () => {
+            const topic = aiDeckTopicInputEl.value.trim();
+            let deckName = aiDeckNameInputEl.value.trim();
+
+            if (!topic) {
+                showTemporaryFeedback(aiDeckFeedbackEl, "Por favor, introduce un tema para el mazo.", "incorrect");
+                return;
+            }
+
+            if (!deckName) {
+                deckName = `Mazo IA: ${topic.charAt(0).toUpperCase() + topic.slice(1)}`;
+            }
+            
+            // Check if a deck with the same name already exists
+            if (userDecks.some(d => d.name.toLowerCase() === deckName.toLowerCase())) {
+                showTemporaryFeedback(aiDeckFeedbackEl, `Ya existe un mazo llamado "${deckName}". Elige otro nombre.`, "incorrect", 4000);
+                return;
+            }
+
+            clearFeedback(aiDeckFeedbackEl);
+            aiLoadingIndicatorEl.classList.remove('hidden');
+            generateAiDeckBtn.disabled = true;
+            showTemporaryFeedback(aiDeckFeedbackEl, "Generando mazo con IA... Esto puede tardar un momento.", "loading", 0);
+
+
+            const prompt = `Genera una lista de 10 a 15 pares de palabras para un mazo de flashcards sobre el tema '${topic}'. Cada par debe tener una palabra en inglés ('question') y su traducción al español ('answer'). Devuelve el resultado como un JSON que se ajuste al siguiente esquema. Asegúrate de que las palabras sean relevantes para el tema y variadas.`;
+            
+            const schema = {
+                type: "ARRAY",
+                items: {
+                    type: "OBJECT",
+                    properties: {
+                        "question": { "type": "STRING", description: "La palabra o frase corta en Inglés." },
+                        "answer": { "type": "STRING", description: "La traducción al Español." }
+                    },
+                    required: ["question", "answer"]
+                }
+            };
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = {
+                contents: chatHistory,
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema
+                }
+            };
+            
+            const apiKey = GEMINI_API_KEY; // This will be an empty string for Canvas, handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    console.error("Gemini API Error Response:", errorBody);
+                    let errorMessage = `Error de la API: ${response.status}`;
+                    if (errorBody && errorBody.error && errorBody.error.message) {
+                        errorMessage += ` - ${errorBody.error.message}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    
+                    const jsonText = result.candidates[0].content.parts[0].text;
+                    const generatedCards = JSON.parse(jsonText); // This should be an array of {question, answer}
+
+                    if (Array.isArray(generatedCards) && generatedCards.length > 0) {
+                        const newAiDeck = {
+                            id: generateUUID(),
+                            name: deckName,
+                            cards: generatedCards.filter(c => c.question && c.answer) // Basic validation
+                        };
+                        userDecks.push(newAiDeck);
+                        saveGameData();
+                        populateDecksListInModal();
+                        showTemporaryFeedback(aiDeckFeedbackEl, `¡Mazo "${deckName}" generado y añadido con ${newAiDeck.cards.length} palabras!`, "correct", 4000);
+                        closeModal(aiDeckModal);
+                        // Optionally, make the new deck active
+                        // handleSelectDeckForStudy(newAiDeck.id); 
+                        // closeModal(decksModal); // Close parent modal too if new deck is made active
+                        showTemporaryFeedback(deckManagementFeedbackEl, `Mazo "${deckName}" (IA) añadido.`, "correct", 3000);
+
+                    } else {
+                        throw new Error("La IA generó una respuesta vacía o en formato incorrecto.");
+                    }
+                } else {
+                     console.error("Gemini API Unexpected Response Structure:", result);
+                    throw new Error("Respuesta inesperada de la API de IA. No se encontraron 'candidates' o 'parts'.");
+                }
+
+            } catch (error) {
+                console.error("Error generando mazo con IA:", error);
+                showTemporaryFeedback(aiDeckFeedbackEl, `Error: ${error.message}. Intenta de nuevo.`, "incorrect", 5000);
+            } finally {
+                aiLoadingIndicatorEl.classList.add('hidden');
+                generateAiDeckBtn.disabled = false;
+                // Clear loading message if it's still there and wasn't replaced by success/error
+                if (aiDeckFeedbackEl.classList.contains('loading')) {
+                    clearFeedback(aiDeckFeedbackEl);
+                }
+            }
+        });
+
+
         // --- Global Event Listeners & Init ---
         openDecksModalBtn.addEventListener('click', () => {
             populateDecksListInModal();
-            updateActiveDeckDisplay(); // Ensure active deck name is current in modal
+            updateActiveDeckDisplay();
             clearFeedback(deckManagementFeedbackEl);
             openModal(decksModal);
         });
@@ -2350,7 +2392,7 @@
 
         useFertilizerBtn.addEventListener('click', growTree);
         exportProgressBtn.addEventListener('click', exportProgress);
-        importProgressBtn.addEventListener('click', () => importProgressInput.click()); // Trigger file input
+        importProgressBtn.addEventListener('click', () => importProgressInput.click());
         importProgressInput.addEventListener('change', handleImportFile);
         downloadWordsBtn.addEventListener('click', () => {
             let contentToDownload = [];
@@ -2365,12 +2407,12 @@
                 } else {
                      showTemporaryFeedback(importExportFeedbackEl, "El mazo activo está vacío.", "info");
                 }
-            } else { // Main deck or no specific deck (download all)
+            } else {
                 userDecks.forEach(deck => {
                     if (deck.cards.length > 0) {
                         contentToDownload.push(`=== Palabras del Mazo: ${deck.name} ===`);
                         contentToDownload.push(...deck.cards.map(c => `${c.question}: ${c.answer}`));
-                        contentToDownload.push(""); // Add a blank line between decks
+                        contentToDownload.push("");
                     }
                 });
             }
@@ -2396,10 +2438,10 @@
         });
 
         function initGameVisuals() {
-            updateCurrentStudyCards(); // This will also call displayCard if cards exist
-            displayCard(); // Call explicitly to handle no-card state correctly
+            updateCurrentStudyCards();
+            displayCard();
             updateAllStatsDisplays();
-            checkAndGenerateApples(); // Initial check
+            checkAndGenerateApples();
             updateStudyPanelWordManagementButtons();
         }
 
@@ -2407,11 +2449,10 @@
             updateScoreDisplay();
             updateFertilizerCountDisplay();
             updateApplesCountDisplay();
-            updateTreeVisual(); // This also updates applesPerDay display
+            updateTreeVisual();
         }
 
         async function initGame() {
-            // Initialize Speech Synthesis
             synth = window.speechSynthesis;
             if (synth) {
                 populateVoices();
@@ -2420,85 +2461,19 @@
                 }
             } else {
                  console.warn("Speech synthesis is not supported in this browser.");
-                if(speakerIconButtonEl) speakerIconButtonEl.style.display = 'none'; // Hide button if no synth
+                if(speakerIconButtonEl) speakerIconButtonEl.style.display = 'none';
             }
 
-            await initCryptoKey(); // Prepare encryption key
-            loadGameData();        // Load saved progress or defaults
-            initGameVisuals();     // Set up the UI based on loaded data
+            await initCryptoKey();
+            loadGameData();
+            initGameVisuals();
 
-            // Start apple generation interval if not already started (e.g. on script reload)
-            if (!window.appleCheckIntervalId) { // Use a global-like scope for interval ID
+            if (!window.appleCheckIntervalId) {
                  window.appleCheckIntervalId = setInterval(checkAndGenerateApples, CHECK_APPLES_INTERVAL);
             }
         }
 
         window.onload = initGame;
-
-
-document.addEventListener('DOMContentLoaded', () => { // Asegúrate de que el DOM esté cargado
-    const generateDeckButton = document.getElementById('generateDeckButton');
-    if (generateDeckButton) {
-        generateDeckButton.addEventListener('click', handleGenerateDeckButtonClick);
-    }
-
-        // AHORA PUEDES IMPORTAR geminiApi.js
-        import { generateFlashcardDeck } from './geminiApi.js'; // Ajusta la ruta si geminiApi.js no está en la misma carpeta que index.html
-
-        // Define la función para manejar la generación del mazo
-        async function handleGenerateDeckButtonClick() {
-            // Asume que tienes un input para el tema y otro para el número de tarjetas en tu HTML
-            const topicInput = document.getElementById('deckTopicInput'); // Asegúrate de que exista este ID en tu HTML
-            const numCardsInput = document.getElementById('numCardsInput'); // Asegúrate de que exista este ID en tu HTML
-
-            const topic = topicInput ? topicInput.value : ''; // Manejo si el input no existe aún
-            const numCards = numCardsInput ? parseInt(numCardsInput.value, 10) : 10;
-
-            if (!topic) {
-                alert("Por favor, ingresa un tema para el mazo.");
-                return;
-            }
-
-            // Aquí puedes mostrar un spinner o deshabilitar el botón de generación
-            console.log("Generando mazo sobre:", topic);
-
-            try {
-                const newDeck = await generateFlashcardDeck(topic, numCards);
-
-                if (newDeck) {
-                    console.log("Mazo generado exitosamente:", newDeck);
-                    // Aquí es donde integrarías el nuevo mazo con la lógica de tu juego.
-                    // Por ejemplo, añadiéndolo a una lista de mazos disponibles,
-                    // guardándolo en tu `gameData`, y actualizando la UI.
-
-                    // Ejemplo (adaptado a tu lógica de juego):
-                    // Asumiendo que 'gameData' es una variable global o accesible aquí
-                    if (typeof gameData !== 'undefined' && gameData.decks) {
-                        gameData.decks.push({
-                            name: `Mazo de IA: ${topic}`, // Nombre descriptivo para el mazo generado
-                            cards: newDeck
-                        });
-                        saveGameData(); // Llama a tu función para guardar el estado del juego
-                        // Aquí necesitarías una función para actualizar la UI que muestre los mazos
-                        // Por ejemplo, volver a renderizar la lista de mazos o añadir dinámicamente el nuevo.
-                        alert(`Mazo "${topic}" generado y añadido.`);
-                    } else {
-                        console.warn("gameData.decks no está disponible o no es un array. El mazo no se añadió a la data del juego.");
-                        alert("Mazo generado, pero no se pudo añadir al juego. Revisa la consola.");
-                    }
-                } else {
-                    alert("No se pudo generar el mazo. Intenta de nuevo.");
-                }
-            } catch (error) {
-                console.error("Hubo un error al generar el mazo:", error);
-                alert("Hubo un error al generar el mazo. Revisa la consola para más detalles.");
-            } finally {
-                // Aquí puedes ocultar el spinner o habilitar el botón de nuevo
-            }
-        }
-
-
-
 
     </script>
 </body>
