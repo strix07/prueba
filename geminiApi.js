@@ -1,4 +1,4 @@
-// geminiApi.js (versión para Netlify Functions)
+// geminiApi.js (versión corregida para Netlify Functions)
 
 async function callGeminiApi(prompt) {
     // Llama a tu Netlify Function, no directamente a la API de Gemini
@@ -27,36 +27,37 @@ async function callGeminiApi(prompt) {
     }
 }
 
-// Dentro de geminiApi.js, en la función generateFlashcardDeck
+// La función generateFlashcardDeck con su contenido correctamente anidado
 async function generateFlashcardDeck(topic, numCards = 10) {
-    const prompt = `Genera un mazo de <span class="math-inline">\{numCards\} flashcards de inglés sobre el tema "</span>{topic}". Cada flashcard debe tener un término en inglés y su traducción al español, y opcionalmente un ejemplo de uso en inglés. Formato:
-[
-    {
-        "english": "término en inglés 1",
-        "spanish": "traducción en español 1",
-        "example": "ejemplo de uso 1 (opcional)"
-    },
-    {
-        "english": "término en inglés 2",
-        "spanish": "traducción en español 2",
-        "example": "ejemplo de uso 2 (opcional)"
-    }
-    ...
-]
-Asegúrate de que la respuesta sea un JSON válido y solo contenga el array de flashcards.`;
-}
+    const prompt = `Genera un mazo de ${numCards} flashcards de inglés sobre el tema "${topic}". Cada flashcard debe tener un término en inglés y su traducción al español, y opcionalmente un ejemplo de uso en inglés. Formato:
+    [
+        {
+            "english": "término en inglés 1",
+            "spanish": "traducción en español 1",
+            "example": "ejemplo de uso 1 (opcional)"
+        },
+        {
+            "english": "término en inglés 2",
+            "spanish": "traducción en español 2",
+            "example": "ejemplo de uso 2 (opcional)"
+        }
+        // ... más flashcards
+    ]
+    Asegúrate de que la respuesta sea un JSON válido y solo contenga el array de flashcards.`;
 
+    // ¡Este bloque try...catch debe ir AQUÍ DENTRO de las llaves de generateFlashcardDeck!
     try {
         const geminiResponse = await callGeminiApi(prompt);
         // La respuesta de la función proxy ya debería ser la respuesta "pura" de Gemini
-        const responseText = geminiResponse.candidates[0].content.parts[0].text;
+        const responseText = geminiResponse.candidates[0].content.parts[0].text; // Asegúrate de que esta ruta sea correcta para tu proxy
 
         const deck = JSON.parse(responseText);
         return deck;
     } catch (error) {
-        console.error("Error generating flashcard deck:", error);
-        return null;
+        console.error("Error generating flashcard deck in geminiApi.js:", error);
+        return null; // Devuelve null o propaga el error como prefieras
     }
-}
+} // <--- Esta es la ÚNICA llave de cierre para generateFlashcardDeck
 
+// Exporta las funciones para que puedan ser importadas en index.html
 export { callGeminiApi, generateFlashcardDeck };
